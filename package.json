@@ -53,8 +53,10 @@
     "dist"
   ],
   "dependencies": {
+    "isomorphic-ws": "^4.0.1",
     "jotai": "^0.12.2",
     "l0g": "file:../../l0g",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "ws": "^7.4.2"
   }
 }

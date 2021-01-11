@@ -19,6 +19,8 @@ const Poll = (props) => {
   const vote = useAction('vote', 'onClick');
 
   return <div>
+    ACTION {typeof vote}
+    SERVER PROPS {JSON.stringify(serverProps)}
     <ul>
       {values.map((value, i) => {
         return <li>
@@ -44,8 +46,14 @@ const Example = () => {
     </ServerComponent> */}
   </>
 }
+
+const local = "http://localhost:3000";
+const ec2 = "";
+
+const serverless = "wss://serverless.state-server.state-less.cloud/dev2"; // "wss://ocreifr8b1.execute-api.us-east-1.amazonaws.com/dev2" //
+
 const App = () => {
-  return <Provider url="http://localhost:3000">
+  return <Provider url={serverless} urls={['ws://localhost:8080']}>
     <Suspense fallback="Loading">
       <Example />
     </Suspense>
