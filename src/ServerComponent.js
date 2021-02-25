@@ -77,8 +77,8 @@ export const ServerComponent = (props) => {
     mappedProps.error = error;
     return <internalContext.Provider value={serverProps}>
         <context.Provider value={mappedProps}>
-            {JSON.stringify(mappedProps)}
-            {JSON.stringify(resolved)}
+            {/* {JSON.stringify(mappedProps)} */}
+            {/* {JSON.stringify(resolved)} */}
             {props.children}
         </context.Provider>
     </internalContext.Provider>

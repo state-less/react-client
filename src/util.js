@@ -1,5 +1,11 @@
 export const emit = (socket, data) => {
-    socket.send(JSON.stringify(data));
+    if (Array.isArray(socket)) {
+        socket.forEach((socket) => {
+            socket.send(JSON.stringify(data));
+        })
+    } else {
+        socket.send(JSON.stringify(data));
+    }
 }
 
 export const on = (socket, event, fn) => {

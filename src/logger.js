@@ -1,4 +1,4 @@
-import l0g from 'l0g/dist/Logger';
+import l0g from 'l0g';
 
 //Screw this. Because of static class properties I'm forced to transpile my code. 
 //I don't want to change my source code as it reads way cleaner using static properties
@@ -39,9 +39,6 @@ const formatter = new Color((options) => {
     return `${ts} ${scope} ${level}: ${message}`
 });
 
-// if (LOG_LEVEL === 'debug') {
-    // }
-    window.Color = Color;
 Color.formatMap.get(Color.isArray).unshift((v) => v && `Array[${v.length}]`);
 Color.formatMap.get(Color.isObject).unshift((v) => v && `${v.constructor.name}[${Object.keys(v)}]`);
 
@@ -53,7 +50,10 @@ export const orgLogger = new Logger('debug', {transports}).scope('state-less');
 export const packageLogger = orgLogger.scope('react-client');
 const windowLogger = orgLogger.scope('browser-console');
 
-window.Logger = Logger;
-window.logger = windowLogger;
+if (typeof window !== 'undefined') {
+
+    window.Logger = Logger;
+    window.logger = windowLogger;
+}
 
 export default packageLogger;

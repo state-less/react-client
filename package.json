@@ -26,7 +26,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^17.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -45,18 +45,15 @@
     "microbundle-crl": "^0.13.10",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react-dom": "^17.0.1",
     "react-scripts": "^3.4.1"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "isomorphic-ws": "^4.0.1",
     "jotai": "^0.12.2",
-    "l0g": "file:../../l0g",
-    "uuid": "^8.3.2",
-    "ws": "^7.4.2"
+    "l0g": "github:C5H8NNaO4/l0g#dev",
+    "uuid": "^8.3.2"
   }
 }

@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react'
+import React, {Suspense, Fragment} from 'react'
 
 import { ErrorBoundary, ServerComponent, Provider, useProps, useAction} from '@state-less/react-client'
 import '@state-less/react-client/dist/index.css'
@@ -13,7 +13,7 @@ const ServerTime = (props) => {
 }
 
 
-const Poll = (props) => {
+export const Poll = (props) => {
   const serverProps = useProps();
   const {values = [], votes = []} = serverProps;
   const vote = useAction('vote', 'onClick');
@@ -47,17 +47,23 @@ const Example = () => {
   </>
 }
 
-const local = "http://localhost:3000";
 const ec2 = "";
 
 const serverless = "wss://serverless.state-server.state-less.cloud/dev2"; // "wss://ocreifr8b1.execute-api.us-east-1.amazonaws.com/dev2" //
-
+const local = 'ws://localhost:8080';
 const App = () => {
-  return <Provider url={serverless} urls={['ws://localhost:8080']}>
+  return <Fragment>
+  <Provider url={serverless}>
     <Suspense fallback="Loading">
       <Example />
     </Suspense>
   </Provider>
+  <Provider url={local}>
+    <Suspense fallback="Loading">
+      <Example />
+    </Suspense>
+  </Provider>
+  </Fragment>
 }
 
 export default App

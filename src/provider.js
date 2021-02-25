@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {io} from 'socket.io-client';
 import { context } from './context';
 // import ws from 'ws';
 import {on, emit, consume} from './util';
@@ -10,6 +9,8 @@ import {packageLogger} from './logger';
 export const Provider = (props) => {
     const {urls = [], url, useAtom} = props;
     const [open, setOpen] = useState(false);
+    const [secOpen, setSecOpen] = useState(urls.map(() => false));
+    const allOpen = secOpen.reduce((all, cur) => all && cur, open);
     if (!url) 
         throw new Error("Missing property 'url' in Provider props.");
         
@@ -18,6 +19,9 @@ export const Provider = (props) => {
     // }, [url]);
 
     const socket = useMemo(() => {
+        if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
+
+
         const ws = new WebSocket(url);
         ws.addEventListener('open', function open() {
             console.log ("connected")
@@ -30,11 +34,13 @@ export const Provider = (props) => {
             const data = await consume(event);
             packageLogger.info`Received message from websocket. ${data}`
         });
+        
         return ws;
-    }, [url]);
+    }, [url, typeof window]);
 
     const sockets = useMemo(() => {
-        return urls.map((url) => {
+        return urls.map((url, i) => {
+            if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
             const ws = new WebSocket(url);
             ws.addEventListener('open', function open() {
                 console.log ("connected")
@@ -42,6 +48,11 @@ export const Provider = (props) => {
                 // ws.send(JSON.stringify({"action" : "useState" ,"key":"votes", "scope":"base"}));
                 // console.log ("sent")
                 // setOpen(true);
+                setSecOpen((secOpen) => {
+                    const updated = [...secOpen];
+                    updated[i] = true;
+                    setSecOpen(updated);
+                })
             });
             ws.addEventListener('message', async (event) => {
                 const data = await consume(event);
@@ -49,14 +60,14 @@ export const Provider = (props) => {
             });
             return ws;
         })
-    })
+    }, [typeof window]);
     useEffect(() => {
         on(socket, 'error', () => {
             const message = logger.error`Connecting to socket ${url}.`
             throw new Error(message);
         }) 
     },[]);
-    return <context.Provider value={{socket,sockets, open, useAtom}}>
+    return <context.Provider value={{socket,sockets, open, secOpen, allOpen, useAtom}}>
         <JotaiProvider>
             {props.children}
         </JotaiProvider>

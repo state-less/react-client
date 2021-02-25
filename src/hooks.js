@@ -126,8 +126,8 @@ export const useServerState = (clientDefaultValue, options) => {
                 var onSetValue = async (event) => {
                     const eventData = await consume(event);
                     const data = parseSocketResponse(eventData);
+                    logger.warning`Received live event ${eventData.action} own id: ${state.id} data id ${data.id} client id ${clientId} value id: ${eventData.requestId} ${JSON.stringify(eventData)}`;
                     if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
-                        logger.warning`Received live event ${eventData.action} own id: ${state.id} data id ${data.id} client id ${clientId} value id: ${eventData.requestId} ${JSON.stringify(state)}`;
                         logger.warning`Parsed state live data ${data}. Setting state. ${{...state, ...data, id: 'foo'}}`;
                         setState((state) => {
                             return {...state, ...data}
@@ -296,7 +296,7 @@ export const useComponent = (componentKey, options = {}) => {
     const logAtom = useMemo(() => atom(), [componentKey]);
     const logger = useMemo(() => baseLogger.scope('useComponent'));
     try {
-        const {socket, sockets, open} = ctx;
+        const {socket, sockets, open, secOpen, allOpen} = ctx;
         const debugProps = useMemo(() => ({key: componentKey, options}))
         const defaultState = useMemo(() => ({component: componentKey, props: {}, scope, key: componentKey}));
 
@@ -321,7 +321,7 @@ export const useComponent = (componentKey, options = {}) => {
         // logger.info`Rerendering live useComponent hook. ${componentKey} ${JSON.stringify(component)}`
         const [componentState] = useServerState(component, {
             key: componentKey,
-            scope: ['public'],
+            scope: 'public',
             defer: !component,
         });
         // useTraceUpdate(internalState);
@@ -339,7 +339,7 @@ export const useComponent = (componentKey, options = {}) => {
 
             const resolvedState =  useServerState(state.value, {
                 key: state.key,
-                scope: ['public', state.scope],
+                scope: state.scope,
                 defer: !state.id || !state.key || !state.scope
             })
             if (state.id && state.key && state.scope) {
@@ -361,7 +361,7 @@ export const useComponent = (componentKey, options = {}) => {
                 return Object.assign(fns, {
                     [handler]: (...args) => {
                         const id = v4();
-                        emit(socket, {action: 'call', id, componentKey, name: action.props.name, handler, args});
+                        emit([socket, ...sockets], {action: 'call', id, componentKey, name: action.props.name, handler, args});
                         return id;
                     }
                 });
@@ -422,6 +422,12 @@ export const useComponent = (componentKey, options = {}) => {
                 setLoading(to);
             } 
             
+            secOpen.forEach((open, i) => {
+                if (open) {
+                    const socket = sockets[i];
+                    emit(socket, {action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', options: {...rest}});
+                }
+            })
             // socket.on(EVENT_ERROR, (componentKey, id, message) => {
             //     if (componentKey === componentKey)
             //         setState({...internalState, foo:'bar',event: id, error: message})
