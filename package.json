@@ -53,7 +53,7 @@
   ],
   "dependencies": {
     "jotai": "^0.12.2",
-    "l0g": "github:C5H8NNaO4/l0g#dev",
+    "l0g": "github:C5H8NNaO4/l0g",
     "uuid": "^8.3.2"
   }
 }
