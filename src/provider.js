@@ -1,19 +1,78 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { context } from './context';
 // import ws from 'ws';
-import {on, emit, consume} from './util';
+import { on, emit, consume, request } from './util';
 
-import {Provider as JotaiProvider} from 'jotai';
-import {packageLogger} from './logger';
+import { atom, Provider as JotaiProvider } from 'jotai';
+import { packageLogger } from './logger';
+import { Web3Provider, web3Context } from './Web3';
+import { useLocalStorage } from '../../algo-trade-frontend/src/lib/hooks/jotai';
+// import { web3Context, Web3UtilProvider } from '../../algo-trade-frontend/src/provider/Web3';
 
-export const Provider = (props) => {
-    const {urls = [], url, useAtom} = props;
+export const useClientContext = () => {
+    const internalCtx = useContext(context);
+    const web3Ctx = useContext(web3Context);
+    return { ...internalCtx, ...web3Ctx }
+}
+
+let compId;
+export const useAuth = (useStrategy, auto) => {
+    const { open, socket, headers, setHeaders } = useContext(context);
+    const { authenticate: auth, logout: deauth, id } = useStrategy();
+    const [wasAuthed, setHasAuthed] = useState(false);
+    async function authenticate() {
+        const challenge = await request(socket, { action: 'auth', phase: 'challenge' });
+        const data = await auth(challenge);
+        if (data.success)
+            try {
+                const response = await request(socket, {
+                    action: 'auth',
+                    phase: 'response',
+                    ...data
+                });
+                console.log("AUTH RESPONSE", response)
+                setHeaders({
+                    ...headers,
+                    Authorization: `Bearer ${response}`
+                });
+                setHasAuthed(true);
+                return response;
+            } catch (e) {
+                throw e;
+            }
+    }
+
+    function logout() {
+        const { Authorization, ...rest } = headers;
+        deauth();
+        setHeaders(rest);
+    }
+
+    useEffect(() => {
+        (async () => {
+            if (id && compId !== id && wasAuthed) {
+                compId = id;
+                await logout();
+            }
+        })()
+        return () => {
+            compId = null;
+        }
+    }, [id])
+
+    return { authenticate, logout };
+}
+
+const headerAtom = atom();
+const _Provider = (props) => {
+    const { urls = [], url, headers: staticHeaders = {}, useAtom } = props;
     const [open, setOpen] = useState(false);
+    const [headers, setHeaders] = useLocalStorage('headers', headerAtom, staticHeaders)
     const [secOpen, setSecOpen] = useState(urls.map(() => false));
     const allOpen = secOpen.reduce((all, cur) => all && cur, open);
-    if (!url) 
+    if (!url)
         throw new Error("Missing property 'url' in Provider props.");
-        
+
     // const socket = useMemo(() => {
     //     return io(url);³
     // }, [url]);
@@ -24,7 +83,7 @@ export const Provider = (props) => {
 
         const ws = new WebSocket(url);
         ws.addEventListener('open', function open() {
-            console.log ("connected")
+            console.log("connected")
             // ws.send(JSON.stringify({"action" : "render" , "message" : "Hello everyone"}));
             // ws.send(JSON.stringify({"action" : "useState" ,"key":"votes", "scope":"base"}));
             // console.log ("sent")
@@ -32,9 +91,8 @@ export const Provider = (props) => {
         });
         ws.addEventListener('message', async (event) => {
             const data = await consume(event);
-            packageLogger.info`Received message from websocket. ${data}`
         });
-        
+
         return ws;
     }, [url, typeof window]);
 
@@ -43,7 +101,7 @@ export const Provider = (props) => {
             if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
             const ws = new WebSocket(url);
             ws.addEventListener('open', function open() {
-                console.log ("connected")
+                console.log("connected")
                 // ws.send(JSON.stringify({"action" : "render" , "message" : "Hello everyone"}));
                 // ws.send(JSON.stringify({"action" : "useState" ,"key":"votes", "scope":"base"}));
                 // console.log ("sent")
@@ -56,7 +114,6 @@ export const Provider = (props) => {
             });
             ws.addEventListener('message', async (event) => {
                 const data = await consume(event);
-                packageLogger.info`Received message from websocket. ${data}`
             });
             return ws;
         })
@@ -65,11 +122,20 @@ export const Provider = (props) => {
         on(socket, 'error', () => {
             const message = logger.error`Connecting to socket ${url}.`
             throw new Error(message);
-        }) 
-    },[]);
-    return <context.Provider value={{socket,sockets, open, secOpen, allOpen, useAtom}}>
-        <JotaiProvider>
+        })
+    }, []);
+
+
+    return <context.Provider value={{ setHeaders, socket, sockets, open, secOpen, allOpen, useAtom, headers }}>
+        <Web3Provider>
             {props.children}
-        </JotaiProvider>
+        </Web3Provider>
     </context.Provider>
+}
+
+export const Provider = (props) => {
+    return <JotaiProvider>
+        <_Provider {...props} />
+    </JotaiProvider>
+
 }
