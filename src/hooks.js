@@ -6,7 +6,7 @@ import baseLogger, { orgLogger } from './logger';
 import { parse, v4 } from 'uuid';
 import { useTraceUpdate } from './debug';
 import packageLogger from './logger';
-import { on, onMessage, emit, consume, off } from './util';
+import { on, onMessage, emit, consume, off, parseSocketResponse } from './util';
 
 let stateCount = 0;
 
@@ -122,7 +122,7 @@ export const useServerState = (clientDefaultValue, options) => {
 
         const [loading, setLoading] = useState(false);
 
-        const extendState = data => console.log(new Error('setState')) || setState({ ...state, ...data });
+        const extendState = data => setState({ ...state, ...data });
 
         const { id, error } = state;
         const setStateEvent = useMemo(() => genSetStateEventName(id), [id]);
@@ -150,7 +150,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 var onSetValue = async (event) => {
                     const eventData = await consume(event);
                     const data = parseSocketResponse(eventData);
-                    if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && !data.value) {
+                    if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined') {
                         return state;
                     }
                     if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
@@ -163,7 +163,13 @@ export const useServerState = (clientDefaultValue, options) => {
                     // });
                 };
                 onMessage(socket, onSetValue);
-                on(socket, errorEvent, ({ error }) => extendState({ error: new Error(error) }));
+                on(socket, 'message',async (event) => {
+                    const data = await consume(event);
+                    if (data.type === 'error') {
+                        const err = await parseSocketResponse(data);
+                        extendState({error: new Error(err)});
+                    }
+                });
                 emit(socket, { action: EVENT_USE_STATE, key, value, scope, requestId: clientId, options: { ...rest }, requestType });
                 setLoading(to);
             }
@@ -191,7 +197,13 @@ export const useServerState = (clientDefaultValue, options) => {
                         }
                     }
                     on(socket, 'message', onSetValue)
-
+                    on(socket, 'message',async (event) => {
+                        const data = await consume(event);
+                        if (data.type === 'error') {
+                            const err = await parseSocketResponse(data);
+                            extendState({error: new Error(err)});
+                        }
+                    });
                 }
             }
             return () => {
@@ -275,21 +287,6 @@ export const useResponse = (fn, action, keepAlive) => {
 const componentAtoms = new Map();
 
 
-const parseSocketResponse = (data) => {
-    const { body, statusCode, message } = data;
-
-    if (statusCode !== 200 && statusCode !== 500) {
-        throw new Error(message || 'Internal Server Error');
-    }
-
-    try {
-        const parsed = JSON.parse(body);
-        return parsed;
-    } catch (e) {
-        const message = baseLogger.warning`Error parsing render result ${e}`;
-        throw new Error(message);
-    }
-}
 
 /**
  * useComponent - Hook that renders serverside components
@@ -328,9 +325,11 @@ export const useComponent = (componentKey, options = {}, rendered) => {
 
         const [internalState, setState] = useAtom(atm);
         const [loading, setLoading] = useState(false);
+        const extendState = data => setState({ ...state, ...data });
 
         const {
             component,
+
         } = internalState;
 
         const [componentState] = useServerState(component, {
@@ -344,7 +343,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
 
         const resolved = {};
         const keys = Object.keys((componentState || rendered)?.props || {});
-        keys.length = 5;
+        keys.length = 15;
 
 
         for (const propKey of keys) {
@@ -406,6 +405,16 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                     }
                 });
 
+                onMessage(socket, async (event) => {
+                    const data = await consume(event);
+                    if (data.type === 'error') {
+                        const err = await parseSocketResponse(data);
+                        const errObj = new Error(err.message);
+                        Object.assign(errObj, err);
+                        console.log("Parsed Error", err);
+                        extendState({error: errObj});
+                    }
+                });
 
                 on(socket, 'log', (data) => {
                     data.tag[0].raw = 'Fake Tagged Template String Arg';
@@ -441,6 +450,9 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             setLoading(false);
         }, [internalState.props, error]);
 
+        if (internalState.error && !component) {
+            return internalState
+        }
 
         if (componentState instanceof Error) {
             throw componentState;
@@ -450,7 +462,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             throw new Promise(Function.prototype)
         }
 
-        return { ...(rendered || {}), ...componentState, resolved };
+        return { ...(rendered || {}), ...componentState,...internalState, resolved };
     } catch (e) {
         if (!ctx) throw new Error('No available context. Are you missing a Provider?');
         throw e;

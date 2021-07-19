@@ -4,7 +4,7 @@ import baseLogger from './logger';
 export const parseSocketResponse = (data) => {
     const { body, statusCode, message } = data;
 
-    if (statusCode !== 200) {
+    if (statusCode !== 200 && statusCode !== 500) {
         throw new Error(message || 'Internal Server Error');
     }
 

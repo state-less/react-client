@@ -17,7 +17,7 @@ export const useAction = (name, handler, callback) => {
     });
 
     if (!action)
-        return () => { throw new Error('Handler not available') }
+        return () => { console.warn('Handler not available') }
 
     if (action && action?.props?.fns && action?.props?.fns[handler]) {
         return action.props.fns[handler];
