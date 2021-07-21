@@ -1157,6 +1157,10 @@ var _Provider = function _Provider(props) {
       secOpen = _useState3[0],
       setSecOpen = _useState3[1];
 
+  var _useState4 = React.useState(null),
+      error = _useState4[0],
+      setError = _useState4[1];
+
   var allOpen = secOpen.reduce(function (all, cur) {
     return all && cur;
   }, open);
@@ -1202,7 +1206,7 @@ var _Provider = function _Provider(props) {
   React.useEffect(function () {
     on(socket, 'error', function () {
       var message = logger.error(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteralLoose(["Connecting to socket ", "."])), url);
-      throw new Error(message);
+      setError(message);
     });
   }, []);
   return /*#__PURE__*/React__default.createElement(context.Provider, {
@@ -1214,7 +1218,8 @@ var _Provider = function _Provider(props) {
       secOpen: secOpen,
       allOpen: allOpen,
       useAtom: useAtom,
-      headers: headers
+      headers: headers,
+      error: error
     }
   }, /*#__PURE__*/React__default.createElement(Web3Provider, null, props.children));
 };

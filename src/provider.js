@@ -69,6 +69,8 @@ const _Provider = (props) => {
     const [open, setOpen] = useState(false);
     const [headers, setHeaders] = useLocalStorage('headers', headerAtom, staticHeaders)
     const [secOpen, setSecOpen] = useState(urls.map(() => false));
+    const [error, setError] = useState(null);
+
     const allOpen = secOpen.reduce((all, cur) => all && cur, open);
     if (!url)
         throw new Error("Missing property 'url' in Provider props.");
@@ -121,12 +123,12 @@ const _Provider = (props) => {
     useEffect(() => {
         on(socket, 'error', () => {
             const message = logger.error`Connecting to socket ${url}.`
-            throw new Error(message);
+            setError(message);
         })
     }, []);
 
 
-    return <context.Provider value={{ setHeaders, socket, sockets, open, secOpen, allOpen, useAtom, headers }}>
+    return <context.Provider value={{ setHeaders, socket, sockets, open, secOpen, allOpen, useAtom, headers, error }}>
         <Web3Provider>
             {props.children}
         </Web3Provider>
