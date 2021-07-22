@@ -19,16 +19,16 @@ let compId;
 export const useAuth = (useStrategy, auto) => {
     const { open, socket, headers, setHeaders } = useContext(context);
     const { authenticate: auth, logout: deauth, id } = useStrategy();
-    const [hasAuthed, setHasAuthed] = useState(false);
+    const [authed, setHasAuthed] = useState(false);
     useEffect(() => {
         (async () => {
-            if (!hasAuthed) {
+            if (open && !authed) {
                 const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers});
 
                 console.log ("AUTO LOGIN", challenge);
             }
         })()
-    }, [hasAuthed]);
+    }, [open, authed]);
 
     async function authenticate() {
         const challenge = await request(socket, { action: 'auth', phase: 'challenge' });
@@ -60,7 +60,7 @@ export const useAuth = (useStrategy, auto) => {
 
     useEffect(() => {
         (async () => {
-            if (id && compId !== id && hasAuthed) {
+            if (id && compId !== id && authed) {
                 compId = id;
                 await logout();
             }
