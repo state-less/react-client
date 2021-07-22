@@ -1098,8 +1098,30 @@ var useAuth = function useAuth(useStrategy, auto) {
       id = _useStrategy.id;
 
   var _useState = React.useState(false),
-      wasAuthed = _useState[0],
+      hasAuthed = _useState[0],
       setHasAuthed = _useState[1];
+
+  React.useEffect(function () {
+    (function () {
+      try {
+        var _temp2 = function () {
+          if (!hasAuthed) {
+            return Promise.resolve(request(socket, {
+              action: 'auth',
+              phase: 'challenge',
+              headers: headers
+            })).then(function (challenge) {
+              console.log("AUTO LOGIN", challenge);
+            });
+          }
+        }();
+
+        return _temp2 && _temp2.then ? _temp2.then(function () {}) : void 0;
+      } catch (e) {
+        Promise.reject(e);
+      }
+    })();
+  }, [hasAuthed]);
 
   function logout() {
     var rest = _objectWithoutPropertiesLoose(headers, _excluded$2);
@@ -1111,14 +1133,14 @@ var useAuth = function useAuth(useStrategy, auto) {
   React.useEffect(function () {
     (function () {
       try {
-        var _temp2 = function () {
-          if (id && compId !== id && wasAuthed) {
+        var _temp4 = function () {
+          if (id && compId !== id && hasAuthed) {
             compId = id;
             return Promise.resolve(logout()).then(function () {});
           }
         }();
 
-        return _temp2 && _temp2.then ? _temp2.then(function () {}) : void 0;
+        return _temp4 && _temp4.then ? _temp4.then(function () {}) : void 0;
       } catch (e) {
         Promise.reject(e);
       }
