@@ -74,9 +74,9 @@ export const useAuth = (useStrategy, auto) => {
                 await logout();
             }
         })()
-        return () => {
-            compId = null;
-        }
+        // return () => {
+        //     compId = null;
+        // }
     }, [id])
 
     return { authenticate, logout };

@@ -1157,10 +1157,6 @@ var useAuth = function useAuth(useStrategy, auto) {
         Promise.reject(e);
       }
     })();
-
-    return function () {
-      compId = null;
-    };
   }, [id]);
   return {
     authenticate: authenticate,
