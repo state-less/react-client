@@ -1085,6 +1085,7 @@ var useAuth = function useAuth(useStrategy, auto) {
   };
 
   var _useContext = useContext(context),
+      open = _useContext.open,
       socket = _useContext.socket,
       headers = _useContext.headers,
       setHeaders = _useContext.setHeaders;
@@ -1095,19 +1096,28 @@ var useAuth = function useAuth(useStrategy, auto) {
       id = _useStrategy.id;
 
   var _useState = useState(false),
-      hasAuthed = _useState[0],
+      authed = _useState[0],
       setHasAuthed = _useState[1];
 
   useEffect(function () {
     (function () {
       try {
         var _temp2 = function () {
-          if (!hasAuthed) {
+          if (open && !authed) {
             return Promise.resolve(request(socket, {
               action: 'auth',
               phase: 'challenge',
               headers: headers
             })).then(function (challenge) {
+              if (challenge.address) {
+                setHasAuthed(true);
+              } else {
+                var newHeaders = _extends({}, headers);
+
+                delete newHeaders.Authorization;
+                setHeaders(newHeaders);
+              }
+
               console.log("AUTO LOGIN", challenge);
             });
           }
@@ -1118,7 +1128,7 @@ var useAuth = function useAuth(useStrategy, auto) {
         Promise.reject(e);
       }
     })();
-  }, [hasAuthed]);
+  }, [open, authed]);
 
   function logout() {
     var rest = _objectWithoutPropertiesLoose(headers, _excluded$2);
@@ -1131,7 +1141,7 @@ var useAuth = function useAuth(useStrategy, auto) {
     (function () {
       try {
         var _temp4 = function () {
-          if (id && compId !== id && hasAuthed) {
+          if (id && compId !== id && authed) {
             compId = id;
             return Promise.resolve(logout()).then(function () {});
           }

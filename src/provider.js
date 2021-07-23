@@ -24,7 +24,14 @@ export const useAuth = (useStrategy, auto) => {
         (async () => {
             if (open && !authed) {
                 const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers});
+                if (challenge.address) {
+                    setHasAuthed(true);
+                } else {
+                    const newHeaders = {...headers};
+                    delete newHeaders.Authorization;
 
+                    setHeaders(newHeaders);
+                }
                 console.log ("AUTO LOGIN", challenge);
             }
         })()
