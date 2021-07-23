@@ -69,7 +69,7 @@ export const useAuth = (useStrategy, auto) => {
 
     useEffect(() => {
         (async () => {
-            if (id && compId !== id && authed) {
+            if (id && (compId !== id) && authed) {
                 compId = id;
                 await logout();
             }
