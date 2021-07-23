@@ -1146,7 +1146,7 @@ var useAuth = function useAuth(useStrategy, auto) {
     (function () {
       try {
         var _temp4 = function () {
-          if (id && compId !== id && authed) {
+          if (id && compId && compId !== id && authed) {
             compId = id;
             return Promise.resolve(logout()).then(function () {});
           }
