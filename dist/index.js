@@ -1118,6 +1118,7 @@ var useAuth = function useAuth(useStrategy, auto) {
                 var newHeaders = _extends({}, headers);
 
                 delete newHeaders.Authorization;
+                debugger;
                 setHeaders(newHeaders);
               }
 
@@ -1136,6 +1137,7 @@ var useAuth = function useAuth(useStrategy, auto) {
   function logout() {
     var rest = _objectWithoutPropertiesLoose(headers, _excluded$2);
 
+    debugger;
     deauth();
     setHeaders(rest);
   }

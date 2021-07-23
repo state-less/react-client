@@ -29,7 +29,8 @@ export const useAuth = (useStrategy, auto) => {
                 } else {
                     const newHeaders = {...headers};
                     delete newHeaders.Authorization;
-
+                    
+                    debugger;
                     setHeaders(newHeaders);
                 }
                 console.log ("AUTO LOGIN", challenge);
@@ -61,6 +62,7 @@ export const useAuth = (useStrategy, auto) => {
 
     function logout() {
         const { Authorization, ...rest } = headers;
+        debugger;
         deauth();
         setHeaders(rest);
     }
