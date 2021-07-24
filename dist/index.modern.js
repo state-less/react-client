@@ -211,7 +211,8 @@ var consume = function consume(event) {
 };
 
 var _excluded = ["key", "strict", "defaultValue", "defer", "value", "scope", "suspend", "rendered", "requestType"],
-    _excluded2 = ["strict", "suspend", "scope", "props"];
+    _excluded2 = ["strict", "suspend", "scope", "props"],
+    _excluded3 = ["error"];
 var stateCount = 0;
 
 var increaseCount = function increaseCount() {
@@ -478,7 +479,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
               return Promise.resolve(consume(event)).then(function (eventData) {
                 var data = parseSocketResponse(eventData);
 
-                if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && !data.value) {
+                if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value !== 'undefined') {
                   return _state;
                 }
 
@@ -755,7 +756,11 @@ var useComponent = function useComponent(componentKey, options, rendered) {
               return Promise.resolve(consume(event)).then(function (eventData) {
                 if (eventData.action === 'render' && eventData.key == componentKey) {
                   var data = parseSocketResponse(eventData);
-                  setState(_extends({}, internalState, {
+
+                  var _error = internalState.error,
+                      _rest = _objectWithoutPropertiesLoose(internalState, _excluded3);
+
+                  setState(_extends({}, _rest, {
                     component: data
                   }));
                 }
@@ -1258,7 +1263,7 @@ var Provider = function Provider(props) {
 
 var _excluded$3 = ["name", "children", "index"],
     _excluded2$2 = ["name", "children"],
-    _excluded3 = ["children"],
+    _excluded3$1 = ["children"],
     _excluded4 = ["name", "scope", "children", "index"],
     _excluded5 = ["children"];
 var logger$1 = packageLogger.scope('ServerComponent');
@@ -1360,7 +1365,7 @@ var ServerComponent2 = function ServerComponent2(props) {
   }),
       _useComponent$props = _useComponent.props,
       serverChildren = _useComponent$props.children,
-      serverProps = _objectWithoutPropertiesLoose(_useComponent$props, _excluded3);
+      serverProps = _objectWithoutPropertiesLoose(_useComponent$props, _excluded3$1);
 
   var parent = useContext(internalContext);
 

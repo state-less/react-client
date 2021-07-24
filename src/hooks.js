@@ -187,7 +187,7 @@ export const useServerState = (clientDefaultValue, options) => {
                     var onSetValue = async () => {
                         const eventData = await consume(event);
                         const data = parseSocketResponse(eventData);
-                        if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && !data.value) {
+                        if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value !== 'undefined') {
                             return state;
                         }
                         if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
@@ -400,7 +400,8 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                         /**TODO: fix base scope === 'public' */
                         if (eventData.action === 'render' && eventData.key == componentKey) {
                             const data = parseSocketResponse(eventData);
-                            setState({ ...internalState, component: data });
+                            const {error, ...rest} = internalState;
+                            setState({ ...rest, component: data });
                         }
                     } catch (e) {
                     }
