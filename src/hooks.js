@@ -192,6 +192,7 @@ export const useServerState = (clientDefaultValue, options) => {
                         }
                         if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
                             setState((state) => {
+                                delete state.error;
                                 return { ...state, ...data }
                             });
                         }

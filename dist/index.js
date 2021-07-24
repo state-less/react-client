@@ -487,6 +487,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
 
                 if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
                   setState(function (state) {
+                    delete state.error;
                     return _extends({}, state, data);
                   });
                 }
