@@ -29,7 +29,7 @@ export const emit = (socket, data) => {
 
 export const request = async (socket, data) => {
     const id = v4();
-    emit(socket, {type: request, id, ...data});
+    emit(socket, {type: request,  ...data, id});
     return new Promise((resolve, reject) => {
 
         const onResponse = async (event) => {

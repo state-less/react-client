@@ -166,9 +166,10 @@ var request = function request(socket, data) {
   try {
     var id = uuid.v4();
     emit(socket, _extends({
-      type: request,
+      type: request
+    }, data, {
       id: id
-    }, data));
+    }));
     return Promise.resolve(new Promise(function (resolve, reject) {
       var onResponse = function onResponse(event) {
         try {
