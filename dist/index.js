@@ -714,22 +714,25 @@ var useComponent = function useComponent(componentKey, options, rendered) {
         var _Object$assign;
 
         return Object.assign(fns, (_Object$assign = {}, _Object$assign[handler] = function () {
-          var id = uuid.v4();
+          try {
+            var id = uuid.v4();
 
-          for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-            args[_key4] = arguments[_key4];
+            for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+              args[_key4] = arguments[_key4];
+            }
+
+            return Promise.resolve(request([socket].concat(sockets), {
+              action: 'call',
+              id: id,
+              componentKey: componentKey,
+              name: action.props.name,
+              handler: handler,
+              args: args,
+              headers: headers
+            }));
+          } catch (e) {
+            return Promise.reject(e);
           }
-
-          emit([socket].concat(sockets), {
-            action: 'call',
-            id: id,
-            componentKey: componentKey,
-            name: action.props.name,
-            handler: handler,
-            args: args,
-            headers: headers
-          });
-          return id;
         }, _Object$assign));
       }, {});
     });

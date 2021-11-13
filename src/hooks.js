@@ -6,7 +6,7 @@ import baseLogger, { orgLogger } from './logger';
 import { parse, v4 } from 'uuid';
 import { useTraceUpdate } from './debug';
 import packageLogger from './logger';
-import { on, onMessage, emit, consume, off, parseSocketResponse } from './util';
+import { on, onMessage, emit, consume, off, parseSocketResponse, request } from './util';
 
 let stateCount = 0;
 
@@ -372,10 +372,10 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         }).forEach((action) => {
             action.props.fns = action.props.handler.reduce((fns, handler) => {
                 return Object.assign(fns, {
-                    [handler]: (...args) => {
+                    [handler]: async (...args) => {
                         const id = v4();
-                        emit([socket, ...sockets], { action: 'call', id, componentKey, name: action.props.name, handler, args, headers });
-                        return id;
+                        return request([socket, ...sockets], { action: 'call', id, componentKey, name: action.props.name, handler, args, headers });
+                        
                     }
                 });
             }, {});
