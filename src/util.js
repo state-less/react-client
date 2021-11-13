@@ -46,11 +46,23 @@ export const request = async (socket, data) => {
 }
 
 export const on = (socket, event, fn) => {
-    socket.addEventListener(event, fn)
+    if (Array.isArray(socket)) {
+        socket.forEach((socket) => {
+            socket.addEventListener(event, fn);
+        })
+    } else {
+        socket.addEventListener(event, fn)
+    }
 }
 
 export const off = (socket, event, fn) => {
-    socket.removeEventListener(event, fn);
+    if (Array.isArray(socket)) {
+        socket.forEach((socket) => {
+            socket.removeEventListener(event, fn);
+        })
+    } else {
+        socket.removeEventListener(event, fn);
+    }
 }
 export const onMessage = (socket, fn) => on(socket, 'message', fn);
 

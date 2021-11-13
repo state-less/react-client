@@ -189,10 +189,22 @@ var request = function request(socket, data) {
   }
 };
 var on = function on(socket, event, fn) {
-  socket.addEventListener(event, fn);
+  if (Array.isArray(socket)) {
+    socket.forEach(function (socket) {
+      socket.addEventListener(event, fn);
+    });
+  } else {
+    socket.addEventListener(event, fn);
+  }
 };
 var off = function off(socket, event, fn) {
-  socket.removeEventListener(event, fn);
+  if (Array.isArray(socket)) {
+    socket.forEach(function (socket) {
+      socket.removeEventListener(event, fn);
+    });
+  } else {
+    socket.removeEventListener(event, fn);
+  }
 };
 var onMessage = function onMessage(socket, fn) {
   return on(socket, 'message', fn);
