@@ -471,9 +471,9 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             setLoading(false);
         }, [internalState.props, error]);
 
-        if (internalState.error && !component) {
-            return internalState
-        }
+        // if (internalState.error && !component) {
+        //     return internalState
+        // }
 
         if (componentState instanceof Error) {
             throw componentState;
