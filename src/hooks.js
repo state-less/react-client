@@ -164,7 +164,8 @@ export const useServerState = (clientDefaultValue, options) => {
                     const data = await consume(event);
                     if (data.type === 'error' && id === data.id) {
                         const err = await parseSocketResponse(data);
-                        extendState({error: new Error(err)});
+                        console.log ("SETTING useState Error",id, data.id, err);
+                        extendState({error: new Error(err.message)});
                     }
                 });
                 emit(socket, { action: EVENT_USE_STATE, key, value, scope, requestId: clientId, options: { ...rest }, requestType });
