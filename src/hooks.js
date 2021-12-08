@@ -404,6 +404,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                     }
                 });
 
+                /* I'm not sure if this is the proper place to handle errors from a component. There's no serverside mechanism that sends error messages from components */
                 onMessage(socket, async (event) => {
                     const data = await consume(event);
                     if (data.type === 'error' && data.key == componentKey) {
