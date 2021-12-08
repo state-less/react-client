@@ -459,7 +459,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
                     setState(function (state) {
                       return _extends({}, state, {
-                        error: new Error(err.message)
+                        error: err
                       });
                     });
                   });
