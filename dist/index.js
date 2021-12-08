@@ -1439,7 +1439,7 @@ var ServerComponent = function ServerComponent(props) {
     var key = _ref2[0],
         state = _ref2[1];
 
-    if (state != null && typeof state !== 'string') {
+    if (state != null && typeof state !== 'string' && typeof state !== 'number') {
       state[Symbol["for"]('l0g.format')] = function () {
         return state.value;
       };

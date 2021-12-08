@@ -137,7 +137,7 @@ export const ServerComponent = (props) => {
     const { children: serverChildren = [], ...rest } = serverProps;
 
     const mappedProps = Object.entries(rest).reduce((obj, [key, state]) => {
-        if (state != null && typeof state !== 'string') {
+        if (state != null && typeof state !== 'string' && typeof state !== 'number') {
             state[Symbol.for('l0g.format')] = () => state.value;
         }
         console.log ("map props", key, state, resolved);
