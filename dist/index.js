@@ -795,7 +795,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
           try {
             return Promise.resolve(consume(event)).then(function (data) {
               var _temp5 = function () {
-                if (data.type === 'error') {
+                if (data.type === 'error' && data.key == componentKey) {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
                     var errObj = new Error(err.message);
                     Object.assign(errObj, err);

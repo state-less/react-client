@@ -406,7 +406,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
 
                 onMessage(socket, async (event) => {
                     const data = await consume(event);
-                    if (data.type === 'error') {
+                    if (data.type === 'error' && data.key == componentKey) {
                         const err = await parseSocketResponse(data);
                         const errObj = new Error(err.message);
                         Object.assign(errObj, err);
