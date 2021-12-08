@@ -462,6 +462,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
               var _temp = function () {
                 if (data.type === 'error' && id === data.id) {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
+                    debugger;
                     console.log("SETTING useState Error", id, data.id, err);
                     extendState({
                       error: new Error(err.message)
@@ -564,6 +565,8 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         scope: scope
       });
     };
+
+    console.log("USE SERVER STATE", key, _state.error);
 
     if (_state.error) {
       if (strict) {
