@@ -160,16 +160,16 @@ export const useServerState = (clientDefaultValue, options) => {
                     }
                 };
                 onMessage(socket, onSetValue);
-                on(socket, 'message',async (event) => {
-                    const data = await consume(event);
-                    if (data.type === 'error' && id === data.id) {
-                        const err = await parseSocketResponse(data);
+                // on(socket, 'message',async (event) => {
+                //     const data = await consume(event);
+                //     if (data.type === 'error' && id === data.id) {
+                //         const err = await parseSocketResponse(data);
 
-                        debugger;
-                        console.log ("SETTING useState Error",id, data.id, err);
-                        extendState({error: new Error(err.message)});
-                    }
-                });
+                //         debugger;
+                //         console.log ("SETTING useState Error",id, data.id, err);
+                //         extendState({error: new Error(err.message)});
+                //     }
+                // });
                 emit(socket, { action: EVENT_USE_STATE, key, value, scope, requestId: clientId, options: { ...rest }, requestType });
                 setLoading(to);
             }
@@ -198,18 +198,27 @@ export const useServerState = (clientDefaultValue, options) => {
                         }
                     }
                     on(socket, 'message', onSetValue)
-                    on(socket, 'message',async (event) => {
+
+                    var onError = async (event) => {
                         const data = await consume(event);
-                        if (data.type === 'error') {
+                        /**
+                         * Only handles error messages that have the same id as the state. 
+                         * There's currently no serverside mechanism that raises a state specific error. 
+                         * This needs to be updated on the serverside to reflect the changes 
+                         */
+                        if (data.type === 'error' && id === data.id) {
                             const err = await parseSocketResponse(data);
-                            extendState({error: new Error(err)});
+                            extendState({error: new Error(err.message)});
                         }
-                    });
+                    }
+
+                    on(socket, 'message', onError);
                 }
             }
             return () => {
                 if (id) {
                     off(socket, 'message', onSetValue)
+                    off(socket, 'message', onError)
                 }
             }
         });

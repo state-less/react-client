@@ -456,27 +456,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         };
 
         onMessage(socket, onSetValue);
-        on(socket, 'message', function (event) {
-          try {
-            return Promise.resolve(consume(event)).then(function (data) {
-              var _temp = function () {
-                if (data.type === 'error' && id === data.id) {
-                  return Promise.resolve(parseSocketResponse(data)).then(function (err) {
-                    debugger;
-                    console.log("SETTING useState Error", id, data.id, err);
-                    extendState({
-                      error: new Error(err.message)
-                    });
-                  });
-                }
-              }();
-
-              if (_temp && _temp.then) return _temp.then(function () {});
-            });
-          } catch (e) {
-            return Promise.reject(e);
-          }
-        });
         emit(socket, {
           action: EVENT_USE_STATE,
           key: key,
@@ -519,31 +498,35 @@ var useServerState = function useServerState(clientDefaultValue, options) {
           };
 
           on(socket, 'message', onSetValue);
-          on(socket, 'message', function (event) {
+
+          var onError = function onError(event) {
             try {
               return Promise.resolve(consume(event)).then(function (data) {
-                var _temp2 = function () {
-                  if (data.type === 'error') {
+                var _temp = function () {
+                  if (data.type === 'error' && id === data.id) {
                     return Promise.resolve(parseSocketResponse(data)).then(function (err) {
                       extendState({
-                        error: new Error(err)
+                        error: new Error(err.message)
                       });
                     });
                   }
                 }();
 
-                if (_temp2 && _temp2.then) return _temp2.then(function () {});
+                if (_temp && _temp.then) return _temp.then(function () {});
               });
             } catch (e) {
               return Promise.reject(e);
             }
-          });
+          };
+
+          on(socket, 'message', onError);
         }
       }
 
       return function () {
         if (id) {
           off(socket, 'message', onSetValue);
+          off(socket, 'message', onError);
         }
       };
     });
@@ -783,7 +766,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
         to = setTimeout(onTimeout, 15000);
         onMessage(socket, function (event) {
           try {
-            var _temp4 = _catch(function () {
+            var _temp3 = _catch(function () {
               return Promise.resolve(consume(event)).then(function (eventData) {
                 if (eventData.action === 'render' && eventData.key == componentKey) {
                   var data = parseSocketResponse(eventData);
@@ -798,7 +781,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
               });
             }, function () {});
 
-            return Promise.resolve(_temp4 && _temp4.then ? _temp4.then(function () {}) : void 0);
+            return Promise.resolve(_temp3 && _temp3.then ? _temp3.then(function () {}) : void 0);
           } catch (e) {
             return Promise.reject(e);
           }
@@ -806,7 +789,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
         onMessage(socket, function (event) {
           try {
             return Promise.resolve(consume(event)).then(function (data) {
-              var _temp5 = function () {
+              var _temp4 = function () {
                 if (data.type === 'error' && data.key == componentKey) {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
                     var errObj = new Error(err.message);
@@ -819,7 +802,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
                 }
               }();
 
-              if (_temp5 && _temp5.then) return _temp5.then(function () {});
+              if (_temp4 && _temp4.then) return _temp4.then(function () {});
             });
           } catch (e) {
             return Promise.reject(e);
