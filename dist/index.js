@@ -738,7 +738,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
             }, function (err) {
               var errObj = new Error(err.message);
               Object.assign(errObj, err);
-              console.log("Parsed Error", err);
+              console.log("Parsed Error", err, state, componentState, resolved);
               extendState({
                 error: errObj
               });
@@ -858,6 +858,10 @@ var useComponent = function useComponent(componentKey, options, rendered) {
     React.useEffect(function () {
       setLoading(false);
     }, [internalState.props, error]);
+
+    if (internalState.error && !component && !rendered) {
+      return internalState;
+    }
 
     if (componentState instanceof Error) {
       throw componentState;

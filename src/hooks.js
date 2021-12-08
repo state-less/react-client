@@ -390,7 +390,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                         } catch (err) {
                             const errObj = new Error(err.message);
                             Object.assign(errObj, err);
-                            console.log("Parsed Error", err);
+                            console.log("Parsed Error", err, state, componentState, resolved);
                             extendState({error: errObj});
 
                         }
@@ -471,9 +471,9 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             setLoading(false);
         }, [internalState.props, error]);
 
-        // if (internalState.error && !component) {
-        //     return internalState
-        // }
+        if (internalState.error && !component && !rendered) {
+            return internalState
+        }
 
         if (componentState instanceof Error) {
             throw componentState;
