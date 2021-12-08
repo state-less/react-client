@@ -439,7 +439,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                 return _state;
               }
 
-              if (eventData.action === 'setValue' && id === data.id) {
+              if (eventData.action === 'setValue') {
                 setState(function (state) {
                   return _extends({}, state, data);
                 });
@@ -455,7 +455,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
           try {
             return Promise.resolve(consume(event)).then(function (data) {
               var _temp = function () {
-                if (data.type === 'error') {
+                if (data.type === 'error' && id === data.id) {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
                     setState(function (state) {
                       return _extends({}, state, {
