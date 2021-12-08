@@ -457,8 +457,10 @@ var useServerState = function useServerState(clientDefaultValue, options) {
               var _temp = function () {
                 if (data.type === 'error') {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
-                    extendState({
-                      error: new Error(err)
+                    setState(function (state) {
+                      return _extends({}, state, {
+                        error: new Error(err.message)
+                      });
                     });
                   });
                 }
