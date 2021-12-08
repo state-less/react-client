@@ -9,7 +9,7 @@ import packageLogger from './logger';
 import { on, onMessage, emit, consume, off, parseSocketResponse, request } from './util';
 
 let stateCount = 0;
-
+ 
 const increaseCount = () => stateCount++;
 const join = delim => (...strings) => strings.join(delim);
 const genEventName = join(EVENT_DELIM);
@@ -158,9 +158,6 @@ export const useServerState = (clientDefaultValue, options) => {
                             return { ...state, ...data }
                         });
                     }
-                    // setState(() => {
-                    //     return data;
-                    // });
                 };
                 onMessage(socket, onSetValue);
                 on(socket, 'message',async (event) => {
@@ -452,9 +449,9 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             setLoading(false);
         }, [internalState.props, error]);
 
-        if (internalState.error && !component) {
-            return internalState
-        }
+        // if (internalState.error && !component) {
+        //     return internalState
+        // }
 
         if (componentState instanceof Error) {
             throw componentState;
@@ -464,7 +461,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             throw new Promise(Function.prototype)
         }
 
-        return { ...(rendered || {}), ...componentState,...internalState, resolved };
+        return { ...(rendered || {}), ...componentState, ...internalState, resolved };
     } catch (e) {
         if (!ctx) throw new Error('No available context. Are you missing a Provider?');
         throw e;
