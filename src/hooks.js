@@ -162,7 +162,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 onMessage(socket, onSetValue);
                 on(socket, 'message',async (event) => {
                     const data = await consume(event);
-                    if (data.type === 'error') {
+                    if (data.type === 'error' && id === data.id) {
                         const err = await parseSocketResponse(data);
                         extendState({error: new Error(err)});
                     }
@@ -371,8 +371,12 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                 return Object.assign(fns, {
                     [handler]: async (...args) => {
                         const id = v4();
-                        return request([socket, ...sockets], { action: 'call', id, componentKey, name: action.props.name, handler, args, headers });
-                        
+                        try {
+                            const res = await request([socket, ...sockets], { action: 'call', id, componentKey, name: action.props.name, handler, args, headers });
+                            return res;
+                        } catch (e) {
+                            console.log ("ERROR!!!");
+                        }
                     }
                 });
             }, {});

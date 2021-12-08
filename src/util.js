@@ -35,10 +35,13 @@ export const request = async (socket, data) => {
         const onResponse = async (event) => {
             const data = await consume(event);
             const json = parseSocketResponse(data);
-            
             if (data.id === id) {
+                if (data.type === 'error') {
+                    reject(json);
+                } else {
+                    resolve(json);
+                }
                 off(socket, 'message', onResponse)
-                resolve(json);
             }
         }
         on(socket, 'message', onResponse);

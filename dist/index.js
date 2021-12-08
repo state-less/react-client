@@ -177,8 +177,13 @@ var request = function request(socket, data) {
             var json = parseSocketResponse(data);
 
             if (data.id === id) {
+              if (data.type === 'error') {
+                reject(json);
+              } else {
+                resolve(json);
+              }
+
               off(socket, 'message', onResponse);
-              resolve(json);
             }
           });
         } catch (e) {
@@ -455,7 +460,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
           try {
             return Promise.resolve(consume(event)).then(function (data) {
               var _temp = function () {
-                if (data.type === 'error') {
+                if (data.type === 'error' && id === data.id) {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
                     extendState({
                       error: new Error(err)
@@ -727,21 +732,24 @@ var useComponent = function useComponent(componentKey, options, rendered) {
         var _Object$assign;
 
         return Object.assign(fns, (_Object$assign = {}, _Object$assign[handler] = function () {
+          for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+            args[_key4] = arguments[_key4];
+          }
+
           try {
             var id = uuid.v4();
-
-            for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-              args[_key4] = arguments[_key4];
-            }
-
-            return Promise.resolve(request([socket].concat(sockets), {
-              action: 'call',
-              id: id,
-              componentKey: componentKey,
-              name: action.props.name,
-              handler: handler,
-              args: args,
-              headers: headers
+            return Promise.resolve(_catch(function () {
+              return Promise.resolve(request([socket].concat(sockets), {
+                action: 'call',
+                id: id,
+                componentKey: componentKey,
+                name: action.props.name,
+                handler: handler,
+                args: args,
+                headers: headers
+              }));
+            }, function () {
+              console.log("ERROR!!!");
             }));
           } catch (e) {
             return Promise.reject(e);
