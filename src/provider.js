@@ -38,9 +38,9 @@ export const useAuth = (useStrategy, auto) => {
         })()
     }, [open, authed]);
 
-    async function authenticate() {
+    async function authenticate(...args) {
         const challenge = await request(socket, { action: 'auth', phase: 'challenge' });
-        const data = await auth(challenge);
+        const data = await auth(challenge, ...args);
         if (data.success)
             try {
                 const response = await request(socket, {

@@ -1080,12 +1080,16 @@ var useClientContext = function useClientContext() {
 var compId;
 var useAuth = function useAuth(useStrategy, auto) {
   var authenticate = function authenticate() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
     try {
       return Promise.resolve(request(socket, {
         action: 'auth',
         phase: 'challenge'
       })).then(function (challenge) {
-        return Promise.resolve(auth(challenge)).then(function (data) {
+        return Promise.resolve(auth.apply(void 0, [challenge].concat(args))).then(function (data) {
           return function () {
             if (data.success) return _catch(function () {
               return Promise.resolve(request(socket, _extends({
