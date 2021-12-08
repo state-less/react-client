@@ -153,7 +153,7 @@ export const useServerState = (clientDefaultValue, options) => {
                     if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined') {
                         return state;
                     }
-                    if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+                    if (eventData.action === 'setValue' && id === data.id) {
                         setState((state) => {
                             return { ...state, ...data }
                         });
@@ -162,7 +162,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 onMessage(socket, onSetValue);
                 on(socket, 'message',async (event) => {
                     const data = await consume(event);
-                    if (data.type === 'error') {
+                    if (data.type === 'error' ) {
                         const err = await parseSocketResponse(data);
                         setState((state) => {
                             return { ...state, error: err }

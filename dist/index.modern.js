@@ -436,7 +436,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                 return _state;
               }
 
-              if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+              if (eventData.action === 'setValue' && id === data.id) {
                 setState(function (state) {
                   return _extends({}, state, data);
                 });
