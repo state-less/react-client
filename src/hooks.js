@@ -336,7 +336,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
 
         const [internalState, setState] = useAtom(atm);
         const [loading, setLoading] = useState(false);
-        const extendState = data => setState({ ...state, ...data });
+        const extendState = data => setState({ ...internalState, ...data });
 
         const {
             component,

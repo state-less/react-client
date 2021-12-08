@@ -665,7 +665,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
         setLoading = _useState5[1];
 
     var extendState = function extendState(data) {
-      return setState(_extends({}, state, data));
+      return setState(_extends({}, internalState, data));
     };
 
     var component = internalState.component;
