@@ -388,6 +388,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                             const res = await request([socket, ...sockets], { action: 'call', id, componentKey, name: action.props.name, handler, args, headers });
                             return res;
                         } catch (err) {
+                            throw err;
                             const errObj = new Error(err.message);
                             Object.assign(errObj, err);
                             console.log("Parsed Error", err, state, componentState, resolved);
