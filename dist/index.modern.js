@@ -732,8 +732,13 @@ var useComponent = function useComponent(componentKey, options, rendered) {
                 args: args,
                 headers: headers
               }));
-            }, function () {
-              console.log("ERROR!!!");
+            }, function (err) {
+              var errObj = new Error(err.message);
+              Object.assign(errObj, err);
+              console.log("Parsed Error", err);
+              extendState({
+                error: errObj
+              });
             }));
           } catch (e) {
             return Promise.reject(e);
