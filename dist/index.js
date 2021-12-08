@@ -439,7 +439,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                 return _state;
               }
 
-              if (eventData.action === 'setValue') {
+              if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
                 setState(function (state) {
                   return _extends({}, state, data);
                 });
@@ -455,12 +455,10 @@ var useServerState = function useServerState(clientDefaultValue, options) {
           try {
             return Promise.resolve(consume(event)).then(function (data) {
               var _temp = function () {
-                if (data.type === 'error' && id === data.id) {
+                if (data.type === 'error') {
                   return Promise.resolve(parseSocketResponse(data)).then(function (err) {
-                    setState(function (state) {
-                      return _extends({}, state, {
-                        error: err
-                      });
+                    extendState({
+                      error: new Error(err)
                     });
                   });
                 }
@@ -860,6 +858,10 @@ var useComponent = function useComponent(componentKey, options, rendered) {
     React.useEffect(function () {
       setLoading(false);
     }, [internalState.props, error]);
+
+    if (internalState.error && !component) {
+      return internalState;
+    }
 
     if (componentState instanceof Error) {
       throw componentState;

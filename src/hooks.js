@@ -153,7 +153,7 @@ export const useServerState = (clientDefaultValue, options) => {
                     if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined') {
                         return state;
                     }
-                    if (eventData.action === 'setValue') {
+                    if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
                         setState((state) => {
                             return { ...state, ...data }
                         });
@@ -162,12 +162,9 @@ export const useServerState = (clientDefaultValue, options) => {
                 onMessage(socket, onSetValue);
                 on(socket, 'message',async (event) => {
                     const data = await consume(event);
-                    if (data.type === 'error' && id === data.id) {
+                    if (data.type === 'error') {
                         const err = await parseSocketResponse(data);
-                        setState((state) => {
-                            return { ...state, error: err }
-                        });
-
+                        extendState({error: new Error(err)});
                     }
                 });
                 emit(socket, { action: EVENT_USE_STATE, key, value, scope, requestId: clientId, options: { ...rest }, requestType });
@@ -452,9 +449,9 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             setLoading(false);
         }, [internalState.props, error]);
 
-        // if (internalState.error && !component) {
-        //     return internalState
-        // }
+        if (internalState.error && !component) {
+            return internalState
+        }
 
         if (componentState instanceof Error) {
             throw componentState;
