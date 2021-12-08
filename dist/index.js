@@ -1453,6 +1453,8 @@ var ServerComponent = function ServerComponent(props) {
       };
     }
 
+    console.log("map props", key, state, resolved);
+
     if (resolved[key]) {
       var _Object$assign4;
 
