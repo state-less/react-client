@@ -472,7 +472,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
           options: _extends({}, rest),
           requestType: requestType
         });
-        setLoading(to);
       }
 
       clearTimeout(stateLoadingStates[scope + ":" + key]);

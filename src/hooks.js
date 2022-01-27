@@ -184,7 +184,6 @@ export const useServerState = (clientDefaultValue, options) => {
                 //     }
                 // });
                 emit(socket, { action: EVENT_USE_STATE, key, value, scope, requestId: clientId, options: { ...rest }, requestType });
-                setLoading(to);
             }
 
             clearTimeout(stateLoadingStates[`${scope}:${key}`]);
