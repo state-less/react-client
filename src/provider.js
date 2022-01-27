@@ -17,7 +17,7 @@ export const useClientContext = () => {
 
 let compId;
 export const useAuth = (useStrategy, auto) => {
-    const { open, socket, headers, setHeaders } = useContext(context);
+    const { open, socket, headers, setHeaders, setIdentity } = useContext(context);
     const { authenticate: auth, logout: deauth, id } = useStrategy();
     const [authed, setHasAuthed] = useState(false);
     useEffect(() => {

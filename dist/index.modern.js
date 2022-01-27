@@ -1121,7 +1121,8 @@ var useAuth = function useAuth(useStrategy, auto) {
       open = _useContext.open,
       socket = _useContext.socket,
       headers = _useContext.headers,
-      setHeaders = _useContext.setHeaders;
+      setHeaders = _useContext.setHeaders,
+      setIdentity = _useContext.setIdentity;
 
   var _useStrategy = useStrategy(),
       auth = _useStrategy.authenticate,
