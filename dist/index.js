@@ -663,15 +663,18 @@ var useComponent = function useComponent(componentKey, options, rendered) {
         internalState = _useAtom2[0],
         setState = _useAtom2[1];
 
-    var _useState5 = React.useState(false),
-        loading = _useState5[0],
-        setLoading = _useState5[1];
-
     var extendState = function extendState(data) {
       return setState(_extends({}, internalState, data));
     };
 
-    var component = internalState.component;
+    var setLoading = function setLoading(loading) {
+      return extendState({
+        loading: loading
+      });
+    };
+
+    var component = internalState.component,
+        loading = internalState.loading;
 
     var _useServerState = useServerState(component, {
       key: componentKey,
@@ -768,7 +771,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
     React.useEffect(function () {
       var to;
 
-      if (open && !props && !error && !loading) {
+      if (open && !props && !error && !loading && !component) {
         to = setTimeout(onTimeout, 15000);
         onMessage(socket, function (event) {
           try {
@@ -821,6 +824,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
 
           (_orgLogger$scope$setM = orgLogger.scope(data.scope).setMessageLevel(data.level)).log.apply(_orgLogger$scope$setM, data.tag);
         });
+        console.log("Emit render");
         emit(socket, {
           action: EVENT_USE_COMPONENT,
           key: componentKey,
@@ -835,6 +839,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
       secOpen.forEach(function (open, i) {
         if (open) {
           var _socket = sockets[i];
+          console.log("Emit render 2");
           emit(_socket, {
             action: EVENT_USE_COMPONENT,
             key: componentKey,
