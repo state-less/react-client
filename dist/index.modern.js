@@ -1144,6 +1144,7 @@ var useAuth = function useAuth(useStrategy, auto) {
             })).then(function (challenge) {
               if (challenge.address) {
                 setHasAuthed(true);
+                setIdentity(challenge.address);
               } else {
                 var newHeaders = _extends({}, headers);
 
@@ -1221,6 +1222,10 @@ var _Provider = function _Provider(props) {
       error = _useState4[0],
       setError = _useState4[1];
 
+  var _useState5 = useState(null),
+      identity = _useState5[0],
+      setIdentity = _useState5[1];
+
   var allOpen = secOpen.reduce(function (all, cur) {
     return all && cur;
   }, open);
@@ -1271,6 +1276,8 @@ var _Provider = function _Provider(props) {
   }, []);
   return /*#__PURE__*/React.createElement(context.Provider, {
     value: {
+      setIdentity: setIdentity,
+      identity: identity,
       setHeaders: setHeaders,
       socket: socket,
       sockets: sockets,

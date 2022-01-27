@@ -26,6 +26,7 @@ export const useAuth = (useStrategy, auto) => {
                 const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers});
                 if (challenge.address) {
                     setHasAuthed(true);
+                    setIdentity(challenge.address)
                 } else {
                     const newHeaders = {...headers};
                     delete newHeaders.Authorization;
@@ -89,6 +90,7 @@ const _Provider = (props) => {
     const [headers, setHeaders] = useLocalStorage('headers', headerAtom, staticHeaders)
     const [secOpen, setSecOpen] = useState(urls.map(() => false));
     const [error, setError] = useState(null);
+    const [identity, setIdentity] = useState(null);
 
     const allOpen = secOpen.reduce((all, cur) => all && cur, open);
     if (!url)
@@ -147,7 +149,7 @@ const _Provider = (props) => {
     }, []);
 
 
-    return <context.Provider value={{ setHeaders, socket, sockets, open, secOpen, allOpen, useAtom, headers, error }}>
+    return <context.Provider value={{ setIdentity, identity, setHeaders, socket, sockets, open, secOpen, allOpen, useAtom, headers, error }}>
         <Web3Provider>
             {props.children}
         </Web3Provider>
