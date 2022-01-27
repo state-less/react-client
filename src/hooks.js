@@ -79,6 +79,8 @@ export const useStream = (name, def) => {
 
     return data;
 }
+
+const stateLoadingStates = {};
 export const useServerState = (clientDefaultValue, options) => {
     var [clientDefaultValue, options] = alignUseServerStateArgs(clientDefaultValue, options);
     const {
@@ -102,6 +104,7 @@ export const useServerState = (clientDefaultValue, options) => {
 
         if (!atoms.has(`${scope}:${key}`)) {
             atm = atom({ defaultState, clientId: increaseCount() })
+            stateLoadingStates[`${scope}:${key}`] = false;
             atoms.set(`${scope}:${key}`, atm);
         } else {
             atm = atoms.get(`${scope}:${key}`)
@@ -120,7 +123,9 @@ export const useServerState = (clientDefaultValue, options) => {
 
         const { clientId } = state;
 
-        const [loading, setLoading] = useState(false);
+        const setLoading = (loading) => {
+            stateLoadingStates[`${scope}:${key}`] = loading;
+        }
 
         const extendState = data => setState({ ...state, ...data });
 
@@ -146,7 +151,9 @@ export const useServerState = (clientDefaultValue, options) => {
 
         useEffect(() => {
             let to;
-            if (open && !id && !error && !loading && !defer) {
+            if (open && !id && !error && !loading && !defer && !stateLoadingStates[`${scope}:${key}`]) {
+                
+                stateLoadingStates[`${scope}:${key}`] = true;
                 var onSetValue = async (event) => {
                     const eventData = await consume(event);
                     const data = parseSocketResponse(eventData);
@@ -154,6 +161,7 @@ export const useServerState = (clientDefaultValue, options) => {
                         return state;
                     }
                     if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+                        stateLoadingStates[`${scope}:${key}`] = false;
                         setState((state) => {
                             return { ...state, ...data }
                         });

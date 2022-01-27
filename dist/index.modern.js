@@ -322,6 +322,7 @@ var useStream = function useStream(name, def) {
   }, [open]);
   return data;
 };
+var stateLoadingStates = {};
 var useServerState = function useServerState(clientDefaultValue, options) {
   var _alignUseServerStateA = alignUseServerStateArgs(clientDefaultValue, options),
       clientDefaultValue = _alignUseServerStateA[0],
@@ -371,6 +372,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         defaultState: defaultState,
         clientId: increaseCount()
       });
+      stateLoadingStates[scope + ":" + key] = false;
       atoms.set(scope + ":" + key, atm);
     } else {
       atm = atoms.get(scope + ":" + key);
@@ -393,9 +395,9 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     }, [rest.id]);
     var clientId = _state.clientId;
 
-    var _useState3 = useState(false),
-        loading = _useState3[0],
-        setLoading = _useState3[1];
+    var setLoading = function setLoading(loading) {
+      stateLoadingStates[scope + ":" + key] = loading;
+    };
 
     var extendState = function extendState(data) {
       return setState(_extends({}, _state, data));
@@ -431,7 +433,9 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     useEffect(function () {
       var to;
 
-      if (open && !id && !error && !loading && !defer) {
+      if (open && !id && !error && !loading && !defer && !stateLoadingStates[scope + ":" + key]) {
+        stateLoadingStates[scope + ":" + key] = true;
+
         var onSetValue = function onSetValue(event) {
           try {
             return Promise.resolve(consume(event)).then(function (eventData) {
@@ -442,6 +446,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
               }
 
               if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+                stateLoadingStates[scope + ":" + key] = false;
                 setState(function (state) {
                   return _extends({}, state, data);
                 });
@@ -574,9 +579,9 @@ var useResponse = function useResponse(fn, action, keepAlive) {
   var ctx = useContext(context);
   var socket = ctx.socket;
 
-  var _useState4 = useState(null),
-      id = _useState4[0],
-      setId = _useState4[1];
+  var _useState3 = useState(null),
+      id = _useState3[0],
+      setId = _useState3[1];
 
   useEffect(function () {
     if (!id) return;
@@ -673,7 +678,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
     };
 
     var component = internalState.component,
-        loading = internalState.loading;
+        _loading = internalState.loading;
 
     var _useServerState = useServerState(component, {
       key: componentKey,
@@ -770,7 +775,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
     useEffect(function () {
       var to;
 
-      if (open && !props && !error && !loading && !loadingStates[scope + ":" + componentKey]) {
+      if (open && !props && !error && !_loading && !loadingStates[scope + ":" + componentKey]) {
         to = setTimeout(onTimeout, 15000);
         loadingStates[scope + ":" + componentKey] = true;
         onMessage(socket, function (event) {
@@ -848,7 +853,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
           });
         }
       });
-      clearTimeout(loading);
+      clearTimeout(_loading);
 
       (function () {
         [EVENT_ERROR].forEach(function (event) {
@@ -873,7 +878,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
       throw componentState;
     }
 
-    if (!component && loading) {
+    if (!component && _loading) {
       return defaultState;
       throw new Promise(Function.prototype);
     }
