@@ -444,6 +444,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                     orgLogger.scope(data.scope).setMessageLevel(data.level).log(...data.tag)
                 });
 
+                console.log ("Emit render")
                 emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', props: clientProps, options: { ...rest }, headers});
 
                 setLoading(to);
@@ -452,6 +453,8 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             secOpen.forEach((open, i) => {
                 if (open) {
                     const socket = sockets[i];
+                    console.log ("Emit render 2")
+
                     emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', options: { ...rest } });
                 }
             })
