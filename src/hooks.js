@@ -152,7 +152,7 @@ export const useServerState = (clientDefaultValue, options) => {
         useEffect(() => {
             let to;
 
-            if (open && !id && !error &&  !defer) {
+            if (open && !id && !error &&  !defer && !stateLoadingStates[`${scope}:${key}`]) {
                 var onSetValue = async (event) => {
                     const eventData = await consume(event);
                     const data = parseSocketResponse(eventData);
@@ -200,7 +200,7 @@ export const useServerState = (clientDefaultValue, options) => {
                     var onSetValue = async () => {
                         const eventData = await consume(event);
                         const data = parseSocketResponse(eventData);
-                        if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value !== 'undefined') {
+                        if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined') {
                             return state;
                         }
                         if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {

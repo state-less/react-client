@@ -436,7 +436,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     React.useEffect(function () {
       var to;
 
-      if (open && !id && !error && !defer) {
+      if (open && !id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
         var onSetValue = function onSetValue(event) {
           try {
             return Promise.resolve(consume(event)).then(function (eventData) {
@@ -487,7 +487,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
               return Promise.resolve(consume(event)).then(function (eventData) {
                 var data = parseSocketResponse(eventData);
 
-                if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value !== 'undefined') {
+                if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined') {
                   return _state;
                 }
 
