@@ -410,7 +410,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
 
         useEffect(() => {
             let to;
-            if (open && !props && !error && !loading) {
+            if (open && !props && !error && !loading && !component) {
                 to = setTimeout(onTimeout, 15000)
                 onMessage(socket, async (event) => {
                     try {
