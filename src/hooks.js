@@ -335,12 +335,13 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         const removeAllListeners = useMemo(() => false && socket.removeAllListeners.bind(socket), [socket]);
 
         const [internalState, setState] = useAtom(atm);
-        const [loading, setLoading] = useState(false);
+        
         const extendState = data => setState({ ...internalState, ...data });
+        const setLoading = loading => extendState({loading});
 
         const {
             component,
-
+            loading
         } = internalState;
 
         const [componentState] = useServerState(component, {
