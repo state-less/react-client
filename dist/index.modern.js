@@ -470,7 +470,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         setLoading(to);
       }
 
-      clearTimeout(loading);
+      clearTimeout(stateLoadingStates[scope + ":" + key]);
       return function () {
         off(socket, 'message', onSetValue);
       };

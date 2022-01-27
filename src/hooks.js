@@ -182,7 +182,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 setLoading(to);
             }
 
-            clearTimeout(loading);
+            clearTimeout(stateLoadingStates[`${scope}:${key}`]);
             return () => {
                 off(socket, 'message', onSetValue);
                 // [createStateEvent].forEach(event => socket.removeAllListeners(event));
