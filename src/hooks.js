@@ -153,6 +153,9 @@ export const useServerState = (clientDefaultValue, options) => {
             let to;
 
             if (open && !id && !error &&  !defer && !stateLoadingStates[`${scope}:${key}`]) {
+                
+                stateLoadingStates[`${scope}:${key}`] = true;
+
                 var onSetValue = async (event) => {
                     const eventData = await consume(event);
                     const data = parseSocketResponse(eventData);
@@ -160,29 +163,13 @@ export const useServerState = (clientDefaultValue, options) => {
                         return state;
                     }
                     if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
-                        stateLoadingStates[`${scope}:${key}`] = false;
                         setState((state) => {
                             return { ...state, ...data }
                         });
                     }
                 };
                 onMessage(socket, onSetValue);
-            }
 
-            if (open && !id && !error &&  !defer && !stateLoadingStates[`${scope}:${key}`]) {
-                
-                stateLoadingStates[`${scope}:${key}`] = true;
-
-                // on(socket, 'message',async (event) => {
-                //     const data = await consume(event);
-                //     if (data.type === 'error' && id === data.id) {
-                //         const err = await parseSocketResponse(data);
-
-                //         debugger;
-                //         console.log ("SETTING useState Error",id, data.id, err);
-                //         extendState({error: new Error(err.message)});
-                //     }
-                // });
                 emit(socket, { action: EVENT_USE_STATE, key, value, scope, requestId: clientId, options: { ...rest }, requestType });
             }
 
@@ -194,6 +181,11 @@ export const useServerState = (clientDefaultValue, options) => {
             }
         }, [open, defer])
 
+        /*
+        *   This hook attaches listeners for the setValue event for existent states
+        *   Existent means we already obtained the states id
+        *   The value of the hooks atom will be updated if the id of the state matches the id of they
+        */
         useEffect(() => {
             if (id) {
                 if (!defer && id) {

@@ -437,6 +437,8 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       var to;
 
       if (open && !id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
+        stateLoadingStates[scope + ":" + key] = true;
+
         var onSetValue = function onSetValue(event) {
           try {
             return Promise.resolve(consume(event)).then(function (eventData) {
@@ -447,7 +449,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
               }
 
               if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
-                stateLoadingStates[scope + ":" + key] = false;
                 setState(function (state) {
                   return _extends({}, state, data);
                 });
@@ -459,10 +460,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         };
 
         onMessage(socket, onSetValue);
-      }
-
-      if (open && !id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
-        stateLoadingStates[scope + ":" + key] = true;
         emit(socket, {
           action: EVENT_USE_STATE,
           key: key,
