@@ -236,7 +236,7 @@ export const useServerState = (clientDefaultValue, options) => {
 
         useEffect(() => {
             // if (id || error) {
-            setLoading(false);
+            // setLoading(false);
             // }
         }, [id, error, key]);
 
@@ -479,9 +479,9 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             }
         }, [error]);
 
-        useEffect(() => {
-            setLoading(false);
-        }, [internalState.props, error]);
+        // useEffect(() => {
+        //     setLoading(false);
+        // }, [internalState.props, error]);
 
         if (internalState.error && !component && !rendered) {
             return internalState

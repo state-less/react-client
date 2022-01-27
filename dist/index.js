@@ -538,9 +538,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         throw error;
       }
     }, [error]);
-    React.useEffect(function () {
-      setLoading(false);
-    }, [id, error, key]);
+    React.useEffect(function () {}, [id, error, key]);
 
     var setServerState = function setServerState(value) {
       socket.emit(EVENT_SET_STATE, {
@@ -867,9 +865,6 @@ var useComponent = function useComponent(componentKey, options, rendered) {
         throw new Error(error);
       }
     }, [error]);
-    React.useEffect(function () {
-      setLoading(false);
-    }, [internalState.props, error]);
 
     if (internalState.error && !component && !rendered) {
       return internalState;
