@@ -1503,7 +1503,8 @@ var web3Strategy = function web3Strategy() {
           return {
             challenge: challenge,
             response: response,
-            success: true
+            success: true,
+            strategy: 'web3'
           };
         });
       } else {

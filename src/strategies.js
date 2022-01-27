@@ -20,7 +20,7 @@ export const web3Strategy = () => {
   const authenticate = async (challenge) => {
     if (account) {
       const response = await sign(challenge, account);
-      return { challenge, response, success: true }
+      return { challenge, response, success: true, strategy: 'web3' }
     } else {
       await activateInjected();
       return { success: false }
