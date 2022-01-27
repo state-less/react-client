@@ -151,7 +151,7 @@ export const useServerState = (clientDefaultValue, options) => {
 
         useEffect(() => {
             let to;
-            if (open && !id && !error && !loading && !defer && !stateLoadingStates[`${scope}:${key}`]) {
+            if (open && !id && !error &&  !defer && !stateLoadingStates[`${scope}:${key}`]) {
                 
                 stateLoadingStates[`${scope}:${key}`] = true;
                 var onSetValue = async (event) => {

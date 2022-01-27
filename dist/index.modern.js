@@ -433,7 +433,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     useEffect(function () {
       var to;
 
-      if (open && !id && !error && !loading && !defer && !stateLoadingStates[scope + ":" + key]) {
+      if (open && !id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
         stateLoadingStates[scope + ":" + key] = true;
 
         var onSetValue = function onSetValue(event) {
