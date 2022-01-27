@@ -433,9 +433,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     useEffect(function () {
       var to;
 
-      if (open && !id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
-        stateLoadingStates[scope + ":" + key] = true;
-
+      if (open && !id && !error && !defer) {
         var onSetValue = function onSetValue(event) {
           try {
             return Promise.resolve(consume(event)).then(function (eventData) {
@@ -458,6 +456,10 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         };
 
         onMessage(socket, onSetValue);
+      }
+
+      if (open && !id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
+        stateLoadingStates[scope + ":" + key] = true;
         emit(socket, {
           action: EVENT_USE_STATE,
           key: key,

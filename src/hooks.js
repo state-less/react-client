@@ -151,9 +151,8 @@ export const useServerState = (clientDefaultValue, options) => {
 
         useEffect(() => {
             let to;
-            if (open && !id && !error &&  !defer && !stateLoadingStates[`${scope}:${key}`]) {
-                
-                stateLoadingStates[`${scope}:${key}`] = true;
+
+            if (open && !id && !error &&  !defer) {
                 var onSetValue = async (event) => {
                     const eventData = await consume(event);
                     const data = parseSocketResponse(eventData);
@@ -168,6 +167,12 @@ export const useServerState = (clientDefaultValue, options) => {
                     }
                 };
                 onMessage(socket, onSetValue);
+            }
+
+            if (open && !id && !error &&  !defer && !stateLoadingStates[`${scope}:${key}`]) {
+                
+                stateLoadingStates[`${scope}:${key}`] = true;
+
                 // on(socket, 'message',async (event) => {
                 //     const data = await consume(event);
                 //     if (data.type === 'error' && id === data.id) {
@@ -185,6 +190,7 @@ export const useServerState = (clientDefaultValue, options) => {
             clearTimeout(stateLoadingStates[`${scope}:${key}`]);
             return () => {
                 off(socket, 'message', onSetValue);
+                // stateLoadingStates[`${scope}:${key}`]
                 // [createStateEvent].forEach(event => socket.removeAllListeners(event));
             }
         }, [open, defer])
