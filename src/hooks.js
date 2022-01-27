@@ -296,7 +296,7 @@ export const useResponse = (fn, action, keepAlive) => {
     };
 }
 const componentAtoms = new Map();
-
+const loadingStates = {};
 
 
 /**
@@ -326,7 +326,8 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         let atm;
 
         if (!componentAtoms.has(`${scope}:${componentKey}`)) {
-            atm = atom({ defaultState })
+            atm = atom({ defaultState });
+            loadingStates[`${scope}:${componentKey}`] = false;
             componentAtoms.set(`${scope}:${componentKey}`, atm);
         } else {
             atm = componentAtoms.get(`${scope}:${componentKey}`)
@@ -406,13 +407,14 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         const cs = useMemo(() => ({rendered}))
 
         const onTimeout = () => {
-            setLoading(false);
+            loadingStates[`${scope}:${componentKey}`] = false;
         }
 
         useEffect(() => {
             let to;
-            if (open && !props && !error && !loading && !component) {
+            if (open && !props && !error && !loading && !loadingStates[`${scope}:${componentKey}`]) {
                 to = setTimeout(onTimeout, 15000)
+                loadingStates[`${scope}:${componentKey}`] = true;
                 onMessage(socket, async (event) => {
                     try {
 

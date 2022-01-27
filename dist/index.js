@@ -603,6 +603,7 @@ var useResponse = function useResponse(fn, action, keepAlive) {
   };
 };
 var componentAtoms = new Map();
+var loadingStates = {};
 var useComponent = function useComponent(componentKey, options, rendered) {
   if (options === void 0) {
     options = {};
@@ -650,6 +651,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
       atm = jotai.atom({
         defaultState: defaultState
       });
+      loadingStates[scope + ":" + componentKey] = false;
       componentAtoms.set(scope + ":" + componentKey, atm);
     } else {
       atm = componentAtoms.get(scope + ":" + componentKey);
@@ -765,14 +767,15 @@ var useComponent = function useComponent(componentKey, options, rendered) {
     });
 
     var onTimeout = function onTimeout() {
-      setLoading(false);
+      loadingStates[scope + ":" + componentKey] = false;
     };
 
     React.useEffect(function () {
       var to;
 
-      if (open && !props && !error && !loading && !component) {
+      if (open && !props && !error && !loading && !loadingStates[scope + ":" + componentKey]) {
         to = setTimeout(onTimeout, 15000);
+        loadingStates[scope + ":" + componentKey] = true;
         onMessage(socket, function (event) {
           try {
             var _temp3 = _catch(function () {
