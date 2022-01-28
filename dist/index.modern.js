@@ -6,6 +6,7 @@ import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import { Web3Provider as Web3Provider$1 } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import Web3 from 'web3';
+import jwt from 'jsonwebtoken';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -1103,7 +1104,8 @@ var useAuth = function useAuth(useStrategy, auto) {
                 setHeaders(_extends({}, headers, {
                   Authorization: "Bearer " + response
                 }));
-                setIdentity(response);
+                var identity = jwt.decode(response);
+                setIdentity(identity);
                 setHasAuthed(true);
                 return response;
               });

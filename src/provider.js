@@ -7,6 +7,7 @@ import { atom, Provider as JotaiProvider } from 'jotai';
 import { packageLogger } from './logger';
 import { Web3Provider, web3Context } from './Web3';
 import { useLocalStorage } from './hooks/jotai';
+import jwt from 'jsonwebtoken'
 // import { web3Context, Web3UtilProvider } from '../../algo-trade-frontend/src/provider/Web3';
 
 export const useClientContext = () => {
@@ -53,7 +54,9 @@ export const useAuth = (useStrategy, auto) => {
                     ...headers,
                     Authorization: `Bearer ${response}`
                 });
-                setIdentity(response)
+
+                const identity = jwt.decode(response);
+                setIdentity(identity)
 
                 setHasAuthed(true);
                 return response;
