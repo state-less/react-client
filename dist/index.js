@@ -1106,6 +1106,7 @@ var useAuth = function useAuth(useStrategy, auto) {
                 setHeaders(_extends({}, headers, {
                   Authorization: "Bearer " + response
                 }));
+                setIdentity(response);
                 setHasAuthed(true);
                 return response;
               });
@@ -1148,7 +1149,7 @@ var useAuth = function useAuth(useStrategy, auto) {
             })).then(function (challenge) {
               if (challenge.address) {
                 setHasAuthed(true);
-                setIdentity(challenge);
+                s;
               } else {
                 var newHeaders = _extends({}, headers);
 

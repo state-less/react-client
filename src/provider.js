@@ -26,8 +26,7 @@ export const useAuth = (useStrategy, auto) => {
                 const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers});
                 if (challenge.address) {
                     setHasAuthed(true);
-                    setIdentity(challenge)
-                } else {
+s                } else {
                     const newHeaders = {...headers};
                     delete newHeaders.Authorization;
                     
@@ -54,6 +53,8 @@ export const useAuth = (useStrategy, auto) => {
                     ...headers,
                     Authorization: `Bearer ${response}`
                 });
+                setIdentity(response)
+
                 setHasAuthed(true);
                 return response;
             } catch (e) {
