@@ -1145,7 +1145,7 @@ var useAuth = function useAuth(useStrategy, auto) {
             })).then(function (challenge) {
               if (challenge.address) {
                 setHasAuthed(true);
-                setIdentity(challenge.address);
+                setIdentity(challenge);
               } else {
                 var newHeaders = _extends({}, headers);
 
