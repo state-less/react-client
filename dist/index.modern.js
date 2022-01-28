@@ -1146,7 +1146,6 @@ var useAuth = function useAuth(useStrategy, auto) {
             })).then(function (challenge) {
               if (challenge.address) {
                 setHasAuthed(true);
-                s;
               } else {
                 var newHeaders = _extends({}, headers);
 
@@ -1198,7 +1197,7 @@ var useAuth = function useAuth(useStrategy, auto) {
 };
 var headerAtom = atom();
 
-var _Provider = function _Provider(props) {
+var MainProvider = function MainProvider(props) {
   var _props$urls = props.urls,
       urls = _props$urls === void 0 ? [] : _props$urls,
       url = props.url,
@@ -1236,15 +1235,7 @@ var _Provider = function _Provider(props) {
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
     var ws = new WebSocket(url);
     ws.addEventListener('open', function open() {
-      console.log("connected");
       setOpen(true);
-    });
-    ws.addEventListener('message', function (event) {
-      try {
-        return Promise.resolve(consume(event)).then(function () {});
-      } catch (e) {
-        return Promise.reject(e);
-      }
     });
     return ws;
   }, [url, typeof window]);
@@ -1294,7 +1285,7 @@ var _Provider = function _Provider(props) {
 };
 
 var Provider = function Provider(props) {
-  return /*#__PURE__*/React.createElement(Provider$1, null, /*#__PURE__*/React.createElement(_Provider, props));
+  return /*#__PURE__*/React.createElement(Provider$1, null, /*#__PURE__*/React.createElement(MainProvider, props));
 };
 
 var _excluded$3 = ["name", "children", "index"],

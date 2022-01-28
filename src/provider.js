@@ -26,7 +26,7 @@ export const useAuth = (useStrategy, auto) => {
                 const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers});
                 if (challenge.address) {
                     setHasAuthed(true);
-s                } else {
+                } else {
                     const newHeaders = {...headers};
                     delete newHeaders.Authorization;
                     
@@ -85,7 +85,7 @@ s                } else {
 }
 
 const headerAtom = atom();
-const _Provider = (props) => {
+const MainProvider = (props) => {
     const { urls = [], url, headers: staticHeaders = {}, useAtom } = props;
     const [open, setOpen] = useState(false);
     const [headers, setHeaders] = useLocalStorage('headers', headerAtom, staticHeaders)
@@ -107,15 +107,11 @@ const _Provider = (props) => {
 
         const ws = new WebSocket(url);
         ws.addEventListener('open', function open() {
-            console.log("connected")
-            // ws.send(JSON.stringify({"action" : "render" , "message" : "Hello everyone"}));
-            // ws.send(JSON.stringify({"action" : "useState" ,"key":"votes", "scope":"base"}));
-            // console.log ("sent")
             setOpen(true);
         });
-        ws.addEventListener('message', async (event) => {
-            const data = await consume(event);
-        });
+        // ws.addEventListener('message', async (event) => {
+        //     const data = await consume(event);
+        // });
 
         return ws;
     }, [url, typeof window]);
@@ -159,7 +155,7 @@ const _Provider = (props) => {
 
 export const Provider = (props) => {
     return <JotaiProvider>
-        <_Provider {...props} />
+        <MainProvider {...props} />
     </JotaiProvider>
 
 }
