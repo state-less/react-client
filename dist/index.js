@@ -490,6 +490,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                 }
 
                 if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+                  console.log("Updating serverstate", key, _state, clientDefaultValue);
                   setState(function (state) {
                     delete state.error;
                     return _extends({}, state, data);
@@ -551,7 +552,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       });
     };
 
-    console.log("USE SERVER STATE", key, _state.error);
+    console.log("USE SERVER STATE", key, _state, clientDefaultValue);
 
     if (_state.error) {
       if (strict) {

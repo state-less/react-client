@@ -196,6 +196,8 @@ export const useServerState = (clientDefaultValue, options) => {
                             return state;
                         }
                         if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+                            console.log ("Updating serverstate", key, state, clientDefaultValue)
+
                             setState((state) => {
                                 delete state.error;
                                 return { ...state, ...data }
@@ -250,7 +252,7 @@ export const useServerState = (clientDefaultValue, options) => {
             })
         }
 
-        console.log ("USE SERVER STATE", key, state.error)
+        console.log ("USE SERVER STATE", key, state, clientDefaultValue)
         if (state.error) {
             if (strict) {
                 throw new Error(state.error);
