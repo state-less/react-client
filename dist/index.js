@@ -552,8 +552,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       });
     };
 
-    console.log("USE SERVER STATE", key, _state, clientDefaultValue);
-
     if (_state.error) {
       if (strict) {
         throw new Error(_state.error);
@@ -570,6 +568,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       return [clientDefaultValue || null];
     }
 
+    console.log("USE SERVER STATE", key, _state.value, clientDefaultValue, typeof _state.value === 'undefined' ? clientDefaultValue : _state.value);
     return [typeof _state.value === 'undefined' ? clientDefaultValue : _state.value, setServerState];
   } catch (e) {
     if (!ctx) throw new Error('No available context. Are you missing a Provider?');
