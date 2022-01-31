@@ -1459,7 +1459,7 @@ var ServerComponent = function ServerComponent(props) {
 
     console.log("map props", key, state, resolved);
 
-    if (resolved[key]) {
+    if (typeof resolved[key] !== 'undefined') {
       var _Object$assign4;
 
       return Object.assign(obj, (_Object$assign4 = {}, _Object$assign4[key] = resolved[key], _Object$assign4));

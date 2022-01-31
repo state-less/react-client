@@ -141,7 +141,7 @@ export const ServerComponent = (props) => {
             state[Symbol.for('l0g.format')] = () => state.value;
         }
         console.log ("map props", key, state, resolved);
-        if (resolved[key]) {
+        if (typeof resolved[key] !== 'undefined') {
             return Object.assign(obj, {
                 [key]: resolved[key]
             })
