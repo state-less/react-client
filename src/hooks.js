@@ -269,7 +269,7 @@ export const useServerState = (clientDefaultValue, options) => {
         }
 
         // baseLogger.debug`Returning live state ${state} ${key} with value ${state.value} ${clientDefaultValue}`
-        return [state.value || clientDefaultValue, setServerState];
+        return [typeof state.value === 'undefined' ? clientDefaultValue : state.value, setServerState];
     } catch (e) {
         if (!ctx) throw new Error('No available context. Are you missing a Provider?');
         throw e;

@@ -569,7 +569,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       return [clientDefaultValue || null];
     }
 
-    return [_state.value || clientDefaultValue, setServerState];
+    return [typeof _state.value === 'undefined' ? clientDefaultValue : _state.value, setServerState];
   } catch (e) {
     if (!ctx) throw new Error('No available context. Are you missing a Provider?');
     throw e;
