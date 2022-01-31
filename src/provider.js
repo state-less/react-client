@@ -39,6 +39,15 @@ export const useAuth = (useStrategy, auto) => {
         })()
     }, [open, authed]);
 
+    useEffect(() => {
+        if (!headers?.Authorization)
+            return
+            
+        const identity = jwt.decode(headers.Authorization.split(' ')[1]);
+        console.log("Setting identity", identity)
+        setIdentity(identity)
+    }, [headers?.Authorization]);
+
     async function authenticate(...args) {
         const challenge = await request(socket, { action: 'auth', phase: 'challenge' });
         const data = await auth(challenge, ...args);
@@ -49,14 +58,13 @@ export const useAuth = (useStrategy, auto) => {
                     phase: 'response',
                     ...data
                 });
-                console.log("AUTH RESPONSE", response)
+    
                 setHeaders({
                     ...headers,
                     Authorization: `Bearer ${response}`
                 });
 
-                const identity = jwt.decode(response);
-                setIdentity(identity)
+
 
                 setHasAuthed(true);
                 return response;

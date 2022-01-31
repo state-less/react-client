@@ -1100,12 +1100,9 @@ var useAuth = function useAuth(useStrategy, auto) {
                 action: 'auth',
                 phase: 'response'
               }, data))).then(function (response) {
-                console.log("AUTH RESPONSE", response);
                 setHeaders(_extends({}, headers, {
                   Authorization: "Bearer " + response
                 }));
-                var identity = jwt.decode(response);
-                setIdentity(identity);
                 setHasAuthed(true);
                 return response;
               });
@@ -1167,6 +1164,12 @@ var useAuth = function useAuth(useStrategy, auto) {
       }
     })();
   }, [open, authed]);
+  useEffect(function () {
+    if (!(headers !== null && headers !== void 0 && headers.Authorization)) return;
+    var identity = jwt.decode(headers.Authorization.split(' ')[1]);
+    console.log("Setting identity", identity);
+    setIdentity(identity);
+  }, [headers === null || headers === void 0 ? void 0 : headers.Authorization]);
 
   function logout() {
     var rest = _objectWithoutPropertiesLoose(headers, _excluded$2);
