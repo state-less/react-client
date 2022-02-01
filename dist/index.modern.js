@@ -1167,7 +1167,7 @@ var useAuth = function useAuth(useStrategy, auto) {
   useEffect(function () {
     if (!(headers !== null && headers !== void 0 && headers.Authorization)) return;
     var identity = jwt.decode(headers.Authorization.split(' ')[1]);
-    var timeValid = +new Date() - identity.exp * 1000;
+    var timeValid = identity.exp * 1000 - +new Date();
     var to = setTimeout(function () {
       orgLogger.info(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteralLoose(["\"JWT Expired. Logging out."])));
       logout();

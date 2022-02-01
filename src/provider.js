@@ -44,7 +44,7 @@ export const useAuth = (useStrategy, auto) => {
             return
 
         const identity = jwt.decode(headers.Authorization.split(' ')[1]);
-        const timeValid = +new Date - (identity.exp * 1000);
+        const timeValid =  (identity.exp * 1000) - +new Date;
 
         const to = setTimeout(() => {
             orgLogger.info`"JWT Expired. Logging out.`;
