@@ -1076,9 +1076,9 @@ var useLocalStorage = function useLocalStorage(name, atom, defaultValue) {
   return [value, setPersistentValue, setValue];
 };
 
-var _templateObject$1;
-
 var _excluded$2 = ["Authorization"];
+
+var _templateObject$1, _templateObject2;
 var useClientContext = function useClientContext() {
   var internalCtx = React.useContext(context);
   var web3Ctx = React.useContext(web3Context);
@@ -1170,8 +1170,16 @@ var useAuth = function useAuth(useStrategy, auto) {
   React.useEffect(function () {
     if (!(headers !== null && headers !== void 0 && headers.Authorization)) return;
     var identity = jwt.decode(headers.Authorization.split(' ')[1]);
-    console.log("Setting identity", identity);
+    var timeValid = +new Date() - identity.exp * 1000;
+    var to = setTimeout(function () {
+      orgLogger.info(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteralLoose(["\"JWT Expired. Logging out."])));
+      logout();
+    }, timeValid);
+    console.log("Setting identity", identity, timeValid);
     setIdentity(identity);
+    return function () {
+      clearTimeout(to);
+    };
   }, [headers === null || headers === void 0 ? void 0 : headers.Authorization]);
 
   function logout() {
@@ -1271,7 +1279,7 @@ var MainProvider = function MainProvider(props) {
   }, [typeof window]);
   React.useEffect(function () {
     on(socket, 'error', function () {
-      var message = logger.error(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteralLoose(["Connecting to socket ", "."])), url);
+      var message = logger.error(_templateObject2 || (_templateObject2 = _taggedTemplateLiteralLoose(["Connecting to socket ", "."])), url);
       setError(message);
     });
   }, []);

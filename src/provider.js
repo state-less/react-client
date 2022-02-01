@@ -4,7 +4,7 @@ import { context } from './context';
 import { on, emit, consume, request } from './util';
 
 import { atom, Provider as JotaiProvider } from 'jotai';
-import { packageLogger } from './logger';
+import { orgLogger, packageLogger } from './logger';
 import { Web3Provider, web3Context } from './Web3';
 import { useLocalStorage } from './hooks/jotai';
 import jwt from 'jsonwebtoken'
@@ -42,10 +42,21 @@ export const useAuth = (useStrategy, auto) => {
     useEffect(() => {
         if (!headers?.Authorization)
             return
-            
+
         const identity = jwt.decode(headers.Authorization.split(' ')[1]);
-        console.log("Setting identity", identity)
+        const timeValid = +new Date - (identity.exp * 1000);
+
+        const to = setTimeout(() => {
+            orgLogger.info`"JWT Expired. Logging out.`;
+            logout()
+        }, timeValid);
+
+        console.log("Setting identity", identity, timeValid);
         setIdentity(identity)
+
+        return () => {
+            clearTimeout(to);
+        }
     }, [headers?.Authorization]);
 
     async function authenticate(...args) {
