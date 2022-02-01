@@ -740,13 +740,13 @@ var useComponent = function useComponent(componentKey, options, rendered) {
                 headers: headers
               }));
             }, function (err) {
-              throw err;
               var errObj = new Error(err.message);
               Object.assign(errObj, err);
               console.log("Parsed Error", err, state, componentState, resolved);
               extendState({
                 error: errObj
               });
+              throw err;
             }));
           } catch (e) {
             return Promise.reject(e);
