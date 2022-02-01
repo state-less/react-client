@@ -33,6 +33,7 @@ export const useAuth = (useStrategy, auto) => {
                     
                     debugger;
                     setHeaders(newHeaders);
+                    setIdentity(null);
                 }
                 console.log ("AUTO LOGIN", challenge);
             }

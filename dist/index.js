@@ -1154,6 +1154,7 @@ var useAuth = function useAuth(useStrategy, auto) {
                 delete newHeaders.Authorization;
                 debugger;
                 setHeaders(newHeaders);
+                setIdentity(null);
               }
 
               console.log("AUTO LOGIN", challenge);
@@ -1461,13 +1462,6 @@ var ServerComponent = function ServerComponent(props) {
 
     var key = _ref2[0],
         state = _ref2[1];
-
-    if (state != null && typeof state !== 'string' && typeof state !== 'number') {
-      state[Symbol["for"]('l0g.format')] = function () {
-        return state.value;
-      };
-    }
-
     console.log("map props", key, state, resolved);
 
     if (typeof resolved[key] !== 'undefined') {
