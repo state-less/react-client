@@ -859,6 +859,16 @@ var useComponent = function useComponent(componentKey, options, rendered) {
       });
     }, [open]);
     useEffect(function () {
+      emit(socket, {
+        action: EVENT_USE_COMPONENT,
+        key: componentKey,
+        scope: scope || 'base',
+        props: clientProps,
+        options: _extends({}, rest),
+        headers: headers
+      });
+    }, [headers.Authorization]);
+    useEffect(function () {
       if (strict && error) {
         throw new Error(error);
       }

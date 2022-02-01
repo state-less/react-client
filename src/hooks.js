@@ -477,6 +477,10 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         }, [open])
 
         useEffect(() => {
+            emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', props: clientProps, options: { ...rest }, headers});
+        }, [headers.Authorization]);
+
+        useEffect(() => {
             if (strict && error) {
                 throw new Error(error);
             }
