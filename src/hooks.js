@@ -9,7 +9,7 @@ import packageLogger from './logger';
 import { on, onMessage, emit, consume, off, parseSocketResponse, request } from './util';
 
 let stateCount = 0;
- 
+
 const increaseCount = () => stateCount++;
 const join = delim => (...strings) => strings.join(delim);
 const genEventName = join(EVENT_DELIM);
@@ -60,13 +60,13 @@ const useStore = (store, key) => {
 };
 
 export const useStream = (name, def) => {
-    const {socket, open} = useContext(context);
+    const { socket, open } = useContext(context);
     const id = useMemo(() => v4());
     const [data, setData] = useState(def || null);
 
     useEffect(() => {
         if (open) {
-            emit(socket, {action: 'stream', name, id});
+            emit(socket, { action: 'stream', name, id });
             on(socket, 'message', async (event) => {
                 const data = await consume(event);
                 const json = parseSocketResponse(data);
@@ -75,7 +75,7 @@ export const useStream = (name, def) => {
                 }
             })
         }
-    },[open]);
+    }, [open]);
 
     return data;
 }
@@ -114,10 +114,10 @@ export const useServerState = (clientDefaultValue, options) => {
 
         const [state, setState] = useAtom(atm);
 
-        
+
         useEffect(() => {
             if (rest.id) {
-                setState({...state, id: rest.id})
+                setState({ ...state, id: rest.id })
             }
         }, [rest.id]);
 
@@ -152,8 +152,8 @@ export const useServerState = (clientDefaultValue, options) => {
         useEffect(() => {
             let to;
 
-            if (open && !id && !error &&  !defer && !stateLoadingStates[`${scope}:${key}`]) {
-                
+            if (open && !id && !error && !defer && !stateLoadingStates[`${scope}:${key}`]) {
+
                 stateLoadingStates[`${scope}:${key}`] = true;
 
                 var onSetValue = async (event) => {
@@ -196,7 +196,7 @@ export const useServerState = (clientDefaultValue, options) => {
                             return state;
                         }
                         if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
-                            console.log ("Updating serverstate", key, state, clientDefaultValue)
+                            console.log("Updating serverstate", key, state, clientDefaultValue)
 
                             setState((state) => {
                                 delete state.error;
@@ -215,7 +215,7 @@ export const useServerState = (clientDefaultValue, options) => {
                          */
                         if (data.type === 'error' && id === data.id) {
                             const err = await parseSocketResponse(data);
-                            extendState({error: new Error(err.message)});
+                            extendState({ error: new Error(err.message) });
                         }
                     }
 
@@ -270,7 +270,7 @@ export const useServerState = (clientDefaultValue, options) => {
         }
 
         // baseLogger.debug`Returning live state ${state} ${key} with value ${state.value} ${clientDefaultValue}`
-        console.log ("USE SERVER STATE", key, state.value, clientDefaultValue, typeof state.value === 'undefined' ? clientDefaultValue : state.value)
+        console.log("USE SERVER STATE", key, state.value, clientDefaultValue, typeof state.value === 'undefined' ? clientDefaultValue : state.value)
 
         return [typeof state.value === 'undefined' ? clientDefaultValue : state.value, setServerState];
     } catch (e) {
@@ -344,9 +344,9 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         const removeAllListeners = useMemo(() => false && socket.removeAllListeners.bind(socket), [socket]);
 
         const [internalState, setState] = useAtom(atm);
-        
+
         const extendState = data => setState({ ...internalState, ...data });
-        const setLoading = loading => extendState({loading});
+        const setLoading = loading => extendState({ loading });
 
         const {
             component,
@@ -368,7 +368,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
 
 
         for (const propKey of keys) {
-            const serverProps = (componentState||rendered)?.props || {};
+            const serverProps = (componentState || rendered)?.props || {};
             const state = serverProps[propKey] || {};
 
             const resolvedState = useServerState(state.value, {
@@ -387,7 +387,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             }
         }
         /**Bind action functions */
-        (componentState||rendered)?.props?.children?.filter((child) => {
+        (componentState || rendered)?.props?.children?.filter((child) => {
             return child.component === 'Action';
         }).forEach((action) => {
             action.props.fns = action.props.handler.reduce((fns, handler) => {
@@ -401,7 +401,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                             const errObj = new Error(err.message);
                             Object.assign(errObj, err);
                             console.log("Parsed Error", err, state, componentState, resolved);
-                            extendState({error: errObj});
+                            extendState({ error: errObj });
                             throw err;
 
                         }
@@ -412,7 +412,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         })
 
         const { props, error } = component || {};
-        const cs = useMemo(() => ({rendered}))
+        const cs = useMemo(() => ({ rendered }))
 
         const onTimeout = () => {
             loadingStates[`${scope}:${componentKey}`] = false;
@@ -430,7 +430,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                         /**TODO: fix base scope === 'public' */
                         if (eventData.action === 'render' && eventData.key == componentKey) {
                             const data = parseSocketResponse(eventData);
-                            const {error, ...rest} = internalState;
+                            const { error, ...rest } = internalState;
                             setState({ ...rest, component: data });
                         }
                     } catch (e) {
@@ -445,7 +445,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                         const errObj = new Error(err.message);
                         Object.assign(errObj, err);
                         console.log("Parsed Error", err);
-                        extendState({error: errObj});
+                        extendState({ error: errObj });
                     }
                 });
 
@@ -454,8 +454,8 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                     orgLogger.scope(data.scope).setMessageLevel(data.level).log(...data.tag)
                 });
 
-                console.log ("Emit render")
-                emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', props: clientProps, options: { ...rest }, headers});
+                console.log("Emit render")
+                emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', props: clientProps, options: { ...rest }, headers });
 
                 setLoading(to);
             }
@@ -463,7 +463,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             secOpen.forEach((open, i) => {
                 if (open) {
                     const socket = sockets[i];
-                    console.log ("Emit render 2")
+                    console.log("Emit render 2")
 
                     emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', options: { ...rest } });
                 }
@@ -477,8 +477,10 @@ export const useComponent = (componentKey, options = {}, rendered) => {
         }, [open])
 
         useEffect(() => {
-            emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', props: clientProps, options: { ...rest }, headers});
-        }, [headers.Authorization]);
+            if (open && !props && !error) {
+                emit(socket, { action: EVENT_USE_COMPONENT, key: componentKey, scope: scope || 'base', props: clientProps, options: { ...rest }, headers });
+            }
+        }, [headers?.Authorization]);
 
         useEffect(() => {
             if (strict && error) {
