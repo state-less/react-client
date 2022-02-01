@@ -859,7 +859,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
       });
     }, [open]);
     useEffect(function () {
-      if (open && !props && !error) {
+      if (open && !error) {
         emit(socket, {
           action: EVENT_USE_COMPONENT,
           key: componentKey,
