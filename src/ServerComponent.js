@@ -19,8 +19,11 @@ export const useAction = (name, handler, callback) => {
     if (!action)
         return () => { console.warn('Handler not available') }
 
-    
+
+
     if (action && action?.props?.fns && action?.props?.fns[handler]) {
+        if (action.props.disabled)
+            action.props.fns[handler].disabled = true;
         return action.props.fns[handler];
     }
 
@@ -70,7 +73,7 @@ export const ChildComponent = (props) => {
     return props.children;
     const mappedProps = Object.entries(serverProps).reduce((obj, [key, state]) => {
         if (state)
-        state[Symbol.for('l0g.format')] = () => state.value;
+            state[Symbol.for('l0g.format')] = () => state.value;
         if (resolved[state.key]) {
 
             // logger.error('HAS RESOLVED', obj, key);
@@ -102,11 +105,11 @@ export const useProps2 = () => {
     return props
 }
 export const ServerComponent2Child = (props) => {
-    const { name, children, index, ...clientProps} = props;
-    const {children: serverChildren} = useContext(internalContext);
+    const { name, children, index, ...clientProps } = props;
+    const { children: serverChildren } = useContext(internalContext);
 
 
-    return <internalContext.Provider value={{ props: {foo:'bar'} }}>
+    return <internalContext.Provider value={{ props: { foo: 'bar' } }}>
         {JSON.stringify(serverChildren)}
     </internalContext.Provider>
 }
@@ -141,7 +144,7 @@ export const ServerComponent = (props) => {
     const { children: serverChildren = [], ...rest } = serverProps;
 
     const mappedProps = Object.entries(rest).reduce((obj, [key, state]) => {
-        console.log ("map props", key, state, resolved);
+        console.log("map props", key, state, resolved);
         if (typeof resolved[key] !== 'undefined') {
             return Object.assign(obj, {
                 [key]: resolved[key]

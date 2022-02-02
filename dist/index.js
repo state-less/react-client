@@ -1340,6 +1340,7 @@ var useAction = function useAction(name, handler, callback) {
   };
 
   if (action && action !== null && action !== void 0 && (_action$props = action.props) !== null && _action$props !== void 0 && _action$props.fns && action !== null && action !== void 0 && (_action$props2 = action.props) !== null && _action$props2 !== void 0 && _action$props2.fns[handler]) {
+    if (action.props.disabled) action.props.fns[handler].disabled = true;
     return action.props.fns[handler];
   }
 
