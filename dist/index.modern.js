@@ -698,6 +698,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
 
       var _state2 = serverProps[propKey] || {};
 
+      console.log("USING Server State from Component", _state2.key, _state2.scope, _state2.id, "Defer", !_state2.id || !_state2.key || !_state2.scope);
       var resolvedState = useServerState(_state2.value, {
         key: _state2.key,
         scope: _state2.scope,

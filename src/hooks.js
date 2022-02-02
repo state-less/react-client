@@ -371,6 +371,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
             const serverProps = (componentState || rendered)?.props || {};
             const state = serverProps[propKey] || {};
 
+            console.log ("USING Server State from Component", state.key, state.scope, state.id, "Defer", !state.id || !state.key || !state.scope)
             const resolvedState = useServerState(state.value, {
                 key: state.key,
                 scope: state.scope,
