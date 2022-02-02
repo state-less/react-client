@@ -543,11 +543,11 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     React.useEffect(function () {}, [id, error, key]);
 
     var setServerState = function setServerState(value) {
-      socket.emit(EVENT_SET_STATE, {
+      emit(socket, {
+        action: EVENT_SET_STATE,
         id: id,
         key: key,
-        value: value
-      }, {
+        value: value,
         scope: scope
       });
     };

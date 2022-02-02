@@ -243,11 +243,11 @@ export const useServerState = (clientDefaultValue, options) => {
         }, [id, error, key]);
 
         const setServerState = (value) => {
-            socket.emit(EVENT_SET_STATE, {
+            emit(socket, {
+                action: EVENT_SET_STATE,
                 id,
                 key,
                 value,
-            }, {
                 scope
             })
         }
