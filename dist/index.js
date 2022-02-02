@@ -1343,6 +1343,7 @@ var useAction = function useAction(name, handler, callback) {
     return action.props.fns[handler];
   }
 
+  if (action.props.disabled) action.handler.disabled = true;
   return action.handler;
 };
 var useProps = function useProps() {
