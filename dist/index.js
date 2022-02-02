@@ -464,7 +464,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         emit(socket, {
           action: EVENT_USE_STATE,
           key: key,
-          value: value,
+          defaultValue: value,
           scope: scope,
           requestId: clientId,
           options: _extends({}, rest),

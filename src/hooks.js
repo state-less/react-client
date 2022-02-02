@@ -170,7 +170,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 };
                 onMessage(socket, onSetValue);
 
-                emit(socket, { action: EVENT_USE_STATE, key, value, scope, requestId: clientId, options: { ...rest }, requestType });
+                emit(socket, { action: EVENT_USE_STATE, key, defaultValue: value, scope, requestId: clientId, options: { ...rest }, requestType });
             }
 
             clearTimeout(stateLoadingStates[`${scope}:${key}`]);
