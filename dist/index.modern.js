@@ -1579,7 +1579,7 @@ var webAuthnStrategy = function webAuthnStrategy() {
         } else {
           var _temp6 = function () {
             if (challenge.type === 'login') {
-              return Promise.resolve(solveLoginChallenge(challenge)).then(function (_solveLoginChallenge) {
+              return Promise.resolve(solveLoginChallenge(challenge.challenge)).then(function (_solveLoginChallenge) {
                 response = _solveLoginChallenge;
               });
             }
