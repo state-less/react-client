@@ -19,7 +19,7 @@ export const useClientContext = () => {
 let compId;
 export const useAuth = (useStrategy, auto) => {
     const { open, socket, headers, setHeaders, setIdentity } = useContext(context);
-    const { authenticate: auth, logout: deauth, id, register} = useStrategy();
+    const { authenticate: auth, logout: deauth, id, register, strategy} = useStrategy();
     const [authed, setHasAuthed] = useState(false);
     useEffect(() => {
         (async () => {
@@ -61,7 +61,7 @@ export const useAuth = (useStrategy, auto) => {
     }, [headers?.Authorization]);
 
     async function authenticate(...args) {
-        const challenge = await request(socket, { action: 'auth', phase: 'challenge' });
+        const challenge = await request(socket, { action: 'auth', phase: 'challenge', strategy });
         const data = await auth(challenge, ...args);
         if (data.success)
             try {

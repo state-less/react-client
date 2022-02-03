@@ -31,7 +31,7 @@ export const web3Strategy = () => {
     }
   }
 
-  return { authenticate, id: account, logout: deactivate }
+  return { authenticate, id: account, logout: deactivate, strategy: 'webauthn' }
 }
 
 export const webAuthnStrategy = () => {
@@ -43,5 +43,5 @@ export const webAuthnStrategy = () => {
     return { challenge, response, success: true, strategy: 'webauthn' }
   }
 
-  return { authenticate, logout: () => {}}
+  return { authenticate, logout: () => {}, strategy: 'webauthn'}
 }

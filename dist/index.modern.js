@@ -1105,7 +1105,8 @@ var useAuth = function useAuth(useStrategy, auto) {
     try {
       return Promise.resolve(request(socket, {
         action: 'auth',
-        phase: 'challenge'
+        phase: 'challenge',
+        strategy: strategy
       })).then(function (challenge) {
         return Promise.resolve(auth.apply(void 0, [challenge].concat(args))).then(function (data) {
           return function () {
@@ -1141,7 +1142,8 @@ var useAuth = function useAuth(useStrategy, auto) {
   var _useStrategy = useStrategy(),
       auth = _useStrategy.authenticate,
       deauth = _useStrategy.logout,
-      id = _useStrategy.id;
+      id = _useStrategy.id,
+      strategy = _useStrategy.strategy;
 
   var _useState = useState(false),
       authed = _useState[0],
@@ -1548,7 +1550,8 @@ var web3Strategy = function web3Strategy() {
   return {
     authenticate: authenticate,
     id: account,
-    logout: deactivate
+    logout: deactivate,
+    strategy: 'webauthn'
   };
 };
 var webAuthnStrategy = function webAuthnStrategy() {
@@ -1570,7 +1573,8 @@ var webAuthnStrategy = function webAuthnStrategy() {
 
   return {
     authenticate: authenticate,
-    logout: function logout() {}
+    logout: function logout() {},
+    strategy: 'webauthn'
   };
 };
 
