@@ -1570,8 +1570,7 @@ var webAuthnStrategy = function webAuthnStrategy() {
 
   return {
     authenticate: authenticate,
-    id: account,
-    logout: deactivate
+    logout: function logout() {}
   };
 };
 

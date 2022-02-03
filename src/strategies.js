@@ -42,5 +42,5 @@ export const webAuthnStrategy = () => {
     return { challenge, response, success: true, strategy: 'webauthn' }
   }
 
-  return { authenticate, id: account, logout: deactivate }
+  return { authenticate, logout: () => {}}
 }
