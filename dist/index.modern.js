@@ -1551,7 +1551,7 @@ var web3Strategy = function web3Strategy() {
     authenticate: authenticate,
     id: account,
     logout: deactivate,
-    strategy: 'webauthn'
+    strategy: 'web3'
   };
 };
 var webAuthnStrategy = function webAuthnStrategy() {
