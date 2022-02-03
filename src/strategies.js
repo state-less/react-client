@@ -37,17 +37,17 @@ export const web3Strategy = () => {
 export const webAuthnStrategy = () => {
 
   const authenticate = async (challenge) => {
-    console.log ("WebAauthn auth challenge", challenge);
+    console.log("WebAauthn auth challenge", challenge);
     let response;
     if (challenge.type === 'register') {
-       response = solveRegistrationChallenge(challenge.challenge);
+      response = await solveRegistrationChallenge(challenge.challenge);
     } else if (challenge.type === 'login') {
 
-      response = solveLoginChallenge(challenge);
+      response = await solveLoginChallenge(challenge);
     }
-    console.log ("WebAauthn auth response", response);
+    console.log("WebAauthn auth response", response);
     return { challenge, response, success: true, strategy: 'webauthn' }
   }
 
-  return { authenticate, logout: () => {}, strategy: 'webauthn'}
+  return { authenticate, logout: () => { }, strategy: 'webauthn' }
 }

@@ -1557,22 +1557,38 @@ var web3Strategy = function web3Strategy() {
 var webAuthnStrategy = function webAuthnStrategy() {
   var authenticate = function authenticate(challenge) {
     try {
+      var _temp4 = function _temp4() {
+        console.log("WebAauthn auth response", response);
+        return {
+          challenge: challenge,
+          response: response,
+          success: true,
+          strategy: 'webauthn'
+        };
+      };
+
       console.log("WebAauthn auth challenge", challenge);
       var response;
 
-      if (challenge.type === 'register') {
-        response = solveRegistrationChallenge(challenge.challenge);
-      } else if (challenge.type === 'login') {
-        response = solveLoginChallenge(challenge);
-      }
+      var _temp5 = function () {
+        if (challenge.type === 'register') {
+          return Promise.resolve(solveRegistrationChallenge(challenge.challenge)).then(function (_solveRegistrationCha) {
+            response = _solveRegistrationCha;
+          });
+        } else {
+          var _temp6 = function () {
+            if (challenge.type === 'login') {
+              return Promise.resolve(solveLoginChallenge(challenge)).then(function (_solveLoginChallenge) {
+                response = _solveLoginChallenge;
+              });
+            }
+          }();
 
-      console.log("WebAauthn auth response", response);
-      return Promise.resolve({
-        challenge: challenge,
-        response: response,
-        success: true,
-        strategy: 'webauthn'
-      });
+          if (_temp6 && _temp6.then) return _temp6.then(function () {});
+        }
+      }();
+
+      return Promise.resolve(_temp5 && _temp5.then ? _temp5.then(_temp4) : _temp4(_temp5));
     } catch (e) {
       return Promise.reject(e);
     }
