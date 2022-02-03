@@ -1563,12 +1563,13 @@ var webAuthnStrategy = function webAuthnStrategy() {
           challenge: challenge,
           response: response,
           success: true,
-          strategy: 'webauthn'
+          strategy: 'webauthn',
+          type: challenge.type
         };
       };
 
       console.log("WebAauthn auth challenge", challenge);
-      var response;
+      var response, type;
 
       var _temp5 = function () {
         if (challenge.type === 'register') {

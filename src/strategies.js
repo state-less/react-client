@@ -38,7 +38,7 @@ export const webAuthnStrategy = () => {
 
   const authenticate = async (challenge) => {
     console.log("WebAauthn auth challenge", challenge);
-    let response;
+    let response, type;
     if (challenge.type === 'register') {
       response = await solveRegistrationChallenge(challenge.challenge);
     } else if (challenge.type === 'login') {
@@ -46,7 +46,7 @@ export const webAuthnStrategy = () => {
       response = await solveLoginChallenge(challenge);
     }
     console.log("WebAauthn auth response", response);
-    return { challenge, response, success: true, strategy: 'webauthn' }
+    return { challenge, response, success: true, strategy: 'webauthn', type: challenge.type }
   }
 
   return { authenticate, logout: () => { }, strategy: 'webauthn' }
