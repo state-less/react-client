@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { request } from "./util";
 import { solveRegistrationChallenge, solveLoginChallenge } from '@webauthn/client'
+import { web3Context } from "./Web3";
 
 
 export const web3Strategy = () => {

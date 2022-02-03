@@ -926,7 +926,7 @@ function getLibrary(provider, connector) {
   return new Web3Provider$1(provider);
 }
 
-var web3Context$1 = createContext();
+var web3Context = createContext();
 var Web3UtilProvider = function Web3UtilProvider(_ref) {
   var verify = function verify(account, message) {
     if (message === void 0) {
@@ -1026,7 +1026,7 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
       setWeb3(_web3);
     }
   }, [account]);
-  return /*#__PURE__*/React.createElement(web3Context$1.Provider, {
+  return /*#__PURE__*/React.createElement(web3Context.Provider, {
     value: _extends({
       activateInjected: activateInjected,
       sign: sign,
@@ -1092,7 +1092,7 @@ var _excluded$2 = ["Authorization"];
 var _templateObject$1, _templateObject2;
 var useClientContext = function useClientContext() {
   var internalCtx = useContext(context);
-  var web3Ctx = useContext(web3Context$1);
+  var web3Ctx = useContext(web3Context);
   return _extends({}, internalCtx, web3Ctx);
 };
 var compId;
