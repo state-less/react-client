@@ -7,6 +7,7 @@ import { Web3Provider as Web3Provider$1 } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import Web3 from 'web3';
 import jwt from 'jsonwebtoken';
+import { solveLoginChallenge } from '@webauthn/client';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -925,7 +926,7 @@ function getLibrary(provider, connector) {
   return new Web3Provider$1(provider);
 }
 
-var web3Context = createContext();
+var web3Context$1 = createContext();
 var Web3UtilProvider = function Web3UtilProvider(_ref) {
   var verify = function verify(account, message) {
     if (message === void 0) {
@@ -1025,7 +1026,7 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
       setWeb3(_web3);
     }
   }, [account]);
-  return /*#__PURE__*/React.createElement(web3Context.Provider, {
+  return /*#__PURE__*/React.createElement(web3Context$1.Provider, {
     value: _extends({
       activateInjected: activateInjected,
       sign: sign,
@@ -1091,7 +1092,7 @@ var _excluded$2 = ["Authorization"];
 var _templateObject$1, _templateObject2;
 var useClientContext = function useClientContext() {
   var internalCtx = useContext(context);
-  var web3Ctx = useContext(web3Context);
+  var web3Ctx = useContext(web3Context$1);
   return _extends({}, internalCtx, web3Ctx);
 };
 var compId;
@@ -1550,6 +1551,29 @@ var web3Strategy = function web3Strategy() {
     logout: deactivate
   };
 };
+var webAuthnStrategy = function webAuthnStrategy() {
+  var authenticate = function authenticate(challenge) {
+    try {
+      console.log("WebAauthn auth challenge", challenge);
+      var response = solveLoginChallenge(challenge);
+      console.log("WebAauthn auth response", response);
+      return Promise.resolve({
+        challenge: challenge,
+        response: response,
+        success: true,
+        strategy: 'webauthn'
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
 
-export { Action, ChildComponent, ErrorBoundary, Provider, ServerComponent, ServerComponent2, ServerComponent2Child, Slot, context$1 as context, internalContext, useAction, useAuth, useClientContext, useComponent, useProps, useProps2, useResponse, useServerAtom, useServerState, useStream, web3Strategy };
+  return {
+    authenticate: authenticate,
+    id: account,
+    logout: deactivate
+  };
+};
+
+export { Action, ChildComponent, ErrorBoundary, Provider, ServerComponent, ServerComponent2, ServerComponent2Child, Slot, context$1 as context, internalContext, useAction, useAuth, useClientContext, useComponent, useProps, useProps2, useResponse, useServerAtom, useServerState, useStream, web3Strategy, webAuthnStrategy };
 //# sourceMappingURL=index.modern.js.map
