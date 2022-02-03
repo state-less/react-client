@@ -7,7 +7,7 @@ import { Web3Provider as Web3Provider$1 } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import Web3 from 'web3';
 import jwt from 'jsonwebtoken';
-import { solveLoginChallenge } from '@webauthn/client';
+import { solveRegistrationChallenge, solveLoginChallenge } from '@webauthn/client';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -1526,8 +1526,8 @@ var web3Strategy = function web3Strategy() {
 
   var authenticate = function authenticate(challenge) {
     try {
-      if (account) {
-        return Promise.resolve(sign(challenge, account)).then(function (response) {
+      if (account && challenge.type === 'sign') {
+        return Promise.resolve(sign(challenge.challenge, account)).then(function (response) {
           return {
             challenge: challenge,
             response: response,
@@ -1558,7 +1558,14 @@ var webAuthnStrategy = function webAuthnStrategy() {
   var authenticate = function authenticate(challenge) {
     try {
       console.log("WebAauthn auth challenge", challenge);
-      var response = solveLoginChallenge(challenge);
+      var response;
+
+      if (challenge.type === 'register') {
+        response = solveRegistrationChallenge(challenge.challenge);
+      } else if (challenge.type === 'login') {
+        response = solveLoginChallenge(challenge);
+      }
+
       console.log("WebAauthn auth response", response);
       return Promise.resolve({
         challenge: challenge,

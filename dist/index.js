@@ -1529,8 +1529,8 @@ var web3Strategy = function web3Strategy() {
 
   var authenticate = function authenticate(challenge) {
     try {
-      if (account) {
-        return Promise.resolve(sign(challenge, account)).then(function (response) {
+      if (account && challenge.type === 'sign') {
+        return Promise.resolve(sign(challenge.challenge, account)).then(function (response) {
           return {
             challenge: challenge,
             response: response,
@@ -1561,7 +1561,14 @@ var webAuthnStrategy = function webAuthnStrategy() {
   var authenticate = function authenticate(challenge) {
     try {
       console.log("WebAauthn auth challenge", challenge);
-      var response = client.solveLoginChallenge(challenge);
+      var response;
+
+      if (challenge.type === 'register') {
+        response = client.solveRegistrationChallenge(challenge.challenge);
+      } else if (challenge.type === 'login') {
+        response = client.solveLoginChallenge(challenge);
+      }
+
       console.log("WebAauthn auth response", response);
       return Promise.resolve({
         challenge: challenge,

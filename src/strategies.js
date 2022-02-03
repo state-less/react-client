@@ -21,8 +21,8 @@ export const web3Strategy = () => {
 
 
   const authenticate = async (challenge) => {
-    if (account) {
-      const response = await sign(challenge, account);
+    if (account && challenge.type === 'sign') {
+      const response = await sign(challenge.challenge, account);
       return { challenge, response, success: true, strategy: 'web3' }
     } else {
       await activateInjected();
@@ -38,7 +38,13 @@ export const webAuthnStrategy = () => {
 
   const authenticate = async (challenge) => {
     console.log ("WebAauthn auth challenge", challenge);
-    const response = solveLoginChallenge(challenge);
+    let response;
+    if (challenge.type === 'register') {
+       response = solveRegistrationChallenge(challenge.challenge);
+    } else if (challenge.type === 'login') {
+
+      response = solveLoginChallenge(challenge);
+    }
     console.log ("WebAauthn auth response", response);
     return { challenge, response, success: true, strategy: 'webauthn' }
   }
