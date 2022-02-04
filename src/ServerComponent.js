@@ -29,7 +29,7 @@ export const useAction = (name, handler, callback) => {
 
     if (action.props.disabled)
         action.handler.disabled = true;
-        
+
     return action.handler;
 }
 
@@ -151,7 +151,7 @@ export const ServerComponent = (props) => {
             })
         }
         /** Map a live state to a property */
-        if (state.id && state.key && state.scope)
+        if (state && state.id && state.key && state.scope)
             return Object.assign(obj, {
                 [key]: state.value
             })

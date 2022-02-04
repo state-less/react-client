@@ -1489,7 +1489,7 @@ var ServerComponent = function ServerComponent(props) {
       return Object.assign(obj, (_Object$assign4 = {}, _Object$assign4[key] = resolved[key], _Object$assign4));
     }
 
-    if (state.id && state.key && state.scope) return Object.assign(obj, (_Object$assign5 = {}, _Object$assign5[key] = state.value, _Object$assign5));
+    if (state && state.id && state.key && state.scope) return Object.assign(obj, (_Object$assign5 = {}, _Object$assign5[key] = state.value, _Object$assign5));
     return Object.assign(obj, (_Object$assign6 = {}, _Object$assign6[key] = state, _Object$assign6));
   }, {});
   mappedProps.error = error;
