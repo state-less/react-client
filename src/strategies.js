@@ -2,6 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { request } from "./util";
 import { solveRegistrationChallenge, solveLoginChallenge } from '@webauthn/client'
 import { web3Context } from "./Web3";
+import fp from '@fingerprintjs/fingerprintjs';
 
 
 export const web3Strategy = () => {
@@ -50,4 +51,16 @@ export const webAuthnStrategy = () => {
   }
 
   return { authenticate, logout: () => { }, strategy: 'webauthn' }
+}
+
+export const fingerprintStrategy = () => {
+
+  const authenticate = async (challenge) => {
+    console.log("Fingerprint auth challenge", challenge);
+    const fp2 = await fp.load();
+    const response = await fp2.get();
+    return { challenge, response, success: true, strategy: 'fingerprint', type: challenge.type }
+  }
+
+  return { authenticate, logout: () => { }, strategy: 'fingerprint' }
 }

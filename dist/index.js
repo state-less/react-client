@@ -11,6 +11,7 @@ var injectedConnector = require('@web3-react/injected-connector');
 var Web3 = _interopDefault(require('web3'));
 var jwt = _interopDefault(require('jsonwebtoken'));
 var client = require('@webauthn/client');
+var fp = _interopDefault(require('@fingerprintjs/fingerprintjs'));
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -1604,6 +1605,32 @@ var webAuthnStrategy = function webAuthnStrategy() {
     strategy: 'webauthn'
   };
 };
+var fingerprintStrategy = function fingerprintStrategy() {
+  var authenticate = function authenticate(challenge) {
+    try {
+      console.log("Fingerprint auth challenge", challenge);
+      return Promise.resolve(fp.load()).then(function (fp2) {
+        return Promise.resolve(fp2.get()).then(function (response) {
+          return {
+            challenge: challenge,
+            response: response,
+            success: true,
+            strategy: 'fingerprint',
+            type: challenge.type
+          };
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return {
+    authenticate: authenticate,
+    logout: function logout() {},
+    strategy: 'fingerprint'
+  };
+};
 
 exports.Action = Action;
 exports.ChildComponent = ChildComponent;
@@ -1614,6 +1641,7 @@ exports.ServerComponent2 = ServerComponent2;
 exports.ServerComponent2Child = ServerComponent2Child;
 exports.Slot = Slot;
 exports.context = context$1;
+exports.fingerprintStrategy = fingerprintStrategy;
 exports.internalContext = internalContext;
 exports.useAction = useAction;
 exports.useAuth = useAuth;

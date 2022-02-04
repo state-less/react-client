@@ -8,6 +8,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import Web3 from 'web3';
 import jwt from 'jsonwebtoken';
 import { solveRegistrationChallenge, solveLoginChallenge } from '@webauthn/client';
+import fp from '@fingerprintjs/fingerprintjs';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -1601,6 +1602,32 @@ var webAuthnStrategy = function webAuthnStrategy() {
     strategy: 'webauthn'
   };
 };
+var fingerprintStrategy = function fingerprintStrategy() {
+  var authenticate = function authenticate(challenge) {
+    try {
+      console.log("Fingerprint auth challenge", challenge);
+      return Promise.resolve(fp.load()).then(function (fp2) {
+        return Promise.resolve(fp2.get()).then(function (response) {
+          return {
+            challenge: challenge,
+            response: response,
+            success: true,
+            strategy: 'fingerprint',
+            type: challenge.type
+          };
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
 
-export { Action, ChildComponent, ErrorBoundary, Provider, ServerComponent, ServerComponent2, ServerComponent2Child, Slot, context$1 as context, internalContext, useAction, useAuth, useClientContext, useComponent, useProps, useProps2, useResponse, useServerAtom, useServerState, useStream, web3Strategy, webAuthnStrategy };
+  return {
+    authenticate: authenticate,
+    logout: function logout() {},
+    strategy: 'fingerprint'
+  };
+};
+
+export { Action, ChildComponent, ErrorBoundary, Provider, ServerComponent, ServerComponent2, ServerComponent2Child, Slot, context$1 as context, fingerprintStrategy, internalContext, useAction, useAuth, useClientContext, useComponent, useProps, useProps2, useResponse, useServerAtom, useServerState, useStream, web3Strategy, webAuthnStrategy };
 //# sourceMappingURL=index.modern.js.map
