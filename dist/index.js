@@ -1106,7 +1106,8 @@ var useAuth = function useAuth(useStrategy, auto) {
       return Promise.resolve(request(socket, {
         action: 'auth',
         phase: 'register',
-        strategy: strategy
+        strategy: strategy,
+        headers: headers
       })).then(function (response) {
         if (response) try {
           setHeaders(_extends({}, headers, {

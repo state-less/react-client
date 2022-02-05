@@ -86,7 +86,7 @@ export const useAuth = (useStrategy, auto) => {
     }
 
     async function register(strategy) {
-        const response = await request(socket, { action: 'auth', phase: 'register', strategy });
+        const response = await request(socket, { action: 'auth', phase: 'register', strategy, headers});
 
         if (response)
             try {
