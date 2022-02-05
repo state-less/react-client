@@ -93,6 +93,7 @@ export const useServerState = (clientDefaultValue, options) => {
         suspend = false,
         rendered = null,
         requestType = 'request',
+        id = null,
         ...rest
     } = options
     const ctx = useContext(context);
@@ -102,12 +103,12 @@ export const useServerState = (clientDefaultValue, options) => {
         const defaultState = useMemo(() => ({ value: clientDefaultValue, id: rest.id || null, scope, key }));
         let atm;
 
-        if (!atoms.has(`${scope}:${key}`)) {
+        if (!atoms.has(`${scope}:${key}:${id}`)) {
             atm = atom({ defaultState, clientId: increaseCount() })
             stateLoadingStates[`${scope}:${key}`] = false;
-            atoms.set(`${scope}:${key}`, atm);
+            atoms.set(`${scope}:${key}:${id}`, atm);
         } else {
-            atm = atoms.get(`${scope}:${key}`)
+            atm = atoms.get(`${scope}:${key}:${id}`)
         }
 
         const removeAllListeners = useMemo(() => false && socket.removeAllListeners.bind(socket), [socket]);

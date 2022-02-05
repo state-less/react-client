@@ -231,7 +231,7 @@ var consume = function consume(event) {
   }
 };
 
-var _excluded = ["key", "strict", "defaultValue", "defer", "value", "scope", "suspend", "rendered", "requestType"],
+var _excluded = ["key", "strict", "defaultValue", "defer", "value", "scope", "suspend", "rendered", "requestType", "id"],
     _excluded2 = ["strict", "suspend", "scope", "props"],
     _excluded3 = ["error"];
 var stateCount = 0;
@@ -370,15 +370,15 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     });
     var atm;
 
-    if (!atoms.has(scope + ":" + key)) {
+    if (!atoms.has(scope + ":" + key + ":" + _id)) {
       atm = atom({
         defaultState: defaultState,
         clientId: increaseCount()
       });
       stateLoadingStates[scope + ":" + key] = false;
-      atoms.set(scope + ":" + key, atm);
+      atoms.set(scope + ":" + key + ":" + _id, atm);
     } else {
-      atm = atoms.get(scope + ":" + key);
+      atm = atoms.get(scope + ":" + key + ":" + _id);
     }
 
     var removeAllListeners = useMemo(function () {
@@ -406,11 +406,11 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       return setState(_extends({}, _state, data));
     };
 
-    var id = _state.id,
+    var _id = _state.id,
         error = _state.error;
     var setStateEvent = useMemo(function () {
-      return genSetStateEventName(id);
-    }, [id]);
+      return genSetStateEventName(_id);
+    }, [_id]);
     var createStateEvent = useMemo(function () {
       return genCreateStateEventName(clientId);
     }, [clientId]);
@@ -436,7 +436,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     useEffect(function () {
       var to;
 
-      if (open && !id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
+      if (open && !_id && !error && !defer && !stateLoadingStates[scope + ":" + key]) {
         stateLoadingStates[scope + ":" + key] = true;
 
         var onSetValue = function onSetValue(event) {
@@ -444,11 +444,11 @@ var useServerState = function useServerState(clientDefaultValue, options) {
             return Promise.resolve(consume(event)).then(function (eventData) {
               var data = parseSocketResponse(eventData);
 
-              if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined') {
+              if (eventData.action === 'setValue' && (clientId === eventData.requestId || _id === data.id) && typeof data.value === 'undefined') {
                 return _state;
               }
 
-              if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+              if (eventData.action === 'setValue' && (clientId === eventData.requestId || _id === data.id)) {
                 setState(function (state) {
                   return _extends({}, state, data);
                 });
@@ -477,18 +477,18 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       };
     }, [open, defer]);
     useEffect(function () {
-      if (id) {
-        if (!defer && id) {
+      if (_id) {
+        if (!defer && _id) {
           var onSetValue = function onSetValue() {
             try {
               return Promise.resolve(consume(event)).then(function (eventData) {
                 var data = parseSocketResponse(eventData);
 
-                if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined') {
+                if (eventData.action === 'setValue' && (clientId === eventData.requestId || _id === data.id) && typeof data.value === 'undefined') {
                   return _state;
                 }
 
-                if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
+                if (eventData.action === 'setValue' && (clientId === eventData.requestId || _id === data.id)) {
                   console.log("Updating serverstate", key, _state, clientDefaultValue);
                   setState(function (state) {
                     delete state.error;
@@ -507,7 +507,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
             try {
               return Promise.resolve(consume(event)).then(function (data) {
                 var _temp = function () {
-                  if (data.type === 'error' && id === data.id) {
+                  if (data.type === 'error' && _id === data.id) {
                     return Promise.resolve(parseSocketResponse(data)).then(function (err) {
                       extendState({
                         error: new Error(err.message)
@@ -528,7 +528,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       }
 
       return function () {
-        if (id) {
+        if (_id) {
           off(socket, 'message', onSetValue);
           off(socket, 'message', onError);
         }
@@ -539,12 +539,12 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         throw error;
       }
     }, [error]);
-    useEffect(function () {}, [id, error, key]);
+    useEffect(function () {}, [_id, error, key]);
 
     var setServerState = function setServerState(value) {
       emit(socket, {
         action: EVENT_SET_STATE,
-        id: id,
+        id: _id,
         key: key,
         value: value,
         scope: scope
@@ -559,7 +559,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       return [_state.error, _state.value];
     }
 
-    if (suspend && !_state.value && loading && !id) {
+    if (suspend && !_state.value && loading && !_id) {
       throw new Promise(Function.prototype);
     }
 
