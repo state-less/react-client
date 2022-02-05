@@ -1101,6 +1101,27 @@ var useClientContext = function useClientContext() {
 };
 var compId;
 var useAuth = function useAuth(useStrategy, auto) {
+  var register = function register(strategy) {
+    try {
+      return Promise.resolve(request(socket, {
+        action: 'auth',
+        phase: 'register',
+        strategy: strategy
+      })).then(function (response) {
+        if (response) try {
+          setHeaders(_extends({}, headers, {
+            Authorization: "Bearer " + response
+          }));
+          setHasAuthed(true);
+          return response;
+        } catch (e) {
+          throw e;
+        }
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
 
   var authenticate = function authenticate() {
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -1227,6 +1248,7 @@ var useAuth = function useAuth(useStrategy, auto) {
   }, [id]);
   return {
     authenticate: authenticate,
+    register: register,
     logout: logout
   };
 };

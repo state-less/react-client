@@ -119,7 +119,7 @@ export const useAuth = (useStrategy, auto) => {
         // }
     }, [id])
 
-    return { authenticate, logout };
+    return { authenticate, register, logout };
 }
 
 const headerAtom = atom();
