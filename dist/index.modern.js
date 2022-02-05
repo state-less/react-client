@@ -1098,6 +1098,7 @@ var useClientContext = function useClientContext() {
 };
 var compId;
 var useAuth = function useAuth(useStrategy, auto) {
+
   var authenticate = function authenticate() {
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];

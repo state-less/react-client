@@ -18,24 +18,24 @@ export const useClientContext = () => {
 
 let compId;
 export const useAuth = (useStrategy, auto) => {
-    const { open, socket, headers, setHeaders, setIdentity } = useContext(context);
-    const { authenticate: auth, logout: deauth, id, register, strategy} = useStrategy();
+    const { open, socket, headers, setHeaders, setIdentity, identity } = useContext(context);
+    const { authenticate: auth, logout: deauth, id,  strategy } = useStrategy();
     const [authed, setHasAuthed] = useState(false);
     useEffect(() => {
         (async () => {
             if (open && !authed) {
-                const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers});
+                const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers });
                 if (challenge.address) {
                     setHasAuthed(true);
                 } else {
-                    const newHeaders = {...headers};
+                    const newHeaders = { ...headers };
                     delete newHeaders.Authorization;
-                    
+
                     debugger;
                     setHeaders(newHeaders);
                     setIdentity(null);
                 }
-                console.log ("AUTO LOGIN", challenge);
+                console.log("AUTO LOGIN", challenge);
             }
         })()
     }, [open, authed]);
@@ -45,7 +45,7 @@ export const useAuth = (useStrategy, auto) => {
             return
 
         const identity = jwt.decode(headers.Authorization.split(' ')[1]);
-        const timeValid =  (identity.exp * 1000) - +new Date;
+        const timeValid = (identity.exp * 1000) - +new Date;
 
         const to = setTimeout(() => {
             orgLogger.info`"JWT Expired. Logging out.`;
@@ -70,7 +70,7 @@ export const useAuth = (useStrategy, auto) => {
                     phase: 'response',
                     ...data
                 });
-    
+
                 setHeaders({
                     ...headers,
                     Authorization: `Bearer ${response}`
@@ -85,6 +85,21 @@ export const useAuth = (useStrategy, auto) => {
             }
     }
 
+    async function register(strategy) {
+        const response = await request(socket, { action: 'auth', phase: 'register', strategy });
+
+        if (response)
+            try {
+                setHeaders({
+                    ...headers,
+                    Authorization: `Bearer ${response}`
+                });
+                setHasAuthed(true);
+                return response;
+            } catch (e) {
+                throw e;
+            }
+    }
     function logout() {
         const { Authorization, ...rest } = headers;
         debugger;
