@@ -738,6 +738,7 @@ var useComponent = function useComponent(componentKey, options, rendered) {
             return Promise.resolve(_catch(function () {
               return Promise.resolve(request([socket].concat(sockets), {
                 action: 'call',
+                props: clientProps,
                 id: id,
                 componentKey: componentKey,
                 name: action.props.name,

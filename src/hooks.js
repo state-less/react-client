@@ -396,7 +396,7 @@ export const useComponent = (componentKey, options = {}, rendered) => {
                     [handler]: async (...args) => {
                         const id = v4();
                         try {
-                            const res = await request([socket, ...sockets], { action: 'call', id, componentKey, name: action.props.name, handler, args, headers });
+                            const res = await request([socket, ...sockets], { action: 'call', props: clientProps, id, componentKey, name: action.props.name, handler, args, headers });
                             return res;
                         } catch (err) {
                             const errObj = new Error(err.message);
