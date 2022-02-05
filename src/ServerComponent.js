@@ -134,7 +134,7 @@ export const ServerComponent = (props) => {
 
     let rendered
     if (parentCtx) {
-        const parentChildren = [parentCtx.children].flat(2).filter(c => c.component === 'ClientComponent')
+        const parentChildren = [parentCtx.children].flat(2).filter(c => c?.component === 'ClientComponent')
         console.log("PARENT CHILDREN", parentChildren, [parentCtx.children].flat(2));
         const child = parentChildren.find(child => child.key === name) || parentChildren[index];
         rendered = child;

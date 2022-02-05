@@ -1478,7 +1478,7 @@ var ServerComponent = function ServerComponent(props) {
 
   if (parentCtx) {
     var parentChildren = [parentCtx.children].flat(2).filter(function (c) {
-      return c.component === 'ClientComponent';
+      return (c === null || c === void 0 ? void 0 : c.component) === 'ClientComponent';
     });
     console.log("PARENT CHILDREN", parentChildren, [parentCtx.children].flat(2));
     var child = parentChildren.find(function (child) {
