@@ -19,7 +19,7 @@ export const useClientContext = () => {
 let compId;
 export const useAuth = (useStrategy, auto) => {
     const { open, socket, headers, setHeaders, setIdentity, identity } = useContext(context);
-    const { authenticate: auth, logout: deauth, id,  strategy } = useStrategy();
+    const { authenticate: auth, logout: deauth, id, strategy } = useStrategy();
     const [authed, setHasAuthed] = useState(false);
     useEffect(() => {
         (async () => {
@@ -86,7 +86,7 @@ export const useAuth = (useStrategy, auto) => {
     }
 
     async function register(strategy) {
-        const response = await request(socket, { action: 'auth', phase: 'register', strategy, headers});
+        const response = await request(socket, { action: 'auth', phase: 'register', strategy, headers });
 
         if (response)
             try {
@@ -135,12 +135,13 @@ const MainProvider = (props) => {
     if (!url)
         throw new Error("Missing property 'url' in Provider props.");
 
-    const socket = useMemo(() => {
+    const [socket, setSocket] = useState(null);
+    useEffect(() => {
         if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
         if (open) return socket;
 
         const ws = new WebSocket(url);
-        console.log ("OPENING SOCKET", ws)
+        console.log("OPENING SOCKET", ws)
         ws.addEventListener('open', function open() {
             setOpen(true);
         });
@@ -152,10 +153,9 @@ const MainProvider = (props) => {
         //     const data = await consume(event);
         // });
 
-        return ws;
-    }, [url, typeof window, open]);
-
-
+        setSocket(socket);
+    }, [url, typeof window, open])
+    
     const sockets = useMemo(() => {
         return urls.map((url, i) => {
             if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;

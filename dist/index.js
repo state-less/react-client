@@ -1290,7 +1290,12 @@ var MainProvider = function MainProvider(props) {
     return all && cur;
   }, open);
   if (!url) throw new Error("Missing property 'url' in Provider props.");
-  var socket = React.useMemo(function () {
+
+  var _useState6 = React.useState(null),
+      socket = _useState6[0],
+      setSocket = _useState6[1];
+
+  React.useEffect(function () {
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
     if (open) return socket;
     var ws = new WebSocket(url);
@@ -1301,7 +1306,7 @@ var MainProvider = function MainProvider(props) {
     ws.addEventListener('close', function open() {
       setOpen(false);
     });
-    return ws;
+    setSocket(socket);
   }, [url, typeof window, open]);
   var sockets = React.useMemo(function () {
     return urls.map(function (url, i) {
