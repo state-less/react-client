@@ -123,6 +123,18 @@ export const useAuth = (useStrategy, auto) => {
 }
 
 const headerAtom = atom();
+
+const SocketManager = (url) => {
+    const ws = new WebSocket(url);
+
+    ws.addEventListener('open', function open() {
+        console.log("SOCKET OPEN")
+    });
+
+    ws.addEventListener('close', function open() {
+        console.log("SOCKET OPEN")
+    });
+}
 const MainProvider = (props) => {
     const { urls = [], url, headers: staticHeaders = {}, useAtom } = props;
     const [open, setOpen] = useState(false);
@@ -135,27 +147,28 @@ const MainProvider = (props) => {
     if (!url)
         throw new Error("Missing property 'url' in Provider props.");
 
-    const [socket, setSocket] = useState(null);
+    const [socket, setSocket] = useState(new WebSocket(url));
     useEffect(() => {
         if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
         if (open) return;
 
-        const ws = new WebSocket(url);
-        console.log("OPENING SOCKET", ws)
-        ws.addEventListener('open', function open() {
+        socket.addEventListener('open', function open() {
             setOpen(true);
         });
 
-        ws.addEventListener('close', function open() {
+        socket.addEventListener('close', function open() {
             setOpen(false);
         });
-        // ws.addEventListener('message', async (event) => {
-        //     const data = await consume(event);
-        // });
 
-        setSocket(ws);
+        if (socket && !open) {
+
+            const ws = new WebSocket(url);
+            console.log("RECONNECTING SOCKET", ws)
+
+            setSocket(ws);
+        }
     }, [url, typeof window, open])
-    
+
     const sockets = useMemo(() => {
         return urls.map((url, i) => {
             if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;

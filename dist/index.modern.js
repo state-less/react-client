@@ -1288,22 +1288,25 @@ var MainProvider = function MainProvider(props) {
   }, open);
   if (!url) throw new Error("Missing property 'url' in Provider props.");
 
-  var _useState6 = useState(null),
+  var _useState6 = useState(new WebSocket(url)),
       socket = _useState6[0],
       setSocket = _useState6[1];
 
   useEffect(function () {
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
     if (open) return;
-    var ws = new WebSocket(url);
-    console.log("OPENING SOCKET", ws);
-    ws.addEventListener('open', function open() {
+    socket.addEventListener('open', function open() {
       setOpen(true);
     });
-    ws.addEventListener('close', function open() {
+    socket.addEventListener('close', function open() {
       setOpen(false);
     });
-    setSocket(ws);
+
+    if (socket && !open) {
+      var ws = new WebSocket(url);
+      console.log("RECONNECTING SOCKET", ws);
+      setSocket(ws);
+    }
   }, [url, typeof window, open]);
   var sockets = useMemo(function () {
     return urls.map(function (url, i) {
