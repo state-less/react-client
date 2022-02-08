@@ -1297,7 +1297,7 @@ var MainProvider = function MainProvider(props) {
 
   React.useEffect(function () {
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-    if (open) return socket;
+    if (open) return;
     var ws = new WebSocket(url);
     console.log("OPENING SOCKET", ws);
     ws.addEventListener('open', function open() {
@@ -1306,7 +1306,7 @@ var MainProvider = function MainProvider(props) {
     ws.addEventListener('close', function open() {
       setOpen(false);
     });
-    setSocket(socket);
+    setSocket(ws);
   }, [url, typeof window, open]);
   var sockets = React.useMemo(function () {
     return urls.map(function (url, i) {
