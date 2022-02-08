@@ -138,7 +138,7 @@ const MainProvider = (props) => {
     const [socket, setSocket] = useState(null);
     useEffect(() => {
         if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-        if (open) return socket;
+        if (open) return;
 
         const ws = new WebSocket(url);
         console.log("OPENING SOCKET", ws)
@@ -153,7 +153,7 @@ const MainProvider = (props) => {
         //     const data = await consume(event);
         // });
 
-        setSocket(socket);
+        setSocket(ws);
     }, [url, typeof window, open])
     
     const sockets = useMemo(() => {
