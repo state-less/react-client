@@ -141,18 +141,22 @@ const MainProvider = (props) => {
 
     const socket = useMemo(() => {
         if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-
+        if (open) return;
 
         const ws = new WebSocket(url);
         ws.addEventListener('open', function open() {
             setOpen(true);
+        });
+
+        ws.addEventListener('close', function open() {
+            setOpen(false);
         });
         // ws.addEventListener('message', async (event) => {
         //     const data = await consume(event);
         // });
 
         return ws;
-    }, [url, typeof window]);
+    }, [url, typeof window, open]);
 
     const sockets = useMemo(() => {
         return urls.map((url, i) => {

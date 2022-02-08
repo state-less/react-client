@@ -1292,12 +1292,16 @@ var MainProvider = function MainProvider(props) {
   if (!url) throw new Error("Missing property 'url' in Provider props.");
   var socket = React.useMemo(function () {
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
+    if (open) return;
     var ws = new WebSocket(url);
     ws.addEventListener('open', function open() {
       setOpen(true);
     });
+    ws.addEventListener('close', function open() {
+      setOpen(false);
+    });
     return ws;
-  }, [url, typeof window]);
+  }, [url, typeof window, open]);
   var sockets = React.useMemo(function () {
     return urls.map(function (url, i) {
       if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
