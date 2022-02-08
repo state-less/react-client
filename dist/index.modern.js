@@ -1289,7 +1289,7 @@ var MainProvider = function MainProvider(props) {
   if (!url) throw new Error("Missing property 'url' in Provider props.");
   var socket = useMemo(function () {
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-    if (open) return;
+    if (open) return socket;
     var ws = new WebSocket(url);
     ws.addEventListener('open', function open() {
       setOpen(true);

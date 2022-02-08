@@ -130,18 +130,14 @@ const MainProvider = (props) => {
     const [secOpen, setSecOpen] = useState(urls.map(() => false));
     const [error, setError] = useState(null);
     const [identity, setIdentity] = useState(null);
-
     const allOpen = secOpen.reduce((all, cur) => all && cur, open);
+
     if (!url)
         throw new Error("Missing property 'url' in Provider props.");
 
-    // const socket = useMemo(() => {
-    //     return io(url);³
-    // }, [url]);
-
     const socket = useMemo(() => {
         if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-        if (open) return;
+        if (open) return socket;
 
         const ws = new WebSocket(url);
         ws.addEventListener('open', function open() {
@@ -157,6 +153,7 @@ const MainProvider = (props) => {
 
         return ws;
     }, [url, typeof window, open]);
+    
 
     const sockets = useMemo(() => {
         return urls.map((url, i) => {
