@@ -1305,7 +1305,7 @@ var MainProvider = function MainProvider(props) {
       setOpen(false);
     });
 
-    if (socket && !open) {
+    if (socket && socket.readyState > 1) {
       var ws = new WebSocket(url);
       console.log("RECONNECTING SOCKET", ws);
       setSocket(ws);

@@ -160,7 +160,7 @@ const MainProvider = (props) => {
             setOpen(false);
         });
 
-        if (socket && !open) {
+        if (socket && socket.readyState > 1) {
 
             const ws = new WebSocket(url);
             console.log("RECONNECTING SOCKET", ws)
