@@ -475,7 +475,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       return function () {
         off(socket, 'message', onSetValue);
       };
-    }, [open, defer]);
+    }, [open, defer, scope, key]);
     useEffect(function () {
       if (_id) {
         if (!defer && _id) {

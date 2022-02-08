@@ -180,7 +180,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 // stateLoadingStates[`${scope}:${key}`]
                 // [createStateEvent].forEach(event => socket.removeAllListeners(event));
             }
-        }, [open, defer])
+        }, [open, defer, scope, key])
 
         /*
         *   This hook attaches listeners for the setValue event for existent states
