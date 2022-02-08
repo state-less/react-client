@@ -1328,11 +1328,12 @@ var MainProvider = function MainProvider(props) {
     });
   }, [typeof window]);
   useEffect(function () {
+    if (!socket) return;
     on(socket, 'error', function () {
       var message = logger.error(_templateObject2 || (_templateObject2 = _taggedTemplateLiteralLoose(["Connecting to socket ", "."])), url);
       setError(message);
     });
-  }, []);
+  }, [socket]);
   return /*#__PURE__*/React.createElement(context.Provider, {
     value: {
       setIdentity: setIdentity,

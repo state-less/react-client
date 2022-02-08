@@ -179,11 +179,12 @@ const MainProvider = (props) => {
         })
     }, [typeof window]);
     useEffect(() => {
+        if (!socket) return;
         on(socket, 'error', () => {
             const message = logger.error`Connecting to socket ${url}.`
             setError(message);
         })
-    }, []);
+    }, [socket]);
 
 
     return <context.Provider value={{ setIdentity, identity, setHeaders, socket, sockets, open, secOpen, allOpen, useAtom, headers, error }}>
