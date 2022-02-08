@@ -1291,6 +1291,7 @@ var MainProvider = function MainProvider(props) {
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
     if (open) return socket;
     var ws = new WebSocket(url);
+    console.log("OPENING SOCKET", ws);
     ws.addEventListener('open', function open() {
       setOpen(true);
     });

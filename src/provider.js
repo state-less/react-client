@@ -140,6 +140,7 @@ const MainProvider = (props) => {
         if (open) return socket;
 
         const ws = new WebSocket(url);
+        console.log ("OPENING SOCKET", ws)
         ws.addEventListener('open', function open() {
             setOpen(true);
         });
@@ -153,7 +154,7 @@ const MainProvider = (props) => {
 
         return ws;
     }, [url, typeof window, open]);
-    
+
 
     const sockets = useMemo(() => {
         return urls.map((url, i) => {
