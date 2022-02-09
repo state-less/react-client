@@ -51,7 +51,7 @@ export const useAuth = (useStrategy, auto = false) => {
     }, [headers?.Authorization]);
 
     async function authenticate(...args) {
-        const challenge = await request(socket, { action: 'auth', phase: 'challenge', strategy, headerss });
+        const challenge = await request(socket, { action: 'auth', phase: 'challenge', strategy, headers });
         const data = await auth(challenge, ...args);
         if (data.success)
             try {

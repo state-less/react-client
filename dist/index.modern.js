@@ -1133,7 +1133,7 @@ var useAuth = function useAuth(useStrategy, auto) {
         action: 'auth',
         phase: 'challenge',
         strategy: strategy,
-        headerss: headerss
+        headers: headers
       })).then(function (challenge) {
         return Promise.resolve(auth.apply(void 0, [challenge].concat(args))).then(function (data) {
           return function () {
