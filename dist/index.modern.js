@@ -7,6 +7,7 @@ import { Web3Provider as Web3Provider$1 } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import Web3 from 'web3';
 import jwt from 'jsonwebtoken';
+import ReconnectingWebsocket from 'reconnecting-websocket';
 import { solveRegistrationChallenge, solveLoginChallenge } from '@webauthn/client';
 import fp from '@fingerprintjs/fingerprintjs';
 
@@ -1091,7 +1092,7 @@ var useLocalStorage = function useLocalStorage(name, atom, defaultValue) {
 
 var _excluded$2 = ["Authorization"];
 
-var _templateObject$1, _templateObject2;
+var _templateObject$1, _templateObject2, _templateObject3;
 var useClientContext = function useClientContext() {
   var internalCtx = useContext(context);
   var web3Ctx = useContext(web3Context);
@@ -1288,30 +1289,23 @@ var MainProvider = function MainProvider(props) {
   }, open);
   if (!url) throw new Error("Missing property 'url' in Provider props.");
 
-  var _useState6 = useState(new WebSocket(url)),
-      socket = _useState6[0],
-      setSocket = _useState6[1];
-
-  useEffect(function () {
-    if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-    if (open) return;
-    socket.addEventListener('open', function open() {
+  var _useMemo = useMemo(function () {
+    if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
+    ws.addEventListener('open', function () {
       setOpen(true);
     });
-    socket.addEventListener('close', function open() {
+    ws.addEventListener('close', function () {
+      orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteralLoose(["Socket connection lost. Reconnecting."])));
       setOpen(false);
     });
+    return new ReconnectingWebsocket(url);
+  }, [url, typeof window, open]),
+      socket = _useMemo[0];
 
-    if (socket && socket.readyState > 1) {
-      var ws = new WebSocket(url);
-      console.log("RECONNECTING SOCKET", ws);
-      setSocket(ws);
-    }
-  }, [url, typeof window, open]);
   var sockets = useMemo(function () {
     return urls.map(function (url, i) {
-      if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-      var ws = new WebSocket(url);
+      if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
+      var ws = new ReconnectingWebsocket(url);
       ws.addEventListener('open', function open() {
         console.log("connected");
         setSecOpen(function (secOpen) {
@@ -1333,7 +1327,7 @@ var MainProvider = function MainProvider(props) {
   useEffect(function () {
     if (!socket) return;
     on(socket, 'error', function () {
-      var message = logger.error(_templateObject2 || (_templateObject2 = _taggedTemplateLiteralLoose(["Connecting to socket ", "."])), url);
+      var message = logger.error(_templateObject3 || (_templateObject3 = _taggedTemplateLiteralLoose(["Connecting to socket ", "."])), url);
       setError(message);
     });
   }, [socket]);

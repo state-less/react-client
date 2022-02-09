@@ -9,6 +9,7 @@ import { Web3Provider, web3Context } from './Web3';
 import { useLocalStorage } from './hooks/jotai';
 import jwt from 'jsonwebtoken'
 // import { web3Context, Web3UtilProvider } from '../../algo-trade-frontend/src/provider/Web3';
+import ReconnectingWebsocket from 'reconnecting-websocket';
 
 export const useClientContext = () => {
     const internalCtx = useContext(context);
@@ -147,32 +148,24 @@ const MainProvider = (props) => {
     if (!url)
         throw new Error("Missing property 'url' in Provider props.");
 
-    const [socket, setSocket] = useState(new WebSocket(url));
-    useEffect(() => {
-        if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-        if (open) return;
+    const [socket, setSocket] = useMemo(() => {
+        if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
 
-        socket.addEventListener('open', function open() {
+        ws.addEventListener('open', () => {
             setOpen(true);
-        });
+        })
 
-        socket.addEventListener('close', function open() {
+        ws.addEventListener('close', () => {
+            orgLogger.warning`Socket connection lost. Reconnecting.`;
             setOpen(false);
-        });
-
-        if (socket && socket.readyState > 1) {
-
-            const ws = new WebSocket(url);
-            console.log("RECONNECTING SOCKET", ws)
-
-            setSocket(ws);
-        }
+        })
+        return new ReconnectingWebsocket(url);
     }, [url, typeof window, open])
 
     const sockets = useMemo(() => {
         return urls.map((url, i) => {
-            if (typeof window === 'undefined' || typeof WebSocket === 'undefined') return;
-            const ws = new WebSocket(url);
+            if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
+            const ws = new ReconnectingWebsocket(url);
             ws.addEventListener('open', function open() {
                 console.log("connected")
                 // ws.send(JSON.stringify({"action" : "render" , "message" : "Hello everyone"}));
