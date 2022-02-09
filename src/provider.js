@@ -161,7 +161,7 @@ const MainProvider = (props) => {
             orgLogger.warning`Socket connection lost. Reconnecting.`;
             setOpen(false);
         })
-        return 
+        return ws
     }, [url, typeof window, open])
 
     const sockets = useMemo(() => {

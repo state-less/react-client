@@ -1301,7 +1301,7 @@ var MainProvider = function MainProvider(props) {
       orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteralLoose(["Socket connection lost. Reconnecting."])));
       setOpen(false);
     });
-    return;
+    return ws;
   }, [url, typeof window, open]);
   var sockets = React.useMemo(function () {
     return urls.map(function (url, i) {
