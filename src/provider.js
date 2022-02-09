@@ -148,8 +148,10 @@ const MainProvider = (props) => {
     if (!url)
         throw new Error("Missing property 'url' in Provider props.");
 
-    const [socket, setSocket] = useMemo(() => {
+    const socket = useMemo(() => {
         if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
+
+        const ws = new ReconnectingWebsocket(url);
 
         ws.addEventListener('open', () => {
             setOpen(true);
@@ -159,7 +161,7 @@ const MainProvider = (props) => {
             orgLogger.warning`Socket connection lost. Reconnecting.`;
             setOpen(false);
         })
-        return new ReconnectingWebsocket(url);
+        return 
     }, [url, typeof window, open])
 
     const sockets = useMemo(() => {

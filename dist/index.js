@@ -1291,9 +1291,9 @@ var MainProvider = function MainProvider(props) {
     return all && cur;
   }, open);
   if (!url) throw new Error("Missing property 'url' in Provider props.");
-
-  var _useMemo = React.useMemo(function () {
+  var socket = React.useMemo(function () {
     if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
+    var ws = new ReconnectingWebsocket(url);
     ws.addEventListener('open', function () {
       setOpen(true);
     });
@@ -1301,10 +1301,8 @@ var MainProvider = function MainProvider(props) {
       orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteralLoose(["Socket connection lost. Reconnecting."])));
       setOpen(false);
     });
-    return new ReconnectingWebsocket(url);
-  }, [url, typeof window, open]),
-      socket = _useMemo[0];
-
+    return;
+  }, [url, typeof window, open]);
   var sockets = React.useMemo(function () {
     return urls.map(function (url, i) {
       if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
