@@ -1135,7 +1135,8 @@ var useAuth = function useAuth(useStrategy, auto) {
       return Promise.resolve(request(socket, {
         action: 'auth',
         phase: 'challenge',
-        strategy: strategy
+        strategy: strategy,
+        headerss: headerss
       })).then(function (challenge) {
         return Promise.resolve(auth.apply(void 0, [challenge].concat(args))).then(function (data) {
           return function () {
@@ -1144,10 +1145,16 @@ var useAuth = function useAuth(useStrategy, auto) {
                 action: 'auth',
                 phase: 'response'
               }, data))).then(function (response) {
-                setHeaders(_extends({}, headers, {
-                  Authorization: "Bearer " + response
-                }));
-                setHasAuthed(true);
+                if (response.address) {
+                  setHasAuthed(true);
+                } else {
+                  var newHeaders = _extends({}, headers);
+
+                  delete newHeaders.Authorization;
+                  setHeaders(newHeaders);
+                  setIdentity(null);
+                }
+
                 return response;
               });
             }, function (e) {
@@ -1160,6 +1167,10 @@ var useAuth = function useAuth(useStrategy, auto) {
       return Promise.reject(e);
     }
   };
+
+  if (auto === void 0) {
+    auto = false;
+  }
 
   var _useContext = React.useContext(context),
       open = _useContext.open,
@@ -1182,25 +1193,8 @@ var useAuth = function useAuth(useStrategy, auto) {
     (function () {
       try {
         var _temp2 = function () {
-          if (open && !authed) {
-            return Promise.resolve(request(socket, {
-              action: 'auth',
-              phase: 'challenge',
-              headers: headers
-            })).then(function (challenge) {
-              if (challenge.address) {
-                setHasAuthed(true);
-              } else {
-                var newHeaders = _extends({}, headers);
-
-                delete newHeaders.Authorization;
-                debugger;
-                setHeaders(newHeaders);
-                setIdentity(null);
-              }
-
-              console.log("AUTO LOGIN", challenge);
-            });
+          if (open && !authed && auto) {
+            return Promise.resolve(authenticate()).then(function () {});
           }
         }();
 

@@ -18,25 +18,14 @@ export const useClientContext = () => {
 }
 
 let compId;
-export const useAuth = (useStrategy, auto) => {
+export const useAuth = (useStrategy, auto = false) => {
     const { open, socket, headers, setHeaders, setIdentity, identity } = useContext(context);
     const { authenticate: auth, logout: deauth, id, strategy } = useStrategy();
     const [authed, setHasAuthed] = useState(false);
     useEffect(() => {
         (async () => {
-            if (open && !authed) {
-                const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers });
-                if (challenge.address) {
-                    setHasAuthed(true);
-                } else {
-                    const newHeaders = { ...headers };
-                    delete newHeaders.Authorization;
-
-                    debugger;
-                    setHeaders(newHeaders);
-                    setIdentity(null);
-                }
-                console.log("AUTO LOGIN", challenge);
+            if (open && !authed && auto) {
+                await authenticate()
             }
         })()
     }, [open, authed]);
@@ -62,7 +51,7 @@ export const useAuth = (useStrategy, auto) => {
     }, [headers?.Authorization]);
 
     async function authenticate(...args) {
-        const challenge = await request(socket, { action: 'auth', phase: 'challenge', strategy });
+        const challenge = await request(socket, { action: 'auth', phase: 'challenge', strategy, headerss });
         const data = await auth(challenge, ...args);
         if (data.success)
             try {
@@ -72,14 +61,15 @@ export const useAuth = (useStrategy, auto) => {
                     ...data
                 });
 
-                setHeaders({
-                    ...headers,
-                    Authorization: `Bearer ${response}`
-                });
+                if (response.address) {
+                    setHasAuthed(true);
+                } else {
+                    const newHeaders = { ...headers };
+                    delete newHeaders.Authorization;
 
-
-
-                setHasAuthed(true);
+                    setHeaders(newHeaders);
+                    setIdentity(null);
+                }
                 return response;
             } catch (e) {
                 throw e;
