@@ -162,7 +162,7 @@ const MainProvider = (props) => {
             setOpen(false);
         })
         return ws
-    }, [url, typeof window, open])
+    }, [url, typeof window])
 
     const sockets = useMemo(() => {
         return urls.map((url, i) => {

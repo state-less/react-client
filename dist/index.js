@@ -1302,7 +1302,7 @@ var MainProvider = function MainProvider(props) {
       setOpen(false);
     });
     return ws;
-  }, [url, typeof window, open]);
+  }, [url, typeof window]);
   var sockets = React.useMemo(function () {
     return urls.map(function (url, i) {
       if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;

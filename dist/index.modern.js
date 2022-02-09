@@ -1299,7 +1299,7 @@ var MainProvider = function MainProvider(props) {
       setOpen(false);
     });
     return ws;
-  }, [url, typeof window, open]);
+  }, [url, typeof window]);
   var sockets = useMemo(function () {
     return urls.map(function (url, i) {
       if (typeof window === 'undefined' || typeof ReconnectingWebsocket === 'undefined') return;
