@@ -1136,7 +1136,7 @@ var useAuth = function useAuth(useStrategy, auto) {
         action: 'auth',
         phase: 'challenge',
         strategy: strategy,
-        headers: headers
+        headerss: headerss
       })).then(function (challenge) {
         return Promise.resolve(auth.apply(void 0, [challenge].concat(args))).then(function (data) {
           return function () {
@@ -1145,8 +1145,11 @@ var useAuth = function useAuth(useStrategy, auto) {
                 action: 'auth',
                 phase: 'response'
               }, data))).then(function (response) {
-                if (response.address) {
+                if (response) {
                   setHasAuthed(true);
+                  setHeaders(_extends({}, headers, {
+                    Authorization: "Bearer " + response
+                  }));
                 } else {
                   var newHeaders = _extends({}, headers);
 
@@ -1194,7 +1197,24 @@ var useAuth = function useAuth(useStrategy, auto) {
       try {
         var _temp2 = function () {
           if (open && !authed && auto) {
-            return Promise.resolve(authenticate()).then(function () {});
+            return Promise.resolve(request(socket, {
+              action: 'auth',
+              phase: 'challenge',
+              headers: headers
+            })).then(function (challenge) {
+              if (challenge.address) {
+                setHasAuthed(true);
+              } else {
+                var newHeaders = _extends({}, headers);
+
+                delete newHeaders.Authorization;
+                debugger;
+                setHeaders(newHeaders);
+                setIdentity(null);
+              }
+
+              console.log("AUTO LOGIN", challenge);
+            });
           }
         }();
 

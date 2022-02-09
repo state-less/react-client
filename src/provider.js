@@ -25,7 +25,18 @@ export const useAuth = (useStrategy, auto = false) => {
     useEffect(() => {
         (async () => {
             if (open && !authed && auto) {
-                await authenticate()
+                const challenge = await request(socket, { action: 'auth', phase: 'challenge', headers });
+                if (challenge.address) {
+                    setHasAuthed(true);
+                } else {
+                    const newHeaders = { ...headers };
+                    delete newHeaders.Authorization;
+
+                    debugger;
+                    setHeaders(newHeaders);
+                    setIdentity(null);
+                }
+                console.log("AUTO LOGIN", challenge);
             }
         })()
     }, [open, authed]);
@@ -51,7 +62,7 @@ export const useAuth = (useStrategy, auto = false) => {
     }, [headers?.Authorization]);
 
     async function authenticate(...args) {
-        const challenge = await request(socket, { action: 'auth', phase: 'challenge', strategy, headers });
+        const challenge = await request(socket, { action: 'auth', phase: 'challenge', strategy, headerss });
         const data = await auth(challenge, ...args);
         if (data.success)
             try {
@@ -61,11 +72,16 @@ export const useAuth = (useStrategy, auto = false) => {
                     ...data
                 });
 
-                if (response.address) {
+                if (response) {
                     setHasAuthed(true);
+                    setHeaders({
+                        ...headers,
+                        Authorization: `Bearer ${response}`
+                    });
                 } else {
                     const newHeaders = { ...headers };
                     delete newHeaders.Authorization;
+
 
                     setHeaders(newHeaders);
                     setIdentity(null);
