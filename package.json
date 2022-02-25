@@ -1,0 +1,65 @@
+{
+    "name": "@state-less/react-client",
+    "version": "0.0.1",
+    "description": "The client for @state-less/react-server",
+    "main": "dist/index.js",
+    "private": true,
+    "dependencies": {
+        "@emotion/react": "^11.8.1",
+        "@emotion/styled": "^11.8.1",
+        "@fingerprintjs/fingerprintjs": "^3.3.3",
+        "@mui/material": "^5.4.3",
+        "@webauthn/client": "^0.1.3",
+        "clsx": "^1.1.1",
+        "jotai": "^1.6.0",
+        "jsonwebtoken": "^8.5.1",
+        "l0g": "github:C5H8NNaO4/l0g",
+        "react": "^17.0.2",
+        "reconnecting-websocket": "^4.4.0"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "babel -x \".ts\" -x \".tsx\" -x \".js\" --copy-files ./src --out-dir ./dist && tsc",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "peerDependencies": {
+        "react": "^17.0.2",
+        "@state-less/react-client": "github:state-less/react-client#junk/testauth"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.17.6",
+        "@babel/core": "^7.17.5",
+        "@babel/plugin-proposal-class-properties": "^7.16.7",
+        "@babel/plugin-proposal-optional-chaining": "^7.16.7",
+        "@babel/plugin-transform-modules-commonjs": "^7.16.8",
+        "@babel/plugin-transform-react-jsx": "^7.17.3",
+        "@babel/plugin-transform-typescript": "^7.16.8",
+        "@babel/preset-env": "^7.16.11",
+        "@babel/preset-typescript": "^7.16.7",
+        "@typescript-eslint/eslint-plugin": "^5.12.0",
+        "@typescript-eslint/parser": "^5.12.0",
+        "eslint": "^7.32.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-prettier": "^7.2.0",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-jsx-a11y": "^6.5.1",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-react": "^7.28.0",
+        "eslint-plugin-react-hooks": "^4.3.0",
+        "prettier": "^2.5.1",
+        "typescript": "^4.5.5"
+    }
+}
