@@ -7,12 +7,12 @@
   "repository": "@state-less/react-client",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
-  "source": "src/index.js",
+  "source": "src/index.ts",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "build": "microbundle-crl --no-compress --format modern,cjs && tsc",
     "start:lib": "microbundle-crl watch --no-compress --format modern,cjs",
     "start:example": "cd example && npm start",
     "start": "npm-run-all --parallel start:example start:lib",
