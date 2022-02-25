@@ -176,23 +176,19 @@ var request = function request(socket, data) {
     }));
     return Promise.resolve(new Promise(function (resolve, reject) {
       var onResponse = function onResponse(event) {
-        try {
-          return Promise.resolve(consume(event)).then(function (data) {
-            var json = parseSocketResponse(data);
+        return Promise.resolve(consume(event)).then(function (data) {
+          var json = parseSocketResponse(data);
 
-            if (data.id === id) {
-              if (data.type === 'error') {
-                reject(json);
-              } else {
-                resolve(json);
-              }
-
-              off(socket, 'message', onResponse);
+          if (data.id === id) {
+            if (data.type === 'error') {
+              reject(json);
+            } else {
+              resolve(json);
             }
-          });
-        } catch (e) {
-          return Promise.reject(e);
-        }
+
+            off(socket, 'message', onResponse);
+          }
+        });
       };
 
       on(socket, 'message', onResponse);
@@ -1561,16 +1557,19 @@ var web3Strategy = function web3Strategy() {
       sign = _useContext.sign,
       deactivate = _useContext.deactivate;
 
-  var _useState = React.useState(null);
-
-  var _useState2 = React.useState(false);
-
-  React.useEffect(function () {
+  var connect = function connect() {
     try {
       return Promise.resolve(activateInjected()).then(function () {});
     } catch (e) {
-      Promise.reject(e);
+      return Promise.reject(e);
     }
+  };
+
+  React.useEffect(function () {
+
+    (function () {
+      return Promise.resolve(connect()).then(function () {});
+    })();
   }, []);
 
   var authenticate = function authenticate(challenge) {
@@ -1607,7 +1606,7 @@ var webAuthnStrategy = function webAuthnStrategy() {
   var authenticate = function authenticate(challenge) {
     try {
       var _temp4 = function _temp4() {
-        console.log("WebAauthn auth response", response);
+        console.log('WebAauthn auth response', response);
         return {
           challenge: challenge,
           response: response,
@@ -1617,8 +1616,8 @@ var webAuthnStrategy = function webAuthnStrategy() {
         };
       };
 
-      console.log("WebAauthn auth challenge", challenge);
-      var response, type;
+      console.log('WebAauthn auth challenge', challenge);
+      var response;
 
       var _temp5 = function () {
         if (challenge.type === 'register') {
@@ -1653,7 +1652,7 @@ var webAuthnStrategy = function webAuthnStrategy() {
 var fingerprintStrategy = function fingerprintStrategy() {
   var authenticate = function authenticate(challenge) {
     try {
-      console.log("Fingerprint auth challenge", challenge);
+      console.log('Fingerprint auth challenge', challenge);
       return Promise.resolve(fp.load()).then(function (fp2) {
         return Promise.resolve(fp2.get()).then(function (response) {
           return {
@@ -1685,9 +1684,8 @@ exports.ServerComponent = ServerComponent;
 exports.ServerComponent2 = ServerComponent2;
 exports.ServerComponent2Child = ServerComponent2Child;
 exports.Slot = Slot;
-exports.context = context$1;
+exports.context = context;
 exports.fingerprintStrategy = fingerprintStrategy;
-exports.internalContext = internalContext;
 exports.useAction = useAction;
 exports.useAuth = useAuth;
 exports.useClientContext = useClientContext;

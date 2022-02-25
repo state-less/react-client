@@ -3,8 +3,8 @@ import baseLogger from './logger';
 import { useComponent } from './hooks';
 const logger = baseLogger.scope('ServerComponent');
 
-export const context = React.createContext();
-export const internalContext = React.createContext();
+const context = React.createContext();
+const internalContext = React.createContext();
 
 
 export const useAction = (name, handler, callback) => {
