@@ -228,6 +228,13 @@ function setupWsHeartbeat(ws) {
 
   ws.addEventListener('open', heartbeat);
   ws.addEventListener('message', heartbeat);
+  ws.addEventListener('message', function (e) {
+    var msg = e.data;
+
+    if (msg === 'ping') {
+      ws.send('pong');
+    }
+  });
   ws.addEventListener('close', function clear() {
     clearTimeout(to);
   });
