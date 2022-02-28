@@ -9,7 +9,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _jotai = require("jotai");
 
-var _context5 = require("./context");
+var _context6 = require("./context");
 
 var _socket = require("./lib/util/socket");
 
@@ -66,7 +66,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var useClientContext = function useClientContext() {
-  var internalCtx = (0, _react.useContext)(_context5.context);
+  var internalCtx = (0, _react.useContext)(_context6.context);
   var web3Ctx = (0, _react.useContext)(_Web.web3Context);
   return _objectSpread(_objectSpread({}, internalCtx), web3Ctx);
 };
@@ -74,10 +74,24 @@ var useClientContext = function useClientContext() {
 exports.useClientContext = useClientContext;
 var compId;
 
-var useAuth = function useAuth(useStrategy) {
+var useNoopStrat = function useNoopStrat() {
+  return {
+    authenticate: function authenticate() {
+      throw new Error('Cannot call authenticate without a strategy.');
+    },
+    logout: function logout() {
+      console.warn('Performing logout without strategy');
+    },
+    id: null,
+    strategy: null
+  };
+};
+
+var useAuth = function useAuth() {
+  var useStrategy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : useNoopStrat;
   var auto = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  var _useContext = (0, _react.useContext)(_context5.context),
+  var _useContext = (0, _react.useContext)(_context6.context),
       open = _useContext.open,
       socket = _useContext.socket,
       headers = _useContext.headers,
@@ -188,7 +202,7 @@ var useAuth = function useAuth(useStrategy) {
               }
 
               _context3.next = 6;
-              return auth.apply(void 0, [challenge].concat(args));
+              return auth.apply(this, [challenge].concat(args));
 
             case 6:
               data = _context3.sent;
@@ -232,7 +246,7 @@ var useAuth = function useAuth(useStrategy) {
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[8, 16]]);
+      }, _callee3, this, [[8, 16]]);
     }));
     return _authenticate.apply(this, arguments);
   }
@@ -287,12 +301,32 @@ var useAuth = function useAuth(useStrategy) {
   }
 
   function logout() {
-    var Authorization = headers.Authorization,
-        rest = _objectWithoutProperties(headers, _excluded);
+    return _logout.apply(this, arguments);
+  }
 
-    debugger;
-    deauth();
-    setHeaders(rest);
+  function _logout() {
+    _logout = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      var Authorization, rest;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              Authorization = headers.Authorization, rest = _objectWithoutProperties(headers, _excluded);
+              _context5.next = 3;
+              return deauth();
+
+            case 3:
+              setHeaders(rest);
+              setIdentity(null);
+
+            case 5:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }));
+    return _logout.apply(this, arguments);
   }
 
   (0, _react.useEffect)(function () {
@@ -427,7 +461,7 @@ var MainProvider = function MainProvider(props) {
       setError(message);
     });
   }, [socket]);
-  return /*#__PURE__*/(0, _jsxRuntime.jsx)(_context5.context.Provider, {
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)(_context6.context.Provider, {
     value: {
       setIdentity: setIdentity,
       identity: identity,

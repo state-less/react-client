@@ -17,10 +17,39 @@ export const useClientContext = () => {
 };
 
 let compId;
-export const useAuth = (useStrategy, auto = false) => {
+
+const useNoopStrat = () => {
+    return {
+        authenticate: () => {
+            throw new Error('Cannot call authenticate without a strategy.');
+        },
+        logout: () => {
+            console.warn('Performing logout without strategy');
+        },
+        id: null,
+        strategy: null,
+    };
+};
+
+type AuthResult = {
+    success: boolean;
+    response: any;
+};
+type Strategy = {
+    authenticate(challenge: any): AuthResult;
+    logout(): void;
+    id: string;
+    strategy: string;
+};
+export const useAuth = (useStrategy = useNoopStrat, auto = false) => {
     const { open, socket, headers, setHeaders, setIdentity, identity } =
         useContext(context);
-    const { authenticate: auth, logout: deauth, id, strategy } = useStrategy();
+    const {
+        authenticate: auth,
+        logout: deauth,
+        id,
+        strategy,
+    }: Strategy = useStrategy();
     const [authed, setHasAuthed] = useState(false);
     useEffect(() => {
         (async () => {
@@ -69,7 +98,7 @@ export const useAuth = (useStrategy, auto = false) => {
             strategy,
             headers,
         });
-        const data = await auth(challenge, ...args);
+        const data = await auth.apply(this, [challenge, ...args]);
         if (data.success)
             try {
                 const response = await request(socket, {
@@ -117,11 +146,11 @@ export const useAuth = (useStrategy, auto = false) => {
                 throw e;
             }
     }
-    function logout() {
+    async function logout() {
         const { Authorization, ...rest } = headers;
-        debugger;
-        deauth();
+        await deauth();
         setHeaders(rest);
+        setIdentity(null);
     }
 
     useEffect(() => {
