@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { atom, Provider as JotaiProvider } from 'jotai';
 
 import { context } from './context';
-import { on, consume, request } from './lib/util/socket';
+import { on, consume, request, setupWsHeartbeat } from './lib/util/socket';
 
 import { orgLogger } from './lib/logger';
 import { Web3Provider, web3Context } from './Web3';
@@ -144,12 +144,9 @@ const headerAtom = atom({});
 const SocketManager = (url) => {
     const ws = new WebSocket(url);
 
-    ws.addEventListener('open', function open() {
-    });
+    ws.addEventListener('open', function open() {});
 
-    ws.addEventListener('close', function open() {
-
-    });
+    ws.addEventListener('close', function open() {});
 };
 const MainProvider = (props) => {
     const { urls = [], url, headers: staticHeaders = {}, useAtom } = props;
@@ -175,7 +172,11 @@ const MainProvider = (props) => {
 
         const ws = new ReconnectingWebsocket(url);
 
+        setupWsHeartbeat(ws);
+
         ws.addEventListener('open', () => {
+            orgLogger.warning`Socket connection initialized.`;
+
             setOpen(true);
         });
 

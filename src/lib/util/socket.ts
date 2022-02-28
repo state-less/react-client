@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import baseLogger from '../logger';
+import baseLogger, { orgLogger } from '../logger';
 
 export const parseSocketResponse = (data) => {
     const { body, statusCode, message } = data;
@@ -76,3 +76,30 @@ export const consume = async (event) => {
         throw e;
     }
 };
+
+/**
+ * Tracks server pings for determining if the connection dropped.
+ * Will terminate non-responsive connections.
+ * This close event should initiate the process of recreating the connection in the ws module manager (eg ws/user.js and modules/ws-user.js)
+ * @see https://gist.github.com/thiagof/aba7791ef9504c1184769ce401f478dc
+ */
+export function setupWsHeartbeat(ws) {
+    // will close the connection if there's no ping from the server
+    function heartbeat() {
+        clearTimeout(this.pingTimeout);
+        orgLogger.debug`Sending heartbeat.`;
+
+        // Use `WebSocket#terminate()` and not `WebSocket#close()`. Delay should be
+        // equal to the interval at which server sends out pings plus an assumption of the latency.
+        this.pingTimeout = setTimeout(() => {
+            orgLogger.warning`Ping timeout. Terminating socket connection.`;
+            this.terminate();
+        }, 30000 + 1000);
+    }
+
+    ws.on('open', heartbeat);
+    ws.on('ping', heartbeat);
+    ws.on('close', function clear() {
+        clearTimeout(this.pingTimeout);
+    });
+}
