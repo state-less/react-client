@@ -3,6 +3,8 @@ import { v4 } from 'uuid';
 import baseLogger, { orgLogger } from '../logger';
 
 export const parseSocketResponse = (data) => {
+    if (data === 'ping') return null;
+
     const { body, statusCode, message } = data;
 
     if (statusCode !== 200 && statusCode !== 500) {

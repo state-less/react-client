@@ -87,6 +87,7 @@ export const useStream = (name, def) => {
             emit(socket, { action: 'stream', name, id });
             on(socket, 'message', async (event) => {
                 const data = await consume(event);
+                if (data === 'ping') return;
                 const json = parseSocketResponse(data);
                 if (data.id === id) {
                     setData(json);
@@ -202,6 +203,8 @@ export const useServerState = (clientDefaultValue, options) => {
 
                 var onSetValue = async (event) => {
                     const eventData = await consume(event);
+                    if (eventData === 'ping') return;
+
                     const data = parseSocketResponse(eventData);
                     if (
                         eventData.action === 'setValue' &&
@@ -249,6 +252,8 @@ export const useServerState = (clientDefaultValue, options) => {
                 if (!defer && id) {
                     var onSetValue = async () => {
                         const eventData = await consume(event);
+                        if (eventData === 'ping') return;
+
                         const data = parseSocketResponse(eventData);
                         if (
                             eventData.action === 'setValue' &&
@@ -273,6 +278,8 @@ export const useServerState = (clientDefaultValue, options) => {
 
                     var onError = async (event) => {
                         const data = await consume(event);
+                        if (data === 'ping') return;
+
                         /**
                          * Only handles error messages that have the same id as the state.
                          * There's currently no serverside mechanism that raises a state specific error.
@@ -365,6 +372,8 @@ export const useResponse = (fn, action, keepAlive) => {
         if (!id) return;
         onMessage(socket, async (event) => {
             const eventData = await consume(event);
+            if (eventData === 'ping') return;
+
             const data = parseSocketResponse(eventData);
             if (eventData.id === id) {
                 fn(data);
@@ -534,6 +543,8 @@ export const useComponent = (
                 onRender = async (event) => {
                     try {
                         const eventData = await consume(event);
+                        if (eventData === 'ping') return;
+
                         /**TODO: fix base scope === 'public' */
                         if (
                             eventData.action === 'render' &&
@@ -550,6 +561,8 @@ export const useComponent = (
                 /* I'm not sure if this is the proper place to handle errors from a component. There's no serverside mechanism that sends error messages from components */
                 onError = async (event) => {
                     const data = await consume(event);
+                    if (data === 'ping') return;
+
                     if (data.type === 'error' && data.key == componentKey) {
                         const err = await parseSocketResponse(data);
                         const errObj = new Error(err.message);
