@@ -112,7 +112,8 @@ var useAuth = function useAuth() {
 
   (0, _react.useEffect)(function () {
     _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var challenge, newHeaders;
+      var _challenge, newHeaders;
+
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -130,9 +131,9 @@ var useAuth = function useAuth() {
               });
 
             case 3:
-              challenge = _context.sent;
+              _challenge = _context.sent;
 
-              if (challenge.address) {
+              if (_challenge.address) {
                 setHasAuthed(true);
               } else {
                 newHeaders = _objectSpread({}, headers);

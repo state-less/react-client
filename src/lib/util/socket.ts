@@ -1,3 +1,4 @@
+import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 } from 'uuid';
 import baseLogger, { orgLogger } from '../logger';
 
@@ -82,8 +83,11 @@ export const consume = async (event) => {
  * Will terminate non-responsive connections.
  * This close event should initiate the process of recreating the connection in the ws module manager (eg ws/user.js and modules/ws-user.js)
  * @see https://gist.github.com/thiagof/aba7791ef9504c1184769ce401f478dc
+ *
+ * Modified to work with WebSocket interface.
  */
-export function setupWsHeartbeat(ws) {
+export function setupWsHeartbeat(ws: ReconnectingWebSocket) {
+    let to;
     // will close the connection if there's no ping from the server
     function heartbeat() {
         clearTimeout(this.pingTimeout);
@@ -91,15 +95,15 @@ export function setupWsHeartbeat(ws) {
 
         // Use `WebSocket#terminate()` and not `WebSocket#close()`. Delay should be
         // equal to the interval at which server sends out pings plus an assumption of the latency.
-        this.pingTimeout = setTimeout(() => {
+        to = setTimeout(() => {
             orgLogger.warning`Ping timeout. Terminating socket connection.`;
-            this.terminate();
+            ws.close();
         }, 30000 + 1000);
     }
 
-    ws.on('open', heartbeat);
-    ws.on('ping', heartbeat);
-    ws.on('close', function clear() {
-        clearTimeout(this.pingTimeout);
+    ws.addEventListener('open', heartbeat);
+    ws.addEventListener('message', heartbeat);
+    ws.addEventListener('close', function clear() {
+        clearTimeout(to);
     });
 }

@@ -202,32 +202,33 @@ var consume = /*#__PURE__*/function () {
  * Will terminate non-responsive connections.
  * This close event should initiate the process of recreating the connection in the ws module manager (eg ws/user.js and modules/ws-user.js)
  * @see https://gist.github.com/thiagof/aba7791ef9504c1184769ce401f478dc
+ *
+ * Modified to work with WebSocket interface.
  */
 
 
 exports.consume = consume;
 
 function setupWsHeartbeat(ws) {
-  // will close the connection if there's no ping from the server
-  function heartbeat() {
-    var _this = this;
+  var to; // will close the connection if there's no ping from the server
 
+  function heartbeat() {
     clearTimeout(this.pingTimeout);
 
     _logger.orgLogger.debug(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Sending heartbeat."]))); // Use `WebSocket#terminate()` and not `WebSocket#close()`. Delay should be
     // equal to the interval at which server sends out pings plus an assumption of the latency.
 
 
-    this.pingTimeout = setTimeout(function () {
+    to = setTimeout(function () {
       _logger.orgLogger.warning(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Ping timeout. Terminating socket connection."])));
 
-      _this.terminate();
+      ws.close();
     }, 30000 + 1000);
   }
 
-  ws.on('open', heartbeat);
-  ws.on('ping', heartbeat);
-  ws.on('close', function clear() {
-    clearTimeout(this.pingTimeout);
+  ws.addEventListener('open', heartbeat);
+  ws.addEventListener('message', heartbeat);
+  ws.addEventListener('close', function clear() {
+    clearTimeout(to);
   });
 }
