@@ -213,14 +213,11 @@ function setupWsHeartbeat(ws) {
   var to; // will close the connection if there's no ping from the server
 
   function heartbeat() {
-    clearTimeout(this.pingTimeout);
-
-    _logger.orgLogger.debug(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Sending heartbeat."]))); // Use `WebSocket#terminate()` and not `WebSocket#close()`. Delay should be
+    clearTimeout(to); // Use `WebSocket#terminate()` and not `WebSocket#close()`. Delay should be
     // equal to the interval at which server sends out pings plus an assumption of the latency.
 
-
     to = setTimeout(function () {
-      _logger.orgLogger.warning(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Ping timeout. Terminating socket connection."])));
+      _logger.orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Ping timeout. Terminating socket connection."])));
 
       ws.close();
     }, 30000 + 1000);
@@ -232,6 +229,8 @@ function setupWsHeartbeat(ws) {
     var msg = e.data;
 
     if (msg === 'ping') {
+      _logger.orgLogger.debug(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Sending heartbeat."])));
+
       ws.send('pong');
     }
   });

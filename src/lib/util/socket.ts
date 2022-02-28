@@ -90,7 +90,7 @@ export function setupWsHeartbeat(ws: ReconnectingWebSocket) {
     let to;
     // will close the connection if there's no ping from the server
     function heartbeat() {
-        clearTimeout(this.pingTimeout);
+        clearTimeout(to);
 
         // Use `WebSocket#terminate()` and not `WebSocket#close()`. Delay should be
         // equal to the interval at which server sends out pings plus an assumption of the latency.
