@@ -131,35 +131,32 @@ var webAuthnStrategy = function webAuthnStrategy() {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              console.log('WebAauthn auth challenge', challenge);
-
               if (!(challenge.type === 'register')) {
-                _context4.next = 7;
+                _context4.next = 6;
                 break;
               }
 
-              _context4.next = 4;
+              _context4.next = 3;
               return (0, _client.solveRegistrationChallenge)(challenge.challenge);
 
-            case 4:
+            case 3:
               response = _context4.sent;
-              _context4.next = 11;
+              _context4.next = 10;
               break;
 
-            case 7:
+            case 6:
               if (!(challenge.type === 'login')) {
-                _context4.next = 11;
+                _context4.next = 10;
                 break;
               }
 
-              _context4.next = 10;
+              _context4.next = 9;
               return (0, _client.solveLoginChallenge)(challenge.challenge);
 
-            case 10:
+            case 9:
               response = _context4.sent;
 
-            case 11:
-              console.log('WebAauthn auth response', response);
+            case 10:
               return _context4.abrupt("return", {
                 challenge: challenge,
                 response: response,
@@ -168,7 +165,7 @@ var webAuthnStrategy = function webAuthnStrategy() {
                 type: challenge.type
               });
 
-            case 13:
+            case 11:
             case "end":
               return _context4.stop();
           }
@@ -198,16 +195,15 @@ var fingerprintStrategy = function fingerprintStrategy() {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
-              console.log('Fingerprint auth challenge', challenge);
-              _context5.next = 3;
+              _context5.next = 2;
               return _fingerprintjs.default.load();
 
-            case 3:
+            case 2:
               fp2 = _context5.sent;
-              _context5.next = 6;
+              _context5.next = 5;
               return fp2.get();
 
-            case 6:
+            case 5:
               response = _context5.sent;
               return _context5.abrupt("return", {
                 challenge: challenge,
@@ -217,7 +213,7 @@ var fingerprintStrategy = function fingerprintStrategy() {
                 type: challenge.type
               });
 
-            case 8:
+            case 7:
             case "end":
               return _context5.stop();
           }

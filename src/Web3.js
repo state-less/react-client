@@ -74,11 +74,11 @@ export const Web3UtilProvider = ({children, autoActivate = true}) => {
    * @returns 
    */
   async function verify (account, message = 'Please verify your Identity by signing this message.') {
-    console.log ("VERIFY ", account, message)
+    
     if (!web3) throw new Error('Web 3 not yet loaded, please connect an account')
     const sig = await sign(message, account);
     const acc = await recover(message, sig);
-    console.log ("VERIFIED", account, acc, sig)
+    
     return acc.toLowerCase() === account.toLowerCase();
   }
 

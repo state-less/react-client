@@ -502,7 +502,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     } // baseLogger.debug`Returning live state ${state} ${key} with value ${state.value} ${clientDefaultValue}`
 
 
-    console.log('USE SERVER STATE', key, state.value, clientDefaultValue, typeof state.value === 'undefined' ? clientDefaultValue : state.value);
     return [typeof state.value === 'undefined' ? clientDefaultValue : state.value, setServerState];
   } catch (e) {
     if (!ctx) throw new Error('No available context. Are you missing a Provider?');
@@ -656,7 +655,6 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
       var propKey = _keys[_i2];
       var serverProps = ((_ref8 = componentState || rendered) === null || _ref8 === void 0 ? void 0 : _ref8.props) || {};
       var state = serverProps[propKey] || {};
-      console.log('USING Server State from Component', state.key, state.scope, state.id, 'Defer', !state.id || !state.key || !state.scope);
       var resolvedState = useServerState(state.value, {
         key: state.key,
         scope: state.scope,
@@ -815,7 +813,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                     data = _context8.sent;
 
                     if (!(data.type === 'error' && data.key == componentKey)) {
-                      _context8.next = 11;
+                      _context8.next = 10;
                       break;
                     }
 
@@ -826,12 +824,11 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                     err = _context8.sent;
                     errObj = new Error(err.message);
                     Object.assign(errObj, err);
-                    console.log('Parsed Error', err);
                     extendState({
                       error: errObj
                     });
 
-                  case 11:
+                  case 10:
                   case "end":
                     return _context8.stop();
                 }
@@ -855,7 +852,6 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
         };
 
         (0, _socket2.on)(socket, 'log', onLog);
-        console.log('Emit render');
         (0, _socket2.emit)(socket, {
           action: _consts.EVENT_USE_COMPONENT,
           key: componentKey,
@@ -870,7 +866,6 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
       secOpen.forEach(function (open, i) {
         if (open) {
           var _socket = sockets[i];
-          console.log('Emit render 2');
           (0, _socket2.emit)(_socket, {
             action: _consts.EVENT_USE_COMPONENT,
             key: componentKey,

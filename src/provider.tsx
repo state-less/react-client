@@ -40,7 +40,6 @@ export const useAuth = (useStrategy, auto = false) => {
                     setHeaders(newHeaders);
                     setIdentity(null);
                 }
-                console.log('AUTO LOGIN', challenge);
             }
         })();
     }, [open, authed]);
@@ -56,7 +55,6 @@ export const useAuth = (useStrategy, auto = false) => {
             logout();
         }, timeValid);
 
-        console.log('Setting identity', identity, timeValid);
         setIdentity(identity);
 
         return () => {
@@ -147,11 +145,10 @@ const SocketManager = (url) => {
     const ws = new WebSocket(url);
 
     ws.addEventListener('open', function open() {
-        console.log('SOCKET OPEN');
     });
 
     ws.addEventListener('close', function open() {
-        console.log('SOCKET OPEN');
+
     });
 };
 const MainProvider = (props) => {

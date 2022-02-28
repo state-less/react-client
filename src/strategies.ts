@@ -37,14 +37,13 @@ export const web3Strategy: AuthStrategyFactory = () => {
 
 export const webAuthnStrategy = () => {
     const authenticate = async (challenge) => {
-        console.log('WebAauthn auth challenge', challenge);
         let response;
         if (challenge.type === 'register') {
             response = await solveRegistrationChallenge(challenge.challenge);
         } else if (challenge.type === 'login') {
             response = await solveLoginChallenge(challenge.challenge);
         }
-        console.log('WebAauthn auth response', response);
+
         return {
             challenge,
             response,
@@ -59,7 +58,7 @@ export const webAuthnStrategy = () => {
 
 export const fingerprintStrategy = () => {
     const authenticate = async (challenge) => {
-        console.log('Fingerprint auth challenge', challenge);
+        
         const fp2 = await fp.load();
         const response = await fp2.get();
         return {

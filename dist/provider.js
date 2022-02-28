@@ -104,7 +104,7 @@ var useAuth = function useAuth(useStrategy) {
           switch (_context.prev = _context.next) {
             case 0:
               if (!(open && !authed && auto)) {
-                _context.next = 6;
+                _context.next = 5;
                 break;
               }
 
@@ -128,9 +128,7 @@ var useAuth = function useAuth(useStrategy) {
                 setIdentity(null);
               }
 
-              console.log('AUTO LOGIN', challenge);
-
-            case 6:
+            case 5:
             case "end":
               return _context.stop();
           }
@@ -149,7 +147,6 @@ var useAuth = function useAuth(useStrategy) {
 
       logout();
     }, timeValid);
-    console.log('Setting identity', identity, timeValid);
     setIdentity(identity);
     return function () {
       clearTimeout(to);
@@ -336,12 +333,8 @@ var headerAtom = (0, _jotai.atom)({});
 
 var SocketManager = function SocketManager(url) {
   var ws = new WebSocket(url);
-  ws.addEventListener('open', function open() {
-    console.log('SOCKET OPEN');
-  });
-  ws.addEventListener('close', function open() {
-    console.log('SOCKET OPEN');
-  });
+  ws.addEventListener('open', function open() {});
+  ws.addEventListener('close', function open() {});
 };
 
 var MainProvider = function MainProvider(props) {

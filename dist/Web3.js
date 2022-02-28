@@ -260,30 +260,28 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
           switch (_context5.prev = _context5.next) {
             case 0:
               message = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : 'Please verify your Identity by signing this message.';
-              console.log("VERIFY ", account, message);
 
               if (web3) {
-                _context5.next = 4;
+                _context5.next = 3;
                 break;
               }
 
               throw new Error('Web 3 not yet loaded, please connect an account');
 
-            case 4:
-              _context5.next = 6;
+            case 3:
+              _context5.next = 5;
               return sign(message, account);
 
-            case 6:
+            case 5:
               sig = _context5.sent;
-              _context5.next = 9;
+              _context5.next = 8;
               return recover(message, sig);
 
-            case 9:
+            case 8:
               acc = _context5.sent;
-              console.log("VERIFIED", account, acc, sig);
               return _context5.abrupt("return", acc.toLowerCase() === account.toLowerCase());
 
-            case 12:
+            case 10:
             case "end":
               return _context5.stop();
           }

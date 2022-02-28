@@ -339,16 +339,6 @@ export const useServerState = (clientDefaultValue, options) => {
         }
 
         // baseLogger.debug`Returning live state ${state} ${key} with value ${state.value} ${clientDefaultValue}`
-        console.log(
-            'USE SERVER STATE',
-            key,
-            state.value,
-            clientDefaultValue,
-            typeof state.value === 'undefined'
-                ? clientDefaultValue
-                : state.value
-        );
-
         return [
             typeof state.value === 'undefined'
                 ? clientDefaultValue
@@ -469,14 +459,6 @@ export const useComponent = (
             const serverProps = (componentState || rendered)?.props || {};
             const state = serverProps[propKey] || {};
 
-            console.log(
-                'USING Server State from Component',
-                state.key,
-                state.scope,
-                state.id,
-                'Defer',
-                !state.id || !state.key || !state.scope
-            );
             const resolvedState = useServerState(state.value, {
                 key: state.key,
                 scope: state.scope,
@@ -572,7 +554,6 @@ export const useComponent = (
                         const err = await parseSocketResponse(data);
                         const errObj = new Error(err.message);
                         Object.assign(errObj, err);
-                        console.log('Parsed Error', err);
                         extendState({ error: errObj });
                     }
                 };
@@ -587,7 +568,6 @@ export const useComponent = (
                 };
                 on(socket, 'log', onLog);
 
-                console.log('Emit render');
                 emit(socket, {
                     action: EVENT_USE_COMPONENT,
                     key: componentKey,
@@ -603,8 +583,6 @@ export const useComponent = (
             secOpen.forEach((open, i) => {
                 if (open) {
                     const socket = sockets[i];
-                    console.log('Emit render 2');
-
                     emit(socket, {
                         action: EVENT_USE_COMPONENT,
                         key: componentKey,
