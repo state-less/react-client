@@ -1,5 +1,9 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
-export declare const parseSocketResponse: (data: any) => any;
+export declare const parseSocketResponse: (data: {
+    statusCode: number;
+    body: string;
+    message: string;
+} | 'ping') => Record<string, any>;
 export declare const emit: (socket: any, data: any) => void;
 export declare const request: (socket: any, data: any) => Promise<unknown>;
 export declare const on: (socket: any, event: any, fn: any) => void;

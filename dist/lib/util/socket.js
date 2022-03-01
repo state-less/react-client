@@ -31,6 +31,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var parseSocketResponse = function parseSocketResponse(data) {
+  if (data === 'ping') return {};
   var body = data.body,
       statusCode = data.statusCode,
       message = data.message;

@@ -2,8 +2,16 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 } from 'uuid';
 import baseLogger, { orgLogger } from '../logger';
 
-export const parseSocketResponse = (data) => {
-    if (data === 'ping') return null;
+export const parseSocketResponse = (
+    data:
+        | {
+              statusCode: number;
+              body: string;
+              message: string;
+          }
+        | 'ping'
+): Record<string, any> => {
+    if (data === 'ping') return {};
 
     const { body, statusCode, message } = data;
 

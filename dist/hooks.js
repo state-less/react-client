@@ -170,13 +170,22 @@ var useStream = function useStream(name, def) {
 
                 case 2:
                   data = _context.sent;
+
+                  if (!(data === 'ping')) {
+                    _context.next = 5;
+                    break;
+                  }
+
+                  return _context.abrupt("return");
+
+                case 5:
                   json = (0, _socket2.parseSocketResponse)(data);
 
                   if (data.id === id) {
                     setData(json);
                   }
 
-                case 5:
+                case 7:
                 case "end":
                   return _context.stop();
               }
@@ -314,23 +323,32 @@ var useServerState = function useServerState(clientDefaultValue, options) {
 
                   case 2:
                     eventData = _context2.sent;
+
+                    if (!(eventData === 'ping')) {
+                      _context2.next = 5;
+                      break;
+                    }
+
+                    return _context2.abrupt("return");
+
+                  case 5:
                     data = (0, _socket2.parseSocketResponse)(eventData);
 
                     if (!(eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined')) {
-                      _context2.next = 6;
+                      _context2.next = 8;
                       break;
                     }
 
                     return _context2.abrupt("return", state);
 
-                  case 6:
+                  case 8:
                     if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
                       setState(function (state) {
                         return _objectSpread(_objectSpread({}, state), data);
                       });
                     }
 
-                  case 7:
+                  case 9:
                   case "end":
                     return _context2.stop();
                 }
@@ -381,16 +399,25 @@ var useServerState = function useServerState(clientDefaultValue, options) {
 
                     case 2:
                       eventData = _context3.sent;
+
+                      if (!(eventData === 'ping')) {
+                        _context3.next = 5;
+                        break;
+                      }
+
+                      return _context3.abrupt("return");
+
+                    case 5:
                       data = (0, _socket2.parseSocketResponse)(eventData);
 
                       if (!(eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined')) {
-                        _context3.next = 6;
+                        _context3.next = 8;
                         break;
                       }
 
                       return _context3.abrupt("return", state);
 
-                    case 6:
+                    case 8:
                       if (eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id)) {
                         setState(function (state) {
                           delete state.error;
@@ -398,7 +425,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                         });
                       }
 
-                    case 7:
+                    case 9:
                     case "end":
                       return _context3.stop();
                   }
@@ -426,21 +453,29 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                     case 2:
                       data = _context4.sent;
 
-                      if (!(data.type === 'error' && id === data.id)) {
-                        _context4.next = 8;
+                      if (!(data === 'ping')) {
+                        _context4.next = 5;
                         break;
                       }
 
-                      _context4.next = 6;
+                      return _context4.abrupt("return");
+
+                    case 5:
+                      if (!(data.type === 'error' && id === data.id)) {
+                        _context4.next = 10;
+                        break;
+                      }
+
+                      _context4.next = 8;
                       return (0, _socket2.parseSocketResponse)(data);
 
-                    case 6:
+                    case 8:
                       err = _context4.sent;
                       extendState({
                         error: new Error(err.message)
                       });
 
-                    case 8:
+                    case 10:
                     case "end":
                       return _context4.stop();
                   }
@@ -534,13 +569,22 @@ var useResponse = function useResponse(fn, action, keepAlive) {
 
               case 2:
                 eventData = _context5.sent;
+
+                if (!(eventData === 'ping')) {
+                  _context5.next = 5;
+                  break;
+                }
+
+                return _context5.abrupt("return");
+
+              case 5:
                 data = (0, _socket2.parseSocketResponse)(eventData);
 
                 if (eventData.id === id) {
                   fn(data);
                 }
 
-              case 5:
+              case 7:
               case "end":
                 return _context5.stop();
             }
@@ -767,6 +811,14 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                   case 3:
                     eventData = _context7.sent;
 
+                    if (!(eventData === 'ping')) {
+                      _context7.next = 6;
+                      break;
+                    }
+
+                    return _context7.abrupt("return");
+
+                  case 6:
                     /**TODO: fix base scope === 'public' */
                     if (eventData.action === 'render' && eventData.key == componentKey) {
                       data = (0, _socket2.parseSocketResponse)(eventData);
@@ -776,19 +828,19 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                       }));
                     }
 
-                    _context7.next = 9;
+                    _context7.next = 11;
                     break;
 
-                  case 7:
-                    _context7.prev = 7;
+                  case 9:
+                    _context7.prev = 9;
                     _context7.t0 = _context7["catch"](0);
 
-                  case 9:
+                  case 11:
                   case "end":
                     return _context7.stop();
                 }
               }
-            }, _callee7, null, [[0, 7]]);
+            }, _callee7, null, [[0, 9]]);
           }));
 
           return function onRender(_x5) {
@@ -812,15 +864,23 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                   case 2:
                     data = _context8.sent;
 
-                    if (!(data.type === 'error' && data.key == componentKey)) {
-                      _context8.next = 10;
+                    if (!(data === 'ping')) {
+                      _context8.next = 5;
                       break;
                     }
 
-                    _context8.next = 6;
+                    return _context8.abrupt("return");
+
+                  case 5:
+                    if (!(data.type === 'error' && data.key == componentKey)) {
+                      _context8.next = 12;
+                      break;
+                    }
+
+                    _context8.next = 8;
                     return (0, _socket2.parseSocketResponse)(data);
 
-                  case 6:
+                  case 8:
                     err = _context8.sent;
                     errObj = new Error(err.message);
                     Object.assign(errObj, err);
@@ -828,7 +888,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                       error: errObj
                     });
 
-                  case 10:
+                  case 12:
                   case "end":
                     return _context8.stop();
                 }
