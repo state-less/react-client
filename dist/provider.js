@@ -27,7 +27,7 @@ var _jsxRuntime = require("react/jsx-runtime");
 
 var _excluded = ["Authorization"];
 
-var _templateObject, _templateObject2, _templateObject3, _templateObject4;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -419,15 +419,18 @@ var MainProvider = function MainProvider(props) {
   if (!url) throw new Error("Missing property 'url' in Provider props.");
   var socket = (0, _react.useMemo)(function () {
     if (typeof window === 'undefined' || typeof _reconnectingWebsocket.default === 'undefined') return;
+
+    _logger.orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Initializeing socket connection ", ". ", "."])), url, typeof window === "undefined" ? "undefined" : _typeof(window));
+
     var ws = new _reconnectingWebsocket.default(url);
     (0, _socket.setupWsHeartbeat)(ws);
     ws.addEventListener('open', function () {
-      _logger.orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Socket connection initialized."])));
+      _logger.orgLogger.warning(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Socket connection initialized."])));
 
       setOpen(true);
     });
     ws.addEventListener('close', function () {
-      _logger.orgLogger.warning(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Socket connection lost. Reconnecting."])));
+      _logger.orgLogger.warning(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Socket connection lost. Reconnecting."])));
 
       setOpen(false);
     });
@@ -463,7 +466,7 @@ var MainProvider = function MainProvider(props) {
   (0, _react.useEffect)(function () {
     if (!socket) return;
     (0, _socket.on)(socket, 'error', function () {
-      var message = _logger.orgLogger.error(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Error connecting to socket ", "."])), url);
+      var message = _logger.orgLogger.error(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Error connecting to socket ", "."])), url);
 
       setError(message);
     });

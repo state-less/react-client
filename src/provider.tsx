@@ -202,6 +202,7 @@ const MainProvider = (props) => {
         )
             return;
 
+        orgLogger.warning`Initializeing socket connection ${url}. ${typeof window}.`;
         const ws = new ReconnectingWebsocket(url);
 
         setupWsHeartbeat(ws);
