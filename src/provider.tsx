@@ -148,10 +148,10 @@ export const useAuth = (useStrategy = useNoopStrat, auto = false) => {
     }
     async function logout() {
         const { Authorization, ...rest } = headers;
-        await request(socket, {
+        request(socket, {
             action: 'logout',
         });
-        await deauth();
+        deauth();
         setHeaders(rest);
         setIdentity(null);
     }
