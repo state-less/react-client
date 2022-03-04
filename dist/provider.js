@@ -313,12 +313,12 @@ var useAuth = function useAuth() {
           switch (_context5.prev = _context5.next) {
             case 0:
               Authorization = headers.Authorization, rest = _objectWithoutProperties(headers, _excluded);
+              setHeaders(rest);
+              setIdentity(null);
               (0, _socket.request)(socket, {
                 action: 'logout'
               });
               deauth();
-              setHeaders(rest);
-              setIdentity(null);
 
             case 5:
             case "end":
