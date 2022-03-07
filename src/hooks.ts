@@ -191,6 +191,18 @@ export const useServerState = (clientDefaultValue, options) => {
 
         useEffect(() => {
             let to;
+            const onPageShow = () => {
+                orgLogger.info`Subscribing to state ${key}`;
+                emit(socket, {
+                    action: EVENT_USE_STATE,
+                    key,
+                    defaultValue: value,
+                    scope,
+                    requestId: clientId,
+                    options: { ...rest },
+                    requestType,
+                });
+            };
 
             if (
                 open &&
@@ -224,19 +236,15 @@ export const useServerState = (clientDefaultValue, options) => {
                 };
                 onMessage(socket, onSetValue);
 
-                emit(socket, {
-                    action: EVENT_USE_STATE,
-                    key,
-                    defaultValue: value,
-                    scope,
-                    requestId: clientId,
-                    options: { ...rest },
-                    requestType,
-                });
+                onPageShow();
+                window.addEventListener('pageshow', onPageShow);
             }
 
             return () => {
                 off(socket, 'message', onSetValue);
+                window.removeEventListener('pageshow', onPageShow);
+                stateLoadingStates[`${scope}:${key}`] = false;
+
                 // stateLoadingStates[`${scope}:${key}`]
                 // [createStateEvent].forEach(event => socket.removeAllListeners(event));
             };

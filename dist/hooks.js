@@ -19,6 +19,8 @@ var _uuid = require("uuid");
 
 var _socket2 = require("./lib/util/socket");
 
+var _templateObject;
+
 var _excluded = ["key", "strict", "defaultValue", "defer", "value", "scope", "suspend", "rendered", "requestType"],
     _excluded2 = ["strict", "suspend", "scope", "props"],
     _excluded3 = ["error"];
@@ -30,6 +32,8 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
@@ -308,6 +312,20 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     (0, _react.useEffect)(function () {
       var to;
 
+      var onPageShow = function onPageShow() {
+        _logger.orgLogger.info(_templateObject || (_templateObject = _taggedTemplateLiteral(["Subscribing to state ", ""])), key);
+
+        (0, _socket2.emit)(socket, {
+          action: _consts.EVENT_USE_STATE,
+          key: key,
+          defaultValue: value,
+          scope: scope,
+          requestId: clientId,
+          options: _objectSpread({}, rest),
+          requestType: requestType
+        });
+      };
+
       if (open && !id && !error && !defer && !stateLoadingStates["".concat(scope, ":").concat(key)]) {
         stateLoadingStates["".concat(scope, ":").concat(key)] = true;
 
@@ -362,19 +380,14 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         }();
 
         (0, _socket2.onMessage)(socket, onSetValue);
-        (0, _socket2.emit)(socket, {
-          action: _consts.EVENT_USE_STATE,
-          key: key,
-          defaultValue: value,
-          scope: scope,
-          requestId: clientId,
-          options: _objectSpread({}, rest),
-          requestType: requestType
-        });
+        onPageShow();
+        window.addEventListener('pageshow', onPageShow);
       }
 
       return function () {
-        (0, _socket2.off)(socket, 'message', onSetValue); // stateLoadingStates[`${scope}:${key}`]
+        (0, _socket2.off)(socket, 'message', onSetValue);
+        window.removeEventListener('pageshow', onPageShow);
+        stateLoadingStates["".concat(scope, ":").concat(key)] = false; // stateLoadingStates[`${scope}:${key}`]
         // [createStateEvent].forEach(event => socket.removeAllListeners(event));
       };
     }, [open, defer, scope, key]);
