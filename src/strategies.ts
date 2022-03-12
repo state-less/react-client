@@ -8,10 +8,27 @@ import {
 import fp from '@fingerprintjs/fingerprintjs';
 
 import { web3Context } from './Web3';
-import { AuthResult, AuthStrategyFactory } from './lib/types';
-import { noopSync } from './lib/util';
 
-export const web3Strategy: AuthStrategyFactory = () => {
+import { noopSync } from './lib/util';
+import { ChallengeResponse, Strategy } from './types';
+
+export const googleStrategy: Strategy = () => {
+    return {
+        authenticate: async (challenge, token) => {
+            return {
+                challenge,
+                response: token.tokenId,
+                strategy: 'google',
+                success: true,
+            };
+        },
+        logout: noopSync,
+        id: 'google',
+        strategy: 'google',
+    };
+};
+
+export const web3Strategy: Strategy = ({ autoLogin = false }) => {
     const { account, activateInjected, sign, deactivate } =
         useContext(web3Context);
 
@@ -25,13 +42,13 @@ export const web3Strategy: AuthStrategyFactory = () => {
         })();
     }, []);
 
-    const authenticate = async (challenge): Promise<AuthResult> => {
+    const authenticate = async (challenge): Promise<ChallengeResponse> => {
         if (account && challenge.type === 'sign') {
             const response = await sign(challenge.challenge, account);
             return { challenge, response, success: true, strategy: 'web3' };
         }
         await activateInjected();
-        return { success: false, strategy: 'web3' };
+        return { challenge, response: null, success: false, strategy: 'web3' };
     };
 
     return { authenticate, id: account, logout: deactivate, strategy: 'web3' };

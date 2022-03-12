@@ -1,5 +1,6 @@
-import { AuthStrategyFactory } from './lib/types';
-export declare const web3Strategy: AuthStrategyFactory;
+import { Strategy } from './types';
+export declare const googleStrategy: Strategy;
+export declare const web3Strategy: Strategy;
 export declare const webAuthnStrategy: () => {
     authenticate: (challenge: any) => Promise<{
         challenge: any;
