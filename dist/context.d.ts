@@ -2,7 +2,7 @@ import React from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 declare type Identity = Record<string, any>;
 declare type Headers = Record<string, any>;
-declare type ClientContext = {
+export declare type ClientContext = {
     socket: ReconnectingWebSocket;
     sockets: ReconnectingWebSocket[];
     open: boolean;

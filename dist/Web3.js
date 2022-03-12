@@ -15,11 +15,11 @@ var _providers = require("@ethersproject/providers");
 
 var _injectedConnector = require("@web3-react/injected-connector");
 
-var _web2 = _interopRequireDefault(require("web3"));
+var _web = _interopRequireDefault(require("web3"));
 
 var _jsxRuntime = require("react/jsx-runtime");
 
-var _excluded = ["activate", "account", "active", "error"],
+var _excluded = ["activate", "account", "active", "error", "deactivate"],
     _excluded2 = ["children"];
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -54,8 +54,9 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
+/** We only support Ethereum BSC and Ganache right now */
 var injected = new _injectedConnector.InjectedConnector({
-  supportedChainIds: [56, 1337]
+  supportedChainIds: [1, 56, 1337]
 });
 exports.injected = injected;
 
@@ -63,7 +64,16 @@ function getLibrary(provider, connector) {
   return new _providers.Web3Provider(provider); // this will vary according to whether you use e.g. ethers or web3.js
 }
 
-var web3Context = (0, _react.createContext)();
+var web3Context = (0, _react.createContext)({
+  activateInjected: null,
+  deactivate: null,
+  sign: null,
+  recover: null,
+  verify: null,
+  active: null,
+  account: null,
+  error: null
+});
 exports.web3Context = web3Context;
 
 var Web3UtilProvider = function Web3UtilProvider(_ref) {
@@ -76,6 +86,7 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
       account = web3React.account,
       active = web3React.active,
       error = web3React.error,
+      deactivate = web3React.deactivate,
       rest = _objectWithoutProperties(web3React, _excluded);
 
   var _useState = (0, _react.useState)(null),
@@ -127,16 +138,15 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
     if (account) {
       var _web3React$library;
 
-      var _web3 = new _web2.default(web3React === null || web3React === void 0 ? void 0 : (_web3React$library = web3React.library) === null || _web3React$library === void 0 ? void 0 : _web3React$library.provider);
-
-      setWeb3(_web3);
+      var newWeb3 = new _web.default(web3React === null || web3React === void 0 ? void 0 : (_web3React$library = web3React.library) === null || _web3React$library === void 0 ? void 0 : _web3React$library.provider);
+      setWeb3(newWeb3);
     }
   }, [account]);
   /**
-   * 
+   *
    * @param {*} web3 - The web3 instance
-   * @param {*} message - The message to sign
-   * @param {*} account - The account to sign with
+   * @param {string} message - The message to sign
+   * @param {string} signerAccount - The account to sign with
    * @returns - The signature
    */
 
@@ -145,21 +155,21 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
   }
   /**
    * Recovers the account from a signed message
-   * @param {*} web3 
-   * @param {*} message 
-   * @param {*} sig 
+   * @param {*} web3
+   * @param {*} message
+   * @param {*} sig
    */
 
 
   function _sign() {
-    _sign = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(message, account) {
-      var res, _web3React$library2, _web;
+    _sign = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(message, signerAccount) {
+      var res, _web3React$library2, web3Instance;
 
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              if (!(!web3 && !account)) {
+              if (!(!web3 && !signerAccount)) {
                 _context3.next = 2;
                 break;
               }
@@ -167,14 +177,14 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
               throw new Error('Web 3 not yet loaded, please connect an account');
 
             case 2:
-              if (!account) {
+              if (!signerAccount) {
                 _context3.next = 9;
                 break;
               }
 
-              _web = new _web2.default(web3React === null || web3React === void 0 ? void 0 : (_web3React$library2 = web3React.library) === null || _web3React$library2 === void 0 ? void 0 : _web3React$library2.provider);
+              web3Instance = new _web.default(web3React === null || web3React === void 0 ? void 0 : (_web3React$library2 = web3React.library) === null || _web3React$library2 === void 0 ? void 0 : _web3React$library2.provider);
               _context3.next = 6;
-              return _web.eth.personal.sign(message, account);
+              return web3Instance.eth.personal.sign(message, signerAccount, undefined);
 
             case 6:
               res = _context3.sent;
@@ -183,7 +193,7 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
 
             case 9:
               _context3.next = 11;
-              return web3.eth.personal.sign(message, account);
+              return web3.eth.personal.sign(message, signerAccount, undefined);
 
             case 11:
               res = _context3.sent;
@@ -206,10 +216,10 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
   }
   /**
    * Verifies an account by signing a message.
-   * @param *{} web3 
-   * @param {*} account  The account to verify
+   * @param {*} web3
+   * @param {*} address - The address to verify
    * @param {*} message  - Optional message to sign.
-   * @returns 
+   * @returns
    */
 
 
@@ -250,10 +260,11 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
   }
 
   function _verify() {
-    _verify = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(account) {
+    _verify = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5( // eslint-disable-next-line no-shadow
+    address) {
       var message,
           sig,
-          acc,
+          recoveredAddress,
           _args5 = arguments;
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
@@ -270,7 +281,7 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
 
             case 3:
               _context5.next = 5;
-              return sign(message, account);
+              return sign(message, address);
 
             case 5:
               sig = _context5.sent;
@@ -278,8 +289,8 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
               return recover(message, sig);
 
             case 8:
-              acc = _context5.sent;
-              return _context5.abrupt("return", acc.toLowerCase() === account.toLowerCase());
+              recoveredAddress = _context5.sent;
+              return _context5.abrupt("return", recoveredAddress.toLowerCase() === address.toLowerCase());
 
             case 10:
             case "end":
@@ -291,16 +302,20 @@ var Web3UtilProvider = function Web3UtilProvider(_ref) {
     return _verify.apply(this, arguments);
   }
 
-  return /*#__PURE__*/(0, _jsxRuntime.jsx)(web3Context.Provider, {
-    value: _objectSpread({
+  var value = (0, _react.useMemo)(function () {
+    return _objectSpread({
       activateInjected: activateInjected,
       sign: sign,
       recover: recover,
       verify: verify,
+      deactivate: deactivate,
       active: active,
       account: account,
       error: error
-    }, rest),
+    }, rest);
+  }, [active, account, error]);
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)(web3Context.Provider, {
+    value: value,
     children: children
   });
 };

@@ -8,7 +8,7 @@ export declare const webAuthnStrategy: () => {
         strategy: string;
         type: any;
     }>;
-    logout: () => void;
+    logout: () => any;
     strategy: string;
 };
 export declare const fingerprintStrategy: () => {
@@ -19,6 +19,6 @@ export declare const fingerprintStrategy: () => {
         strategy: string;
         type: any;
     }>;
-    logout: () => void;
+    logout: () => any;
     strategy: string;
 };

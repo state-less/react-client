@@ -3,7 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.truncateMid = void 0;
+exports.truncateMid = exports.noopSync = void 0;
+
+/* eslint-disable no-void */
 
 /**
  * Truncates the middle of a string.
@@ -17,3 +19,10 @@ var truncateMid = function truncateMid(str) {
 };
 
 exports.truncateMid = truncateMid;
+
+var noopSync = function noopSync() {
+  // Make sure undefined is not overridden
+  return void 0;
+};
+
+exports.noopSync = noopSync;

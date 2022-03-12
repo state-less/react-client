@@ -19,6 +19,7 @@ export type Web3Context = {
     sign: (message: string, signerAccount: string) => Promise<any>;
     recover: (message: any, sig: any) => Promise<any>;
     verify: (account: any, message?: string) => Promise<boolean>;
+    deactivate: () => void;
     active: boolean;
     account: string;
     error: Error;
@@ -26,6 +27,7 @@ export type Web3Context = {
 
 export const web3Context: React.Context<Web3Context> = createContext({
     activateInjected: null,
+    deactivate: null,
     sign: null,
     recover: null,
     verify: null,
@@ -36,7 +38,7 @@ export const web3Context: React.Context<Web3Context> = createContext({
 
 export const Web3UtilProvider = ({ children, autoActivate = true }) => {
     const web3React = useWeb3React();
-    const { activate, account, active, error, ...rest } = web3React;
+    const { activate, account, active, error, deactivate, ...rest } = web3React;
     const [web3, setWeb3] = useState(null);
 
     const activateInjected = async () => activate(injected);
@@ -121,6 +123,7 @@ export const Web3UtilProvider = ({ children, autoActivate = true }) => {
             sign,
             recover,
             verify,
+            deactivate,
             active,
             account,
             error,

@@ -1,5 +1,7 @@
 /// <reference types="react" />
-export declare const useClientContext: () => {};
+import { ClientContext } from './context';
+import { Web3Context } from './Web3';
+export declare const useClientContext: () => ClientContext & Web3Context;
 export declare const useAuth: (useStrategy?: () => {
     authenticate: () => never;
     logout: () => void;

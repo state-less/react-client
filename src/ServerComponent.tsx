@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useComponent } from './hooks';
 import { orgLogger } from './lib/logger';
 
@@ -92,7 +92,7 @@ export const ServerComponent = (props) => {
             .filter((c) => c?.component === 'ClientComponent');
 
         const child =
-            parentChildren.find((child) => child.key === name) ||
+            parentChildren.find(({ key }) => key === name) ||
             parentChildren[index];
         rendered = child;
     }
@@ -102,8 +102,7 @@ export const ServerComponent = (props) => {
         rendered
     );
     const { props: serverProps = {}, resolved, error } = component;
-    // eslint-disable-next-line no-unused-vars
-    const { children: serverChildren = [], ...rest } = serverProps;
+    const { ...rest } = serverProps;
 
     const mappedProps: any = Object.entries(rest).reduce(
         (obj, [key, state]: [string, any]) => {
@@ -123,17 +122,14 @@ export const ServerComponent = (props) => {
     );
 
     mappedProps.error = error;
+    const serverPropsMemo = useMemo(() => {
+        return { ...serverProps, name };
+    }, [name, JSON.stringify(serverProps)]);
+
     return (
-        <internalContext.Provider value={{ ...serverProps, name }}>
+        <internalContext.Provider value={serverPropsMemo}>
             <context.Provider value={mappedProps}>{children}</context.Provider>
         </internalContext.Provider>
     );
 };
 ServerComponent.childMap = {};
-export const Slot = () => {};
-
-// export const Action = (props, name) => {
-//   const { ctx } = useContext(internalContext)
-
-//   return <>{props.children}</>
-// }

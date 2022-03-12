@@ -5,3 +5,4 @@
  * @returns
  */
 export declare const truncateMid: (str: string, n?: number) => string;
+export declare const noopSync: () => any;

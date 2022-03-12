@@ -9,6 +9,10 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _jotai = require("jotai");
 
+var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
+
+var _reconnectingWebsocket = _interopRequireDefault(require("reconnecting-websocket"));
+
 var _context6 = require("./context");
 
 var _socket = require("./lib/util/socket");
@@ -19,15 +23,11 @@ var _Web = require("./Web3");
 
 var _jotai2 = require("./hooks/jotai");
 
-var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
-
-var _reconnectingWebsocket = _interopRequireDefault(require("reconnecting-websocket"));
-
 var _jsxRuntime = require("react/jsx-runtime");
 
 var _excluded = ["Authorization"];
 
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40,8 +40,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -58,6 +56,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
@@ -80,7 +80,7 @@ var useNoopStrat = function useNoopStrat() {
       throw new Error('Cannot call authenticate without a strategy.');
     },
     logout: function logout() {
-      console.warn('Performing logout without strategy');
+      _logger.orgLogger.warning(_templateObject || (_templateObject = _taggedTemplateLiteral(["Performing logout without strategy"])));
     },
     id: null,
     strategy: null
@@ -138,7 +138,6 @@ var useAuth = function useAuth() {
               } else {
                 newHeaders = _objectSpread({}, headers);
                 delete newHeaders.Authorization;
-                debugger;
                 setHeaders(newHeaders);
                 setIdentity(null);
               }
@@ -154,15 +153,15 @@ var useAuth = function useAuth() {
   (0, _react.useEffect)(function () {
     if (!(headers !== null && headers !== void 0 && headers.Authorization)) return;
 
-    var identity = _jsonwebtoken.default.decode(headers.Authorization.split(' ')[1]);
+    var decoded = _jsonwebtoken.default.decode(headers.Authorization.split(' ')[1]);
 
-    var timeValid = identity.exp * 1000 - +new Date();
+    var timeValid = decoded.exp * 1000 - +new Date();
     var to = setTimeout(function () {
-      _logger.orgLogger.info(_templateObject || (_templateObject = _taggedTemplateLiteral(["\"JWT Expired. Logging out."])));
+      _logger.orgLogger.info(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["\"JWT Expired. Logging out."])));
 
       logout();
     }, timeValid);
-    setIdentity(identity);
+    setIdentity(decoded);
     return function () {
       clearTimeout(to);
     };
@@ -414,17 +413,17 @@ var MainProvider = function MainProvider(props) {
   var socket = (0, _react.useMemo)(function () {
     if (typeof window === 'undefined' || typeof _reconnectingWebsocket.default === 'undefined') return;
 
-    _logger.orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Initializeing socket connection ", ". ", "."])), url, typeof window === "undefined" ? "undefined" : _typeof(window));
+    _logger.orgLogger.warning(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Initializeing socket connection ", ". ", "."])), url, typeof window === "undefined" ? "undefined" : _typeof(window));
 
     var ws = new _reconnectingWebsocket.default(url);
     (0, _socket.setupWsHeartbeat)(ws);
     ws.addEventListener('open', function () {
-      _logger.orgLogger.warning(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Socket connection initialized."])));
+      _logger.orgLogger.warning(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Socket connection initialized."])));
 
       setOpen(true);
     });
     ws.addEventListener('close', function () {
-      _logger.orgLogger.warning(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Socket connection lost. Reconnecting."])));
+      _logger.orgLogger.warning(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Socket connection lost. Reconnecting."])));
 
       setOpen(false);
     });
@@ -460,7 +459,7 @@ var MainProvider = function MainProvider(props) {
   (0, _react.useEffect)(function () {
     if (!socket) return;
     (0, _socket.on)(socket, 'error', function () {
-      var message = _logger.orgLogger.error(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Error connecting to socket ", "."])), url);
+      var message = _logger.orgLogger.error(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Error connecting to socket ", "."])), url);
 
       setError(message);
     });

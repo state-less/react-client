@@ -9,9 +9,11 @@ var _react = require("react");
 
 var _client = require("@webauthn/client");
 
+var _fingerprintjs = _interopRequireDefault(require("@fingerprintjs/fingerprintjs"));
+
 var _Web = require("./Web3");
 
-var _fingerprintjs = _interopRequireDefault(require("@fingerprintjs/fingerprintjs"));
+var _util = require("./lib/util");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74,7 +76,7 @@ var web3Strategy = function web3Strategy() {
           switch (_context3.prev = _context3.next) {
             case 0:
               if (!(account && challenge.type === 'sign')) {
-                _context3.next = 7;
+                _context3.next = 5;
                 break;
               }
 
@@ -90,17 +92,17 @@ var web3Strategy = function web3Strategy() {
                 strategy: 'web3'
               });
 
-            case 7:
-              _context3.next = 9;
+            case 5:
+              _context3.next = 7;
               return activateInjected();
 
-            case 9:
+            case 7:
               return _context3.abrupt("return", {
                 success: false,
                 strategy: 'web3'
               });
 
-            case 10:
+            case 8:
             case "end":
               return _context3.stop();
           }
@@ -180,7 +182,7 @@ var webAuthnStrategy = function webAuthnStrategy() {
 
   return {
     authenticate: authenticate,
-    logout: function logout() {},
+    logout: _util.noopSync,
     strategy: 'webauthn'
   };
 };
@@ -228,7 +230,7 @@ var fingerprintStrategy = function fingerprintStrategy() {
 
   return {
     authenticate: authenticate,
-    logout: function logout() {},
+    logout: _util.noopSync,
     strategy: 'fingerprint'
   };
 };

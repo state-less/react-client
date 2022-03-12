@@ -4,9 +4,12 @@ import {
     solveRegistrationChallenge,
     solveLoginChallenge,
 } from '@webauthn/client';
-import { web3Context } from './Web3';
+
 import fp from '@fingerprintjs/fingerprintjs';
+
+import { web3Context } from './Web3';
 import { AuthResult, AuthStrategyFactory } from './lib/types';
+import { noopSync } from './lib/util';
 
 export const web3Strategy: AuthStrategyFactory = () => {
     const { account, activateInjected, sign, deactivate } =
@@ -26,10 +29,9 @@ export const web3Strategy: AuthStrategyFactory = () => {
         if (account && challenge.type === 'sign') {
             const response = await sign(challenge.challenge, account);
             return { challenge, response, success: true, strategy: 'web3' };
-        } else {
-            await activateInjected();
-            return { success: false, strategy: 'web3' };
         }
+        await activateInjected();
+        return { success: false, strategy: 'web3' };
     };
 
     return { authenticate, id: account, logout: deactivate, strategy: 'web3' };
@@ -53,12 +55,11 @@ export const webAuthnStrategy = () => {
         };
     };
 
-    return { authenticate, logout: () => {}, strategy: 'webauthn' };
+    return { authenticate, logout: noopSync, strategy: 'webauthn' };
 };
 
 export const fingerprintStrategy = () => {
     const authenticate = async (challenge) => {
-        
         const fp2 = await fp.load();
         const response = await fp2.get();
         return {
@@ -70,5 +71,5 @@ export const fingerprintStrategy = () => {
         };
     };
 
-    return { authenticate, logout: () => {}, strategy: 'fingerprint' };
+    return { authenticate, logout: noopSync, strategy: 'fingerprint' };
 };
