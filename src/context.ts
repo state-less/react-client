@@ -4,7 +4,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 type Identity = Record<string, any>;
 type Headers = Record<string, any>;
 
-type ClientContext = {
+export type ClientContext = {
     socket: ReconnectingWebSocket;
     sockets: ReconnectingWebSocket[];
     open: boolean;
@@ -27,5 +27,5 @@ export const context: React.Context<ClientContext> = createContext({
     setHeaders: () => {},
     identity: null,
     setIdentity: () => {},
-    error: null
+    error: null,
 });

@@ -1,18 +1,19 @@
+/* eslint-disable no-unused-expressions */
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { atom, Provider as JotaiProvider } from 'jotai';
 
-import { context } from './context';
-import { on, consume, request, setupWsHeartbeat } from './lib/util/socket';
-
-import { orgLogger } from './lib/logger';
-import { Web3Provider, web3Context } from './Web3';
-import { useLocalStorage } from './hooks/jotai';
 import jwt from 'jsonwebtoken';
 import ReconnectingWebsocket from 'reconnecting-websocket';
+import { ClientContext, context } from './context';
+import { on, request, setupWsHeartbeat } from './lib/util/socket';
 
-export const useClientContext = () => {
-    const internalCtx = useContext(context) as object;
-    const web3Ctx = useContext(web3Context) as object;
+import { orgLogger } from './lib/logger';
+import { Web3Provider, web3Context, Web3Context } from './Web3';
+import { useLocalStorage } from './hooks/jotai';
+
+export const useClientContext = (): ClientContext & Web3Context => {
+    const internalCtx = useContext(context);
+    const web3Ctx = useContext(web3Context);
     return { ...internalCtx, ...web3Ctx };
 };
 
@@ -24,7 +25,7 @@ const useNoopStrat = () => {
             throw new Error('Cannot call authenticate without a strategy.');
         },
         logout: () => {
-            console.warn('Performing logout without strategy');
+            orgLogger.warning`Performing logout without strategy`;
         },
         id: null,
         strategy: null,
@@ -65,7 +66,6 @@ export const useAuth = (useStrategy = useNoopStrat, auto = false) => {
                     const newHeaders = { ...headers };
                     delete newHeaders.Authorization;
 
-                    debugger;
                     setHeaders(newHeaders);
                     setIdentity(null);
                 }
@@ -76,15 +76,15 @@ export const useAuth = (useStrategy = useNoopStrat, auto = false) => {
     useEffect(() => {
         if (!headers?.Authorization) return;
 
-        const identity = jwt.decode(headers.Authorization.split(' ')[1]);
-        const timeValid = identity.exp * 1000 - +new Date();
+        const decoded = jwt.decode(headers.Authorization.split(' ')[1]);
+        const timeValid = decoded.exp * 1000 - +new Date();
 
         const to = setTimeout(() => {
             orgLogger.info`"JWT Expired. Logging out.`;
             logout();
         }, timeValid);
 
-        setIdentity(identity);
+        setIdentity(decoded);
 
         return () => {
             clearTimeout(to);

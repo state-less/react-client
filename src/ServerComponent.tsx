@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useComponent } from './hooks';
+import { orgLogger } from './lib/logger';
 
 // TODO: Fix types in useComponent
 
@@ -10,7 +11,7 @@ const context = React.createContext({});
 const internalContext: React.Context<InternalContextProps> =
     React.createContext({});
 
-export const useAction = (name, handler, callback) => {
+export const useAction = (name, handler) => {
     const ctx = useContext(internalContext);
     const { children = [] } = ctx;
 
@@ -20,7 +21,8 @@ export const useAction = (name, handler, callback) => {
 
     if (!action)
         return () => {
-            console.warn('Handler not available');
+            orgLogger.scope('useAction')
+                .warning`Handler '${name}' not available. Are you sure your component is rendering this action on the server?`;
         };
 
     if (action && action?.props?.fns && action?.props?.fns[handler]) {
