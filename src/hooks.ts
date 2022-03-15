@@ -443,7 +443,7 @@ export const useComponent = (
         );
 
         let atm;
-
+        const loading = loadingStates[`${scope}:${componentKey}`];
         if (!componentAtoms.has(`${scope}:${componentKey}`)) {
             atm = atom({ defaultState });
             loadingStates[`${scope}:${componentKey}`] = false;
@@ -455,10 +455,7 @@ export const useComponent = (
             useAtom(atm);
 
         const extendState = (data) => setState({ ...internalState, ...data });
-        const setLoading = (loading) => extendState({ loading });
-
-        const { component, loading } = internalState;
-
+        const { component } = internalState;
         const [componentState] = useServerState(component, {
             key: componentKey,
             scope: 'public',
@@ -598,7 +595,7 @@ export const useComponent = (
                     headers,
                 });
 
-                setLoading(to);
+                loadingStates[`${scope}:${componentKey}`] = true;
             }
 
             secOpen.forEach((open, i) => {
@@ -661,6 +658,7 @@ export const useComponent = (
             ...componentState,
             ...internalState,
             resolved,
+            loading,
         };
     } catch (e) {
         if (!ctx)

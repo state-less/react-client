@@ -101,7 +101,7 @@ export const ServerComponent = (props) => {
         { scope, props: clientProps },
         rendered
     );
-    const { props: serverProps = {}, resolved, error } = component;
+    const { props: serverProps = {}, resolved, error, loading } = component;
     const { ...rest } = serverProps;
 
     const mappedProps: any = Object.entries(rest).reduce(
@@ -121,7 +121,8 @@ export const ServerComponent = (props) => {
         {}
     );
 
-    mappedProps.error = error;
+    Object.assign(mappedProps, { error, loading });
+
     const serverPropsMemo = useMemo(() => {
         return { ...serverProps, name };
     }, [name, JSON.stringify(serverProps)]);

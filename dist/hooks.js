@@ -662,6 +662,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
       };
     }, []);
     var atm;
+    var loading = loadingStates["".concat(scope, ":").concat(componentKey)];
 
     if (!componentAtoms.has("".concat(scope, ":").concat(componentKey))) {
       atm = (0, _jotai.atom)({
@@ -682,14 +683,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
       return setState(_objectSpread(_objectSpread({}, internalState), data));
     };
 
-    var setLoading = function setLoading(loading) {
-      return extendState({
-        loading: loading
-      });
-    };
-
-    var component = internalState.component,
-        loading = internalState.loading;
+    var component = internalState.component;
 
     var _useServerState = useServerState(component, {
       key: componentKey,
@@ -933,7 +927,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           options: _objectSpread({}, rest),
           headers: headers
         });
-        setLoading(to);
+        loadingStates["".concat(scope, ":").concat(componentKey)] = true;
       }
 
       secOpen.forEach(function (open, i) {
@@ -990,7 +984,8 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
     }
 
     return _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, rendered || {}), componentState), internalState), {}, {
-      resolved: resolved
+      resolved: resolved,
+      loading: loading
     });
   } catch (e) {
     if (!ctx) throw new Error('No available context. Are you missing a Provider?');
