@@ -15,7 +15,8 @@ var _logger = require("./lib/logger");
 
 var _jsxRuntime = require("react/jsx-runtime");
 
-var _excluded = ["name", "scope", "children", "index"];
+var _excluded = ["name", "scope", "children", "index"],
+    _excluded2 = ["children"];
 
 var _templateObject;
 
@@ -40,8 +41,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -148,9 +147,10 @@ var ServerComponent = function ServerComponent(props) {
       serverProps = _component$props === void 0 ? {} : _component$props,
       resolved = component.resolved,
       error = component.error,
-      loading = component.loading;
+      loading = component.loading; // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  var rest = _extends({}, serverProps);
+  var _serverChildren = serverProps.children,
+      rest = _objectWithoutProperties(serverProps, _excluded2);
 
   var mappedProps = Object.entries(rest).reduce(function (obj, _ref2) {
     var _ref3 = _slicedToArray(_ref2, 2),

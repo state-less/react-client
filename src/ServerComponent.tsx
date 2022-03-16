@@ -102,7 +102,8 @@ export const ServerComponent = (props) => {
         rendered
     );
     const { props: serverProps = {}, resolved, error, loading } = component;
-    const { ...rest } = serverProps;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { children: _serverChildren, ...rest } = serverProps;
 
     const mappedProps: any = Object.entries(rest).reduce(
         (obj, [key, state]: [string, any]) => {
