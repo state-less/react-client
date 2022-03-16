@@ -11,7 +11,7 @@ export const parseSocketResponse = (
           }
         | 'ping'
 ): Record<string, any> => {
-    if (data === 'ping') return {};
+    if (typeof data !== 'object') return {};
 
     const { body, statusCode, message } = data;
 
