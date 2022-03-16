@@ -28,7 +28,7 @@ export const googleStrategy: Strategy = () => {
     };
 };
 
-export const web3Strategy: Strategy = ({ autoLogin = false }) => {
+export const web3Strategy: Strategy = ({ autoConnect = false } = {}) => {
     const { account, activateInjected, sign, deactivate } =
         useContext(web3Context);
 
@@ -38,7 +38,7 @@ export const web3Strategy: Strategy = ({ autoLogin = false }) => {
 
     useEffect(() => {
         (async () => {
-            await connect();
+            if (autoConnect) await connect();
         })();
     }, []);
 

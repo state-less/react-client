@@ -147,7 +147,8 @@ var ServerComponent = function ServerComponent(props) {
   var _component$props = component.props,
       serverProps = _component$props === void 0 ? {} : _component$props,
       resolved = component.resolved,
-      error = component.error;
+      error = component.error,
+      loading = component.loading;
 
   var rest = _extends({}, serverProps);
 
@@ -165,7 +166,10 @@ var ServerComponent = function ServerComponent(props) {
     if (state && state.id && state.key && state.scope) return Object.assign(obj, _defineProperty({}, key, state.value));
     return Object.assign(obj, _defineProperty({}, key, state));
   }, {});
-  mappedProps.error = error;
+  Object.assign(mappedProps, {
+    error: error,
+    loading: loading
+  });
   var serverPropsMemo = (0, _react.useMemo)(function () {
     return _objectSpread(_objectSpread({}, serverProps), {}, {
       name: name

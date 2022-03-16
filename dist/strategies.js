@@ -58,9 +58,10 @@ var googleStrategy = function googleStrategy() {
 
 exports.googleStrategy = googleStrategy;
 
-var web3Strategy = function web3Strategy(_ref) {
-  var _ref$autoLogin = _ref.autoLogin,
-      autoLogin = _ref$autoLogin === void 0 ? false : _ref$autoLogin;
+var web3Strategy = function web3Strategy() {
+  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref$autoConnect = _ref.autoConnect,
+      autoConnect = _ref$autoConnect === void 0 ? false : _ref$autoConnect;
 
   var _useContext = (0, _react.useContext)(_Web.web3Context),
       account = _useContext.account,
@@ -96,10 +97,15 @@ var web3Strategy = function web3Strategy(_ref) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
+              if (!autoConnect) {
+                _context3.next = 3;
+                break;
+              }
+
+              _context3.next = 3;
               return connect();
 
-            case 2:
+            case 3:
             case "end":
               return _context3.stop();
           }
