@@ -1,4 +1,6 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
+import { atom, useAtom } from 'jotai';
+import { v4 } from 'uuid';
 import {
     EVENT_ERROR,
     EVENT_CREATE_STATE,
@@ -10,9 +12,7 @@ import {
     EVENT_USE_COMPONENT,
 } from './consts';
 import { context } from './context';
-import { atom, useAtom } from 'jotai';
 import { orgLogger } from './lib/logger';
-import { v4 } from 'uuid';
 import {
     on,
     onMessage,
@@ -61,7 +61,7 @@ const alignArgs =
     (length, ...def) =>
     (...args) => {
         const nargs = [...args];
-        for (var i = length; i > def.length; i--) {
+        for (let i = length; i > def.length; i--) {
             if (!args[i - 1]) {
                 nargs[i - 1] = args[i - 2];
                 nargs[i - 2] = def[i - 2];
@@ -149,7 +149,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 loading: false,
             });
 
-            //Because multiple hooks may access the same component we need to bypass the react render cycle
+            // Because multiple hooks may access the same component we need to bypass the react render cycle
             stateLoadingStates[`${scope}:${key}`] = false;
             atoms.set(`${scope}:${key}:${rest.id}`, atm);
         } else {
@@ -184,7 +184,7 @@ export const useServerState = (clientDefaultValue, options) => {
 
         const onTimeout = () => {
             setState((state) => {
-                const id = state.id;
+                const { id } = state;
                 if (!id) {
                     return {
                         ...state,
@@ -478,9 +478,9 @@ export const useComponent = (
 
         const resolved = {};
         const keys = Object.keys((componentState || rendered)?.props || {});
-        keys.length = 15;
+        keys.length = 25;
 
-        for (const propKey of keys) {
+        keys.forEach((propKey) => {
             const serverProps = (componentState || rendered)?.props || {};
             const state = serverProps[propKey] || {};
 
@@ -500,8 +500,9 @@ export const useComponent = (
                     resolved[setKey] = setValue;
                 }
             }
-        }
-        /**Bind action functions */
+        });
+
+        /** Bind action functions */
         (componentState || rendered)?.props?.children
             ?.filter((child) => {
                 return child.component === 'Action';
@@ -544,7 +545,10 @@ export const useComponent = (
         const onTimeout = () => {};
 
         useEffect(() => {
-            let to, onRender, onError, onLog;
+            let to;
+            let onRender;
+            let onError;
+            let onLog;
             if (
                 open &&
                 !props &&
@@ -558,7 +562,7 @@ export const useComponent = (
                         const eventData = await consume(event);
                         if (eventData === 'ping') return;
 
-                        /**TODO: fix base scope === 'public' */
+                        /** TODO: fix base scope === 'public' */
                         if (
                             eventData.action === 'render' &&
                             eventData.key === componentKey

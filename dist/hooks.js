@@ -7,15 +7,15 @@ exports.useStream = exports.useServerState = exports.useResponse = exports.useCo
 
 var _react = require("react");
 
+var _jotai = require("jotai");
+
+var _uuid = require("uuid");
+
 var _consts = require("./consts");
 
 var _context9 = require("./context");
 
-var _jotai = require("jotai");
-
 var _logger = require("./lib/logger");
-
-var _uuid = require("uuid");
 
 var _socket = require("./lib/util/socket");
 
@@ -258,7 +258,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         defaultState: defaultState,
         clientId: increaseCount(),
         loading: false
-      }); //Because multiple hooks may access the same component we need to bypass the react render cycle
+      }); // Because multiple hooks may access the same component we need to bypass the react render cycle
 
       stateLoadingStates["".concat(scope, ":").concat(key)] = false;
       atoms.set("".concat(scope, ":").concat(key, ":").concat(rest.id), atm);
@@ -713,12 +713,10 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
 
     var resolved = {};
     var keys = Object.keys(((_ref7 = componentState || rendered) === null || _ref7 === void 0 ? void 0 : _ref7.props) || {});
-    keys.length = 15;
-
-    for (var _i2 = 0, _keys = keys; _i2 < _keys.length; _i2++) {
+    keys.length = 25;
+    keys.forEach(function (propKey) {
       var _ref8;
 
-      var propKey = _keys[_i2];
       var serverProps = ((_ref8 = componentState || rendered) === null || _ref8 === void 0 ? void 0 : _ref8.props) || {};
       var state = serverProps[propKey] || {};
       var resolvedState = useServerState(state.value, {
@@ -739,9 +737,8 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           resolved[setKey] = setValue;
         }
       }
-    }
-    /**Bind action functions */
-
+    });
+    /** Bind action functions */
 
     (_ref9 = componentState || rendered) === null || _ref9 === void 0 ? void 0 : (_ref9$props = _ref9.props) === null || _ref9$props === void 0 ? void 0 : (_ref9$props$children = _ref9$props.children) === null || _ref9$props$children === void 0 ? void 0 : _ref9$props$children.filter(function (child) {
       return child.component === 'Action';
@@ -810,7 +807,10 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
     var onTimeout = function onTimeout() {};
 
     (0, _react.useEffect)(function () {
-      var to, onRender, onError, onLog;
+      var to;
+      var onRender;
+      var onError;
+      var onLog;
 
       if (open && !props && !error && !loadingStates["".concat(scope, ":").concat(componentKey)]) {
         to = setTimeout(onTimeout, 15000);
@@ -839,7 +839,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                     return _context7.abrupt("return");
 
                   case 6:
-                    /**TODO: fix base scope === 'public' */
+                    /** TODO: fix base scope === 'public' */
                     if (eventData.action === 'render' && eventData.key === componentKey) {
                       data = (0, _socket.parseSocketResponse)(eventData);
                       _error = internalState.error, _rest = _objectWithoutProperties(internalState, _excluded3);
