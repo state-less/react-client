@@ -478,9 +478,18 @@ export const useComponent = (
 
         const resolved = {};
         const keys = Object.keys((componentState || rendered)?.props || {});
-        keys.length = 25;
 
-        keys.forEach((propKey) => {
+        if (keys.length > 15) {
+            orgLogger.warning`Component has over 15 states. Components are currently limited to ${15} states`;
+        }
+
+        keys.length = 15;
+
+        /**
+         * We cannot use array iterators because it skips over empty entries.
+         */
+        // eslint-disable-next-line no-restricted-syntax
+        for (const propKey of keys) {
             const serverProps = (componentState || rendered)?.props || {};
             const state = serverProps[propKey] || {};
 
@@ -500,8 +509,7 @@ export const useComponent = (
                     resolved[setKey] = setValue;
                 }
             }
-        });
-
+        }
         /** Bind action functions */
         (componentState || rendered)?.props?.children
             ?.filter((child) => {

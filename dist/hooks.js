@@ -713,10 +713,16 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
 
     var resolved = {};
     var keys = Object.keys(((_ref7 = componentState || rendered) === null || _ref7 === void 0 ? void 0 : _ref7.props) || {});
-    keys.length = 25;
-    keys.forEach(function (propKey) {
+    keys.length = 15;
+    /**
+     * We cannot use array iterators because it skips over empty entries.
+     */
+    // eslint-disable-next-line no-restricted-syntax
+
+    for (var _i2 = 0, _keys = keys; _i2 < _keys.length; _i2++) {
       var _ref8;
 
+      var propKey = _keys[_i2];
       var serverProps = ((_ref8 = componentState || rendered) === null || _ref8 === void 0 ? void 0 : _ref8.props) || {};
       var state = serverProps[propKey] || {};
       var resolvedState = useServerState(state.value, {
@@ -737,8 +743,9 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           resolved[setKey] = setValue;
         }
       }
-    });
+    }
     /** Bind action functions */
+
 
     (_ref9 = componentState || rendered) === null || _ref9 === void 0 ? void 0 : (_ref9$props = _ref9.props) === null || _ref9$props === void 0 ? void 0 : (_ref9$props$children = _ref9$props.children) === null || _ref9$props$children === void 0 ? void 0 : _ref9$props$children.filter(function (child) {
       return child.component === 'Action';
