@@ -17,9 +17,9 @@ var _logger = require("./lib/logger");
 
 var _uuid = require("uuid");
 
-var _socket2 = require("./lib/util/socket");
+var _socket = require("./lib/util/socket");
 
-var _templateObject;
+var _templateObject, _templateObject2;
 
 var _excluded = ["key", "strict", "defaultValue", "defer", "value", "scope", "suspend", "rendered", "requestType"],
     _excluded2 = ["strict", "suspend", "scope", "props"],
@@ -62,6 +62,10 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var stateCount = 0;
+
+var isRenderResponse = function isRenderResponse(eventData) {
+  return true;
+};
 
 var increaseCount = function increaseCount() {
   return stateCount++;
@@ -157,12 +161,12 @@ var useStream = function useStream(name, def) {
 
   (0, _react.useEffect)(function () {
     if (open) {
-      (0, _socket2.emit)(socket, {
+      (0, _socket.emit)(socket, {
         action: 'stream',
         name: name,
         id: id
       });
-      (0, _socket2.on)(socket, 'message', /*#__PURE__*/function () {
+      (0, _socket.on)(socket, 'message', /*#__PURE__*/function () {
         var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
           var data, json;
           return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -170,7 +174,7 @@ var useStream = function useStream(name, def) {
               switch (_context.prev = _context.next) {
                 case 0:
                   _context.next = 2;
-                  return (0, _socket2.consume)(event);
+                  return (0, _socket.consume)(event);
 
                 case 2:
                   data = _context.sent;
@@ -183,7 +187,7 @@ var useStream = function useStream(name, def) {
                   return _context.abrupt("return");
 
                 case 5:
-                  json = (0, _socket2.parseSocketResponse)(data);
+                  json = (0, _socket.parseSocketResponse)(data);
 
                   if (data.id === id) {
                     setData(json);
@@ -252,8 +256,10 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     if (!atoms.has("".concat(scope, ":").concat(key, ":").concat(rest.id))) {
       atm = (0, _jotai.atom)({
         defaultState: defaultState,
-        clientId: increaseCount()
-      });
+        clientId: increaseCount(),
+        loading: false
+      }); //Because multiple hooks may access the same component we need to bypass the react render cycle
+
       stateLoadingStates["".concat(scope, ":").concat(key)] = false;
       atoms.set("".concat(scope, ":").concat(key, ":").concat(rest.id), atm);
     } else {
@@ -276,12 +282,15 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       }
     }, [rest.id]);
 
-    var setLoading = function setLoading(loading) {
-      stateLoadingStates["".concat(scope, ":").concat(key)] = loading;
-    };
-
     var extendState = function extendState(data) {
       return setState(_objectSpread(_objectSpread({}, state), data));
+    };
+
+    var setLoading = function setLoading(loading) {
+      stateLoadingStates["".concat(scope, ":").concat(key)] = loading;
+      extendState({
+        loading: loading
+      });
     };
 
     var setStateEvent = (0, _react.useMemo)(function () {
@@ -315,7 +324,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       var onPageShow = function onPageShow() {
         _logger.orgLogger.info(_templateObject || (_templateObject = _taggedTemplateLiteral(["Subscribing to state ", ""])), key);
 
-        (0, _socket2.emit)(socket, {
+        (0, _socket.emit)(socket, {
           action: _consts.EVENT_USE_STATE,
           key: key,
           defaultValue: value,
@@ -337,7 +346,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
                     _context2.next = 2;
-                    return (0, _socket2.consume)(event);
+                    return (0, _socket.consume)(event);
 
                   case 2:
                     eventData = _context2.sent;
@@ -350,7 +359,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                     return _context2.abrupt("return");
 
                   case 5:
-                    data = (0, _socket2.parseSocketResponse)(eventData);
+                    data = (0, _socket.parseSocketResponse)(eventData);
 
                     if (!(eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined')) {
                       _context2.next = 8;
@@ -379,13 +388,13 @@ var useServerState = function useServerState(clientDefaultValue, options) {
           };
         }();
 
-        (0, _socket2.onMessage)(socket, onSetValue);
+        (0, _socket.onMessage)(socket, onSetValue);
         onPageShow();
         window.addEventListener('pageshow', onPageShow);
       }
 
       return function () {
-        (0, _socket2.off)(socket, 'message', onSetValue);
+        (0, _socket.off)(socket, 'message', onSetValue);
         window.removeEventListener('pageshow', onPageShow);
         stateLoadingStates["".concat(scope, ":").concat(key)] = false; // stateLoadingStates[`${scope}:${key}`]
         // [createStateEvent].forEach(event => socket.removeAllListeners(event));
@@ -408,7 +417,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                   switch (_context3.prev = _context3.next) {
                     case 0:
                       _context3.next = 2;
-                      return (0, _socket2.consume)(event);
+                      return (0, _socket.consume)(event);
 
                     case 2:
                       eventData = _context3.sent;
@@ -421,7 +430,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                       return _context3.abrupt("return");
 
                     case 5:
-                      data = (0, _socket2.parseSocketResponse)(eventData);
+                      data = (0, _socket.parseSocketResponse)(eventData);
 
                       if (!(eventData.action === 'setValue' && (clientId === eventData.requestId || id === data.id) && typeof data.value === 'undefined')) {
                         _context3.next = 8;
@@ -451,7 +460,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
             };
           }();
 
-          (0, _socket2.on)(socket, 'message', onSetValue);
+          (0, _socket.on)(socket, 'message', onSetValue);
 
           var onError = /*#__PURE__*/function () {
             var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(event) {
@@ -461,7 +470,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                   switch (_context4.prev = _context4.next) {
                     case 0:
                       _context4.next = 2;
-                      return (0, _socket2.consume)(event);
+                      return (0, _socket.consume)(event);
 
                     case 2:
                       data = _context4.sent;
@@ -480,7 +489,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
                       }
 
                       _context4.next = 8;
-                      return (0, _socket2.parseSocketResponse)(data);
+                      return (0, _socket.parseSocketResponse)(data);
 
                     case 8:
                       err = _context4.sent;
@@ -501,14 +510,14 @@ var useServerState = function useServerState(clientDefaultValue, options) {
             };
           }();
 
-          (0, _socket2.on)(socket, 'message', onError);
+          (0, _socket.on)(socket, 'message', onError);
         }
       }
 
       return function () {
         if (id) {
-          (0, _socket2.off)(socket, 'message', onSetValue);
-          (0, _socket2.off)(socket, 'message', onError);
+          (0, _socket.off)(socket, 'message', onSetValue);
+          (0, _socket.off)(socket, 'message', onError);
         }
       };
     });
@@ -523,7 +532,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     }, [id, error, key]);
 
     var setServerState = function setServerState(value) {
-      (0, _socket2.emit)(socket, {
+      (0, _socket.emit)(socket, {
         action: _consts.EVENT_SET_STATE,
         id: id,
         key: key,
@@ -570,7 +579,7 @@ var useResponse = function useResponse(fn, action, keepAlive) {
 
   (0, _react.useEffect)(function () {
     if (!id) return;
-    (0, _socket2.onMessage)(socket, /*#__PURE__*/function () {
+    (0, _socket.onMessage)(socket, /*#__PURE__*/function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(event) {
         var eventData, data;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
@@ -578,7 +587,7 @@ var useResponse = function useResponse(fn, action, keepAlive) {
             switch (_context5.prev = _context5.next) {
               case 0:
                 _context5.next = 2;
-                return (0, _socket2.consume)(event);
+                return (0, _socket.consume)(event);
 
               case 2:
                 eventData = _context5.sent;
@@ -591,7 +600,7 @@ var useResponse = function useResponse(fn, action, keepAlive) {
                 return _context5.abrupt("return");
 
               case 5:
-                data = (0, _socket2.parseSocketResponse)(eventData);
+                data = (0, _socket.parseSocketResponse)(eventData);
 
                 if (eventData.id === id) {
                   fn(data);
@@ -658,11 +667,11 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
         component: rendered,
         props: {},
         scope: scope,
-        key: componentKey
+        key: componentKey,
+        loading: false
       };
     }, []);
     var atm;
-    var loading = loadingStates["".concat(scope, ":").concat(componentKey)];
 
     if (!componentAtoms.has("".concat(scope, ":").concat(componentKey))) {
       atm = (0, _jotai.atom)({
@@ -681,6 +690,12 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
 
     var extendState = function extendState(data) {
       return setState(_objectSpread(_objectSpread({}, internalState), data));
+    };
+
+    var setLoading = function setLoading(loading) {
+      return extendState({
+        loading: loading
+      });
     };
 
     var component = internalState.component;
@@ -753,7 +768,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                   }
 
                   _context6.next = 5;
-                  return (0, _socket2.request)([socket].concat(_toConsumableArray(sockets)), {
+                  return (0, _socket.request)([socket].concat(_toConsumableArray(sockets)), {
                     action: 'call',
                     props: clientProps,
                     id: id,
@@ -792,14 +807,12 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
         props = _ref11.props,
         error = _ref11.error;
 
-    var onTimeout = function onTimeout() {
-      loadingStates["".concat(scope, ":").concat(componentKey)] = false;
-    };
+    var onTimeout = function onTimeout() {};
 
     (0, _react.useEffect)(function () {
       var to, onRender, onError, onLog;
 
-      if (open && !props && !error && !loading && !loadingStates["".concat(scope, ":").concat(componentKey)]) {
+      if (open && !props && !error && !loadingStates["".concat(scope, ":").concat(componentKey)]) {
         to = setTimeout(onTimeout, 15000);
         loadingStates["".concat(scope, ":").concat(componentKey)] = true;
 
@@ -813,7 +826,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                   case 0:
                     _context7.prev = 0;
                     _context7.next = 3;
-                    return (0, _socket2.consume)(event);
+                    return (0, _socket.consume)(event);
 
                   case 3:
                     eventData = _context7.sent;
@@ -827,22 +840,25 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
 
                   case 6:
                     /**TODO: fix base scope === 'public' */
-                    if (eventData.action === 'render' && eventData.key == componentKey) {
-                      data = (0, _socket2.parseSocketResponse)(eventData);
+                    if (eventData.action === 'render' && eventData.key === componentKey) {
+                      data = (0, _socket.parseSocketResponse)(eventData);
                       _error = internalState.error, _rest = _objectWithoutProperties(internalState, _excluded3);
                       setState(_objectSpread(_objectSpread({}, _rest), {}, {
-                        component: data
+                        component: data,
+                        loading: false
                       }));
                     }
 
-                    _context7.next = 11;
+                    _context7.next = 12;
                     break;
 
                   case 9:
                     _context7.prev = 9;
                     _context7.t0 = _context7["catch"](0);
 
-                  case 11:
+                    _logger.orgLogger.error(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Error in render result ", "."])), _context7.t0);
+
+                  case 12:
                   case "end":
                     return _context7.stop();
                 }
@@ -855,7 +871,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           };
         }();
 
-        (0, _socket2.onMessage)(socket, onRender);
+        (0, _socket.onMessage)(socket, onRender);
         /* I'm not sure if this is the proper place to handle errors from a component. There's no serverside mechanism that sends error messages from components */
 
         onError = /*#__PURE__*/function () {
@@ -866,7 +882,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                 switch (_context8.prev = _context8.next) {
                   case 0:
                     _context8.next = 2;
-                    return (0, _socket2.consume)(event);
+                    return (0, _socket.consume)(event);
 
                   case 2:
                     data = _context8.sent;
@@ -879,20 +895,21 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                     return _context8.abrupt("return");
 
                   case 5:
-                    if (!(data.type === 'error' && data.key == componentKey)) {
+                    if (!(data.type === 'error' && data.key === componentKey)) {
                       _context8.next = 12;
                       break;
                     }
 
                     _context8.next = 8;
-                    return (0, _socket2.parseSocketResponse)(data);
+                    return (0, _socket.parseSocketResponse)(data);
 
                   case 8:
                     err = _context8.sent;
                     errObj = new Error(err.message);
                     Object.assign(errObj, err);
                     extendState({
-                      error: errObj
+                      error: errObj,
+                      loading: false
                     });
 
                   case 12:
@@ -908,7 +925,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           };
         }();
 
-        (0, _socket2.onMessage)(socket, onError);
+        (0, _socket.onMessage)(socket, onError);
 
         onLog = function onLog(data) {
           var _orgLogger$scope$setM;
@@ -918,8 +935,8 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           (_orgLogger$scope$setM = _logger.orgLogger.scope(data.scope).setMessageLevel(data.level)).log.apply(_orgLogger$scope$setM, _toConsumableArray(data.tag));
         };
 
-        (0, _socket2.on)(socket, 'log', onLog);
-        (0, _socket2.emit)(socket, {
+        (0, _socket.on)(socket, 'log', onLog);
+        (0, _socket.emit)(socket, {
           action: _consts.EVENT_USE_COMPONENT,
           key: componentKey,
           scope: scope || 'base',
@@ -927,31 +944,30 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           options: _objectSpread({}, rest),
           headers: headers
         });
-        loadingStates["".concat(scope, ":").concat(componentKey)] = true;
-      }
+        setLoading(true);
+      } // secOpen.forEach((open, i) => {
+      //     if (open) {
+      //         const socket = sockets[i];
+      //         emit(socket, {
+      //             action: EVENT_USE_COMPONENT,
+      //             key: componentKey,
+      //             scope: scope || 'base',
+      //             options: { ...rest },
+      //         });
+      //     }
+      // });
 
-      secOpen.forEach(function (open, i) {
-        if (open) {
-          var _socket = sockets[i];
-          (0, _socket2.emit)(_socket, {
-            action: _consts.EVENT_USE_COMPONENT,
-            key: componentKey,
-            scope: scope || 'base',
-            options: _objectSpread({}, rest)
-          });
-        }
-      });
-      clearTimeout(loading);
 
       (function () {
-        (0, _socket2.off)(socket, 'message', onRender);
-        (0, _socket2.off)(socket, 'message', onError);
-        (0, _socket2.off)(socket, 'message', onLog);
+        (0, _socket.off)(socket, 'message', onRender);
+        (0, _socket.off)(socket, 'message', onError);
+        (0, _socket.off)(socket, 'message', onLog);
+        setLoading(false);
       });
     }, [open]);
     (0, _react.useEffect)(function () {
       if (open && !error) {
-        (0, _socket2.emit)(socket, {
+        (0, _socket.emit)(socket, {
           action: _consts.EVENT_USE_COMPONENT,
           key: componentKey,
           scope: scope || 'base',
@@ -959,6 +975,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           options: _objectSpread({}, rest),
           headers: headers
         });
+        setLoading(true);
       }
     }, [headers === null || headers === void 0 ? void 0 : headers.Authorization]);
     (0, _react.useEffect)(function () {
@@ -975,7 +992,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
       throw componentState;
     }
 
-    if (!component && loading) {
+    if (!component && internalState.loading) {
       if (suspend) {
         throw new Promise(function () {});
       } else {
@@ -984,8 +1001,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
     }
 
     return _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, rendered || {}), componentState), internalState), {}, {
-      resolved: resolved,
-      loading: loading
+      resolved: resolved
     });
   } catch (e) {
     if (!ctx) throw new Error('No available context. Are you missing a Provider?');

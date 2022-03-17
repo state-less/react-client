@@ -25,6 +25,7 @@ import {
 
 let stateCount = 0;
 
+const isRenderResponse = (eventData) => true;
 const increaseCount = () => stateCount++;
 const join =
     (delim) =>
@@ -142,7 +143,13 @@ export const useServerState = (clientDefaultValue, options) => {
         let atm;
 
         if (!atoms.has(`${scope}:${key}:${rest.id}`)) {
-            atm = atom({ defaultState, clientId: increaseCount() });
+            atm = atom({
+                defaultState,
+                clientId: increaseCount(),
+                loading: false,
+            });
+
+            //Because multiple hooks may access the same component we need to bypass the react render cycle
             stateLoadingStates[`${scope}:${key}`] = false;
             atoms.set(`${scope}:${key}:${rest.id}`, atm);
         } else {
@@ -158,11 +165,12 @@ export const useServerState = (clientDefaultValue, options) => {
             }
         }, [rest.id]);
 
+        const extendState = (data) => setState({ ...state, ...data });
+
         const setLoading = (loading) => {
             stateLoadingStates[`${scope}:${key}`] = loading;
+            extendState({ loading });
         };
-
-        const extendState = (data) => setState({ ...state, ...data });
 
         const setStateEvent = useMemo(() => genSetStateEventName(id), [id]);
         const createStateEvent = useMemo(
@@ -438,12 +446,13 @@ export const useComponent = (
                 props: {},
                 scope,
                 key: componentKey,
+                loading: false,
             }),
             []
         );
 
         let atm;
-        const loading = loadingStates[`${scope}:${componentKey}`];
+
         if (!componentAtoms.has(`${scope}:${componentKey}`)) {
             atm = atom({ defaultState });
             loadingStates[`${scope}:${componentKey}`] = false;
@@ -455,6 +464,8 @@ export const useComponent = (
             useAtom(atm);
 
         const extendState = (data) => setState({ ...internalState, ...data });
+        const setLoading = (loading) => extendState({ loading });
+
         const { component } = internalState;
         const [componentState] = useServerState(component, {
             key: componentKey,
@@ -530,9 +541,7 @@ export const useComponent = (
             });
 
         const { props, error } = component || {};
-        const onTimeout = () => {
-            loadingStates[`${scope}:${componentKey}`] = false;
-        };
+        const onTimeout = () => {};
 
         useEffect(() => {
             let to, onRender, onError, onLog;
@@ -540,7 +549,6 @@ export const useComponent = (
                 open &&
                 !props &&
                 !error &&
-                !loading &&
                 !loadingStates[`${scope}:${componentKey}`]
             ) {
                 to = setTimeout(onTimeout, 15000);
@@ -553,13 +561,19 @@ export const useComponent = (
                         /**TODO: fix base scope === 'public' */
                         if (
                             eventData.action === 'render' &&
-                            eventData.key == componentKey
+                            eventData.key === componentKey
                         ) {
                             const data = parseSocketResponse(eventData);
                             const { error, ...rest } = internalState;
-                            setState({ ...rest, component: data });
+                            setState({
+                                ...rest,
+                                component: data,
+                                loading: false,
+                            });
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        orgLogger.error`Error in render result ${e}.`;
+                    }
                 };
                 onMessage(socket, onRender);
 
@@ -568,11 +582,11 @@ export const useComponent = (
                     const data = await consume(event);
                     if (data === 'ping') return;
 
-                    if (data.type === 'error' && data.key == componentKey) {
+                    if (data.type === 'error' && data.key === componentKey) {
                         const err = await parseSocketResponse(data);
                         const errObj = new Error(err.message);
                         Object.assign(errObj, err);
-                        extendState({ error: errObj });
+                        extendState({ error: errObj, loading: false });
                     }
                 };
                 onMessage(socket, onError);
@@ -595,27 +609,26 @@ export const useComponent = (
                     headers,
                 });
 
-                loadingStates[`${scope}:${componentKey}`] = true;
+                setLoading(true);
             }
 
-            secOpen.forEach((open, i) => {
-                if (open) {
-                    const socket = sockets[i];
-                    emit(socket, {
-                        action: EVENT_USE_COMPONENT,
-                        key: componentKey,
-                        scope: scope || 'base',
-                        options: { ...rest },
-                    });
-                }
-            });
-
-            clearTimeout(loading);
+            // secOpen.forEach((open, i) => {
+            //     if (open) {
+            //         const socket = sockets[i];
+            //         emit(socket, {
+            //             action: EVENT_USE_COMPONENT,
+            //             key: componentKey,
+            //             scope: scope || 'base',
+            //             options: { ...rest },
+            //         });
+            //     }
+            // });
 
             () => {
                 off(socket, 'message', onRender);
                 off(socket, 'message', onError);
                 off(socket, 'message', onLog);
+                setLoading(false);
             };
         }, [open]);
 
@@ -629,6 +642,7 @@ export const useComponent = (
                     options: { ...rest },
                     headers,
                 });
+                setLoading(true);
             }
         }, [headers?.Authorization]);
 
@@ -645,7 +659,7 @@ export const useComponent = (
         if (componentState instanceof Error) {
             throw componentState;
         }
-        if (!component && loading) {
+        if (!component && internalState.loading) {
             if (suspend) {
                 throw new Promise(() => {});
             } else {
@@ -658,7 +672,6 @@ export const useComponent = (
             ...componentState,
             ...internalState,
             resolved,
-            loading,
         };
     } catch (e) {
         if (!ctx)
