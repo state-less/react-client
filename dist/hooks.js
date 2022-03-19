@@ -19,10 +19,12 @@ var _logger = require("./lib/logger");
 
 var _socket = require("./lib/util/socket");
 
-var _templateObject, _templateObject2;
+var _util = require("./lib/util");
+
+var _templateObject, _templateObject2, _templateObject3;
 
 var _excluded = ["key", "strict", "defaultValue", "defer", "value", "scope", "suspend", "rendered", "requestType"],
-    _excluded2 = ["strict", "suspend", "scope", "props"],
+    _excluded2 = ["strict", "suspend", "scope", "props", "host"],
     _excluded3 = ["error"];
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -145,11 +147,13 @@ var useStore = function useStore(store, key) {
       setAtom = _useState2[1];
 };
 
-var useStream = function useStream(name, def) {
+var useStream = function useStream(name, def, host) {
   var _useContext = (0, _react.useContext)(_context9.context),
-      socket = _useContext.socket,
+      sockets = _useContext.sockets,
       open = _useContext.open;
 
+  host = (0, _util.assertGetSingleHost)(sockets, host);
+  var socket = sockets[host];
   var id = (0, _react.useMemo)(function () {
     return (0, _uuid.v4)();
   }, []);
@@ -238,11 +242,17 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       requestType = _options$requestType === void 0 ? 'request' : _options$requestType,
       rest = _objectWithoutProperties(_options, _excluded);
 
+  var _options2 = options,
+      _options2$host = _options2.host,
+      host = _options2$host === void 0 ? null : _options2$host;
   var ctx = (0, _react.useContext)(_context9.context);
 
   try {
-    var socket = ctx.socket,
+    var sockets = ctx.sockets,
         open = ctx.open;
+    host = (0, _util.assertGetSingleHost)(sockets, host);
+    var socket = sockets[host];
+    if (!socket) throw new Error("Passed non existing host to useComponent. Please verify you defined '".concat(host, "' in your provider"));
     var defaultState = (0, _react.useMemo)(function () {
       return {
         value: clientDefaultValue,
@@ -293,16 +303,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       });
     };
 
-    var setStateEvent = (0, _react.useMemo)(function () {
-      return genSetStateEventName(id);
-    }, [id]);
-    var createStateEvent = (0, _react.useMemo)(function () {
-      return genCreateStateEventName(clientId);
-    }, [clientId]);
-    var errorEvent = (0, _react.useMemo)(function () {
-      return genErrorEventName(clientId);
-    }, [clientId]);
-
     var onTimeout = function onTimeout() {
       setState(function (state) {
         var id = state.id;
@@ -322,7 +322,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       var to;
 
       var onPageShow = function onPageShow() {
-        _logger.orgLogger.info(_templateObject || (_templateObject = _taggedTemplateLiteral(["Subscribing to state ", ""])), key);
+        _logger.orgLogger.debug(_templateObject || (_templateObject = _taggedTemplateLiteral(["Subscribing to state ", ""])), key);
 
         (0, _socket.emit)(socket, {
           action: _consts.EVENT_USE_STATE,
@@ -568,9 +568,15 @@ var useServerState = function useServerState(clientDefaultValue, options) {
 
 exports.useServerState = useServerState;
 
-var useResponse = function useResponse(fn, action, keepAlive) {
+var useResponse = function useResponse(fn, action, _ref5) {
+  var _ref5$keepAlive = _ref5.keepAlive,
+      keepAlive = _ref5$keepAlive === void 0 ? false : _ref5$keepAlive,
+      _ref5$host = _ref5.host,
+      host = _ref5$host === void 0 ? null : _ref5$host;
   var ctx = (0, _react.useContext)(_context9.context);
-  var socket = ctx.socket;
+  var sockets = ctx.sockets;
+  host = (0, _util.assertGetSingleHost)(sockets, host);
+  var socket = sockets[host];
 
   var _useState5 = (0, _react.useState)(null),
       _useState6 = _slicedToArray(_useState5, 2),
@@ -580,7 +586,7 @@ var useResponse = function useResponse(fn, action, keepAlive) {
   (0, _react.useEffect)(function () {
     if (!id) return;
     (0, _socket.onMessage)(socket, /*#__PURE__*/function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(event) {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(event) {
         var eventData, data;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
@@ -615,7 +621,7 @@ var useResponse = function useResponse(fn, action, keepAlive) {
       }));
 
       return function (_x4) {
-        return _ref5.apply(this, arguments);
+        return _ref6.apply(this, arguments);
       };
     }());
   }, [id]);
@@ -641,27 +647,30 @@ var loadingStates = {};
  * @param {*} options - Options
 
  */
-var useComponent = function useComponent(componentKey, _ref6, rendered) {
-  var _ref6$strict = _ref6.strict,
-      strict = _ref6$strict === void 0 ? false : _ref6$strict,
-      _ref6$suspend = _ref6.suspend,
-      suspend = _ref6$suspend === void 0 ? false : _ref6$suspend,
-      _ref6$scope = _ref6.scope,
-      scope = _ref6$scope === void 0 ? _consts.DEFAULT_SCOPE : _ref6$scope,
-      clientProps = _ref6.props,
-      rest = _objectWithoutProperties(_ref6, _excluded2);
+var useComponent = function useComponent(componentKey, _ref7, rendered) {
+  var _ref7$strict = _ref7.strict,
+      strict = _ref7$strict === void 0 ? false : _ref7$strict,
+      _ref7$suspend = _ref7.suspend,
+      suspend = _ref7$suspend === void 0 ? false : _ref7$suspend,
+      _ref7$scope = _ref7.scope,
+      scope = _ref7$scope === void 0 ? _consts.DEFAULT_SCOPE : _ref7$scope,
+      clientProps = _ref7.props,
+      _ref7$host = _ref7.host,
+      host = _ref7$host === void 0 ? null : _ref7$host,
+      rest = _objectWithoutProperties(_ref7, _excluded2);
 
   var ctx = (0, _react.useContext)(_context9.context);
 
   try {
-    var _ref7, _ref9, _ref9$props, _ref9$props$children;
+    var _ref8, _ref10, _ref10$props, _ref10$props$children;
 
-    var socket = ctx.socket,
-        sockets = ctx.sockets,
+    var sockets = ctx.sockets,
         open = ctx.open,
-        secOpen = ctx.secOpen,
-        allOpen = ctx.allOpen,
-        headers = ctx.headers;
+        headers = ctx.headers; // eslint-disable-next-line no-param-reassign
+
+    host = (0, _util.assertGetSingleHost)(sockets, host);
+    var socket = sockets[host];
+    if (!socket) throw new Error("Passed non existing host to useComponent. Please verify you defined '".concat(host, "' in your provider"));
     var defaultState = (0, _react.useMemo)(function () {
       return {
         component: rendered,
@@ -712,7 +721,12 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
 
 
     var resolved = {};
-    var keys = Object.keys(((_ref7 = componentState || rendered) === null || _ref7 === void 0 ? void 0 : _ref7.props) || {});
+    var keys = Object.keys(((_ref8 = componentState || rendered) === null || _ref8 === void 0 ? void 0 : _ref8.props) || {});
+
+    if (keys.length > 15) {
+      _logger.orgLogger.warning(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Component has over 15 states. Components are currently limited to ", " states"])), 15);
+    }
+
     keys.length = 15;
     /**
      * We cannot use array iterators because it skips over empty entries.
@@ -720,10 +734,10 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
     // eslint-disable-next-line no-restricted-syntax
 
     for (var _i2 = 0, _keys = keys; _i2 < _keys.length; _i2++) {
-      var _ref8;
+      var _ref9;
 
       var propKey = _keys[_i2];
-      var serverProps = ((_ref8 = componentState || rendered) === null || _ref8 === void 0 ? void 0 : _ref8.props) || {};
+      var serverProps = ((_ref9 = componentState || rendered) === null || _ref9 === void 0 ? void 0 : _ref9.props) || {};
       var state = serverProps[propKey] || {};
       var resolvedState = useServerState(state.value, {
         key: state.key,
@@ -747,7 +761,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
     /** Bind action functions */
 
 
-    (_ref9 = componentState || rendered) === null || _ref9 === void 0 ? void 0 : (_ref9$props = _ref9.props) === null || _ref9$props === void 0 ? void 0 : (_ref9$props$children = _ref9$props.children) === null || _ref9$props$children === void 0 ? void 0 : _ref9$props$children.filter(function (child) {
+    (_ref10 = componentState || rendered) === null || _ref10 === void 0 ? void 0 : (_ref10$props = _ref10.props) === null || _ref10$props === void 0 ? void 0 : (_ref10$props$children = _ref10$props.children) === null || _ref10$props$children === void 0 ? void 0 : _ref10$props$children.filter(function (child) {
       return child.component === 'Action';
     }).forEach(function (action) {
       action.props.fns = action.props.handler.reduce(function (fns, handler) {
@@ -772,7 +786,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                   }
 
                   _context6.next = 5;
-                  return (0, _socket.request)([socket].concat(_toConsumableArray(sockets)), {
+                  return (0, _socket.request)(socket, {
                     action: 'call',
                     props: clientProps,
                     id: id,
@@ -807,9 +821,9 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
       }, {});
     });
 
-    var _ref11 = component || {},
-        props = _ref11.props,
-        error = _ref11.error;
+    var _ref12 = component || {},
+        props = _ref12.props,
+        error = _ref12.error;
 
     var onTimeout = function onTimeout() {};
 
@@ -824,7 +838,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
         loadingStates["".concat(scope, ":").concat(componentKey)] = true;
 
         onRender = /*#__PURE__*/function () {
-          var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(event) {
+          var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(event) {
             var eventData, data, _error, _rest;
 
             return regeneratorRuntime.wrap(function _callee7$(_context7) {
@@ -863,7 +877,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
                     _context7.prev = 9;
                     _context7.t0 = _context7["catch"](0);
 
-                    _logger.orgLogger.error(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Error in render result ", "."])), _context7.t0);
+                    _logger.orgLogger.error(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Error in render result ", "."])), _context7.t0);
 
                   case 12:
                   case "end":
@@ -874,7 +888,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           }));
 
           return function onRender(_x5) {
-            return _ref12.apply(this, arguments);
+            return _ref13.apply(this, arguments);
           };
         }();
 
@@ -882,7 +896,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
         /* I'm not sure if this is the proper place to handle errors from a component. There's no serverside mechanism that sends error messages from components */
 
         onError = /*#__PURE__*/function () {
-          var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(event) {
+          var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(event) {
             var data, err, errObj;
             return regeneratorRuntime.wrap(function _callee8$(_context8) {
               while (1) {
@@ -928,7 +942,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           }));
 
           return function onError(_x6) {
-            return _ref13.apply(this, arguments);
+            return _ref14.apply(this, arguments);
           };
         }();
 
@@ -952,18 +966,7 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
           headers: headers
         });
         setLoading(true);
-      } // secOpen.forEach((open, i) => {
-      //     if (open) {
-      //         const socket = sockets[i];
-      //         emit(socket, {
-      //             action: EVENT_USE_COMPONENT,
-      //             key: componentKey,
-      //             scope: scope || 'base',
-      //             options: { ...rest },
-      //         });
-      //     }
-      // });
-
+      }
 
       (function () {
         (0, _socket.off)(socket, 'message', onRender);
@@ -1014,20 +1017,6 @@ var useComponent = function useComponent(componentKey, _ref6, rendered) {
     if (!ctx) throw new Error('No available context. Are you missing a Provider?');
     throw e;
   }
-}; // export const useServerAtom = (atm, clientDefaultValue, options) => {
-//     const { useAtom } = useContext(context);
-//     const [state, setState] = useServerState(clientDefaultValue, options);
-//     const [value, setAtomValue] = useAtom(atm);
-//     useEffect(() => {
-//         setAtomValue(state);
-//     }, [state]);
-//     return [value, setAtomValue];
-// };
-// const Test = () => {
-//     useServerState('test', {
-//         strict,
-//     });
-// };
-
+};
 
 exports.useComponent = useComponent;

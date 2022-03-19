@@ -1,5 +1,7 @@
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -23,6 +25,8 @@ var _Web = require("./Web3");
 
 var _jotai2 = require("./hooks/jotai");
 
+var _util = require("./lib/util");
+
 var _jsxRuntime = require("react/jsx-runtime");
 
 var _excluded = ["Authorization"];
@@ -34,8 +38,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -89,11 +91,16 @@ var useNoopStrat = function useNoopStrat() {
 
 var useAuth = function useAuth() {
   var useStrategy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : useNoopStrat;
-  var auto = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+  var _ref = arguments.length > 1 ? arguments[1] : undefined,
+      _ref$auto = _ref.auto,
+      auto = _ref$auto === void 0 ? false : _ref$auto,
+      _ref$host = _ref.host,
+      host = _ref$host === void 0 ? null : _ref$host;
 
   var _useContext = (0, _react.useContext)(_context6.context),
       open = _useContext.open,
-      socket = _useContext.socket,
+      sockets = _useContext.sockets,
       headers = _useContext.headers,
       setHeaders = _useContext.setHeaders,
       setIdentity = _useContext.setIdentity,
@@ -161,15 +168,20 @@ var useAuth = function useAuth() {
 
       logout();
     }, timeValid);
-    setIdentity(decoded);
+    setIdentity(decoded); // eslint-disable-next-line consistent-return
+
     return function () {
       clearTimeout(to);
     };
-  }, [headers === null || headers === void 0 ? void 0 : headers.Authorization]);
+  }, [headers === null || headers === void 0 ? void 0 : headers.Authorization]); // eslint-disable-next-line no-param-reassign
+
+  host = (0, _util.assertGetSingleHost)(sockets, host);
+  var socket = sockets[host];
 
   function authenticate() {
     return _authenticate.apply(this, arguments);
-  }
+  } // eslint-disable-next-line no-shadow
+
 
   function _authenticate() {
     _authenticate = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
@@ -208,20 +220,20 @@ var useAuth = function useAuth() {
               data = _context3.sent;
 
               if (!data.success) {
-                _context3.next = 19;
+                _context3.next = 11;
                 break;
               }
 
-              _context3.prev = 8;
-              _context3.next = 11;
+              _context3.next = 10;
               return (0, _socket.request)(socket, _objectSpread({
                 action: 'auth',
                 phase: 'response'
               }, data));
 
-            case 11:
+            case 10:
               response = _context3.sent;
 
+            case 11:
               if (response) {
                 setHasAuthed(true);
                 setHeaders(_objectSpread(_objectSpread({}, headers), {}, {
@@ -236,17 +248,12 @@ var useAuth = function useAuth() {
 
               return _context3.abrupt("return", response);
 
-            case 16:
-              _context3.prev = 16;
-              _context3.t0 = _context3["catch"](8);
-              throw _context3.t0;
-
-            case 19:
+            case 13:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, this, [[8, 16]]);
+      }, _callee3, this);
     }));
     return _authenticate.apply(this, arguments);
   }
@@ -256,7 +263,7 @@ var useAuth = function useAuth() {
   }
 
   function _register() {
-    _register = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(strategy) {
+    _register = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(strategyName) {
       var response;
       return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
@@ -266,36 +273,28 @@ var useAuth = function useAuth() {
               return (0, _socket.request)(socket, {
                 action: 'auth',
                 phase: 'register',
-                strategy: strategy,
+                strategy: strategyName,
                 headers: headers
               });
 
             case 2:
               response = _context4.sent;
 
-              if (!response) {
-                _context4.next = 13;
-                break;
+              if (response) {
+                setHeaders(_objectSpread(_objectSpread({}, headers), {}, {
+                  Authorization: "Bearer ".concat(response)
+                }));
+                setHasAuthed(true);
               }
 
-              _context4.prev = 4;
-              setHeaders(_objectSpread(_objectSpread({}, headers), {}, {
-                Authorization: "Bearer ".concat(response)
-              }));
-              setHasAuthed(true);
               return _context4.abrupt("return", response);
 
-            case 10:
-              _context4.prev = 10;
-              _context4.t0 = _context4["catch"](4);
-              throw _context4.t0;
-
-            case 13:
+            case 5:
             case "end":
               return _context4.stop();
           }
         }
-      }, _callee4, null, [[4, 10]]);
+      }, _callee4);
     }));
     return _register.apply(this, arguments);
   }
@@ -372,12 +371,11 @@ var SocketManager = function SocketManager(url) {
 };
 
 var MainProvider = function MainProvider(props) {
-  var _props$urls = props.urls,
-      urls = _props$urls === void 0 ? [] : _props$urls,
-      url = props.url,
+  var _props$hosts = props.hosts,
+      hosts = _props$hosts === void 0 ? {} : _props$hosts,
       _props$headers = props.headers,
       staticHeaders = _props$headers === void 0 ? {} : _props$headers,
-      useAtom = props.useAtom;
+      children = props.children;
 
   var _useState3 = (0, _react.useState)(false),
       _useState4 = _slicedToArray(_useState3, 2),
@@ -389,96 +387,63 @@ var MainProvider = function MainProvider(props) {
       headers = _useLocalStorage2[0],
       setHeaders = _useLocalStorage2[1];
 
-  var _useState5 = (0, _react.useState)(urls.map(function () {
-    return false;
-  })),
+  var _useState5 = (0, _react.useState)(null),
       _useState6 = _slicedToArray(_useState5, 2),
-      secOpen = _useState6[0],
-      setSecOpen = _useState6[1];
+      error = _useState6[0],
+      setError = _useState6[1];
 
   var _useState7 = (0, _react.useState)(null),
       _useState8 = _slicedToArray(_useState7, 2),
-      error = _useState8[0],
-      setError = _useState8[1];
+      identity = _useState8[0],
+      setIdentity = _useState8[1];
 
-  var _useState9 = (0, _react.useState)(null),
-      _useState10 = _slicedToArray(_useState9, 2),
-      identity = _useState10[0],
-      setIdentity = _useState10[1];
-
-  var allOpen = secOpen.reduce(function (all, cur) {
-    return all && cur;
-  }, open);
-  if (!url) throw new Error("Missing property 'url' in Provider props.");
-  var socket = (0, _react.useMemo)(function () {
-    if (typeof window === 'undefined' || typeof _reconnectingWebsocket.default === 'undefined') return;
-
-    _logger.orgLogger.warning(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Initializeing socket connection ", ". ", "."])), url, typeof window === "undefined" ? "undefined" : _typeof(window));
-
-    var ws = new _reconnectingWebsocket.default(url);
-    (0, _socket.setupWsHeartbeat)(ws);
-    ws.addEventListener('open', function () {
-      _logger.orgLogger.warning(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Socket connection initialized."])));
-
-      setOpen(true);
-    });
-    ws.addEventListener('close', function () {
-      _logger.orgLogger.warning(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Socket connection lost. Reconnecting."])));
-
-      setOpen(false);
-    });
-    return ws;
-  }, [url, typeof window === "undefined" ? "undefined" : _typeof(window)]);
+  if (!hosts) throw new Error("Missing property 'hosts' in Provider.");
   var sockets = (0, _react.useMemo)(function () {
-    // return urls.map((url, i) => {
-    //     if (
-    //         typeof window === 'undefined' ||
-    //         typeof ReconnectingWebsocket === 'undefined'
-    //     )
-    //         return;
-    //     const ws = new ReconnectingWebsocket(url);
-    //     ws.addEventListener('open', function open() {
-    //         console.log('connected');
-    //         // ws.send(JSON.stringify({"action" : "render" , "message" : "Hello everyone"}));
-    //         // ws.send(JSON.stringify({"action" : "useState" ,"key":"votes", "scope":"base"}));
-    //         // console.log ("sent")
-    //         // setOpen(true);
-    //         setSecOpen((secOpen) => {
-    //             const updated = [...secOpen];
-    //             updated[i] = true;
-    //             setSecOpen(updated);
-    //         });
-    //     });
-    //     ws.addEventListener('message',  (event) => {
-    //         const data = await consume(event);
-    //     });
-    //     return ws;
-    // });
-    return [];
-  }, [typeof window === "undefined" ? "undefined" : _typeof(window)]);
-  (0, _react.useEffect)(function () {
-    if (!socket) return;
-    (0, _socket.on)(socket, 'error', function () {
-      var message = _logger.orgLogger.error(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Error connecting to socket ", "."])), url);
+    if (typeof window === 'undefined' || typeof _reconnectingWebsocket.default === 'undefined') return;
+    var hostNames = Object.keys(hosts);
+    var localSocketInstances = hostNames.reduce(function (acc, key) {
+      var url = hosts[key];
 
-      setError(message);
-    });
-  }, [socket]);
-  return /*#__PURE__*/(0, _jsxRuntime.jsx)(_context6.context.Provider, {
-    value: {
+      _logger.orgLogger.info(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Initializeing socket connection to: ", "."])), url);
+
+      var ws = new _reconnectingWebsocket.default(url);
+      (0, _socket.on)(ws, 'open', function () {
+        _logger.orgLogger.debug(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Socket connection initialized."])));
+
+        setOpen(true);
+      });
+      (0, _socket.on)(ws, 'close', function () {
+        _logger.orgLogger.debug(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Socket connection lost. Reconnecting."])));
+
+        setOpen(false);
+      });
+      (0, _socket.on)(ws, 'error', function () {
+        var message = _logger.orgLogger.error(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Error connecting to socket ", "."])), url);
+
+        setOpen(false);
+        setError(message);
+      });
+      (0, _socket.setupWsHeartbeat)(ws);
+      return _objectSpread(_defineProperty({}, key, ws), acc);
+    }, {}); // eslint-disable-next-line consistent-return
+
+    return localSocketInstances;
+  }, [JSON.stringify(hosts)]);
+  var providerValue = (0, _react.useMemo)(function () {
+    return {
       setIdentity: setIdentity,
       identity: identity,
       setHeaders: setHeaders,
-      socket: socket,
       sockets: sockets,
       open: open,
-      secOpen: secOpen,
-      allOpen: allOpen,
       headers: headers,
       error: error
-    },
+    };
+  }, [identity, setHeaders, hosts, open, headers, error]);
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)(_context6.context.Provider, {
+    value: providerValue,
     children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_Web.Web3Provider, {
-      children: props.children
+      children: children
     })
   });
 };

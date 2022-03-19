@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { atom, Provider as JotaiProvider } from 'jotai';
 
 import jwt from 'jsonwebtoken';
@@ -10,6 +10,7 @@ import { on, request, setupWsHeartbeat } from './lib/util/socket';
 import { orgLogger } from './lib/logger';
 import { Web3Provider, web3Context, Web3Context } from './Web3';
 import { useLocalStorage } from './hooks/jotai';
+import { assertGetSingleHost } from './lib/util';
 
 export const useClientContext = (): ClientContext & Web3Context => {
     const internalCtx = useContext(context);
@@ -42,8 +43,11 @@ type Strategy = {
     id: string;
     strategy: string;
 };
-export const useAuth = (useStrategy = useNoopStrat, auto = false) => {
-    const { open, socket, headers, setHeaders, setIdentity, identity } =
+export const useAuth = (
+    useStrategy = useNoopStrat,
+    { auto = false, host = null }
+) => {
+    const { open, sockets, headers, setHeaders, setIdentity, identity } =
         useContext(context);
     const {
         authenticate: auth,
@@ -86,10 +90,15 @@ export const useAuth = (useStrategy = useNoopStrat, auto = false) => {
 
         setIdentity(decoded);
 
+        // eslint-disable-next-line consistent-return
         return () => {
             clearTimeout(to);
         };
     }, [headers?.Authorization]);
+
+    // eslint-disable-next-line no-param-reassign
+    host = assertGetSingleHost(sockets, host);
+    const socket = sockets[host];
 
     async function authenticate(...args) {
         const challenge = await request(socket, {
@@ -99,52 +108,49 @@ export const useAuth = (useStrategy = useNoopStrat, auto = false) => {
             headers,
         });
         const data = await auth.apply(this, [challenge, ...args]);
-        if (data.success)
-            try {
-                const response = await request(socket, {
-                    action: 'auth',
-                    phase: 'response',
-                    ...data,
-                });
 
-                if (response) {
-                    setHasAuthed(true);
-                    setHeaders({
-                        ...headers,
-                        Authorization: `Bearer ${response}`,
-                    });
-                } else {
-                    const newHeaders = { ...headers };
-                    delete newHeaders.Authorization;
+        let response;
+        if (data.success) {
+            response = await request(socket, {
+                action: 'auth',
+                phase: 'response',
+                ...data,
+            });
+        }
 
-                    setHeaders(newHeaders);
-                    setIdentity(null);
-                }
-                return response;
-            } catch (e) {
-                throw e;
-            }
+        if (response) {
+            setHasAuthed(true);
+            setHeaders({
+                ...headers,
+                Authorization: `Bearer ${response}`,
+            });
+        } else {
+            const newHeaders = { ...headers };
+            delete newHeaders.Authorization;
+
+            setHeaders(newHeaders);
+            setIdentity(null);
+        }
+        return response;
     }
 
-    async function register(strategy) {
+    // eslint-disable-next-line no-shadow
+    async function register(strategyName: string) {
         const response = await request(socket, {
             action: 'auth',
             phase: 'register',
-            strategy,
+            strategy: strategyName,
             headers,
         });
 
-        if (response)
-            try {
-                setHeaders({
-                    ...headers,
-                    Authorization: `Bearer ${response}`,
-                });
-                setHasAuthed(true);
-                return response;
-            } catch (e) {
-                throw e;
-            }
+        if (response) {
+            setHeaders({
+                ...headers,
+                Authorization: `Bearer ${response}`,
+            });
+            setHasAuthed(true);
+        }
+        return response;
     }
     async function logout() {
         const { Authorization, ...rest } = headers;
@@ -181,97 +187,77 @@ const SocketManager = (url) => {
     ws.addEventListener('close', function open() {});
 };
 const MainProvider = (props) => {
-    const { urls = [], url, headers: staticHeaders = {}, useAtom } = props;
+    const { hosts = {}, headers: staticHeaders = {}, children } = props;
     const [open, setOpen] = useState(false);
     const [headers, setHeaders] = useLocalStorage(
         'headers',
         headerAtom,
         staticHeaders
     );
-    const [secOpen, setSecOpen] = useState(urls.map(() => false));
+
     const [error, setError] = useState(null);
     const [identity, setIdentity] = useState(null);
-    const allOpen = secOpen.reduce((all, cur) => all && cur, open);
 
-    if (!url) throw new Error("Missing property 'url' in Provider props.");
+    if (!hosts) throw new Error("Missing property 'hosts' in Provider.");
 
-    const socket = useMemo(() => {
+    const sockets = useMemo(() => {
         if (
             typeof window === 'undefined' ||
             typeof ReconnectingWebsocket === 'undefined'
         )
             return;
 
-        orgLogger.warning`Initializeing socket connection ${url}. ${typeof window}.`;
-        const ws = new ReconnectingWebsocket(url);
+        const hostNames = Object.keys(hosts);
 
-        setupWsHeartbeat(ws);
+        const localSocketInstances = hostNames.reduce((acc, key) => {
+            const url = hosts[key];
+            orgLogger.info`Initializeing socket connection to: ${url}.`;
 
-        ws.addEventListener('open', () => {
-            orgLogger.warning`Socket connection initialized.`;
+            const ws = new ReconnectingWebsocket(url);
 
-            setOpen(true);
-        });
+            on(ws, 'open', () => {
+                orgLogger.debug`Socket connection initialized.`;
+                setOpen(true);
+            });
 
-        ws.addEventListener('close', () => {
-            orgLogger.warning`Socket connection lost. Reconnecting.`;
-            setOpen(false);
-        });
-        return ws;
-    }, [url, typeof window]);
+            on(ws, 'close', () => {
+                orgLogger.debug`Socket connection lost. Reconnecting.`;
+                setOpen(false);
+            });
 
-    const sockets = useMemo(() => {
-        // return urls.map((url, i) => {
-        //     if (
-        //         typeof window === 'undefined' ||
-        //         typeof ReconnectingWebsocket === 'undefined'
-        //     )
-        //         return;
-        //     const ws = new ReconnectingWebsocket(url);
-        //     ws.addEventListener('open', function open() {
-        //         console.log('connected');
-        //         // ws.send(JSON.stringify({"action" : "render" , "message" : "Hello everyone"}));
-        //         // ws.send(JSON.stringify({"action" : "useState" ,"key":"votes", "scope":"base"}));
-        //         // console.log ("sent")
-        //         // setOpen(true);
-        //         setSecOpen((secOpen) => {
-        //             const updated = [...secOpen];
-        //             updated[i] = true;
-        //             setSecOpen(updated);
-        //         });
-        //     });
-        //     ws.addEventListener('message',  (event) => {
-        //         const data = await consume(event);
-        //     });
-        //     return ws;
-        // });
-        return [];
-    }, [typeof window]);
+            on(ws, 'error', () => {
+                const message = orgLogger.error`Error connecting to socket ${url}.`;
+                setOpen(false);
+                setError(message);
+            });
 
-    useEffect(() => {
-        if (!socket) return;
-        on(socket, 'error', () => {
-            const message = orgLogger.error`Error connecting to socket ${url}.`;
-            setError(message);
-        });
-    }, [socket]);
+            setupWsHeartbeat(ws);
+
+            return {
+                [key]: ws,
+                ...acc,
+            };
+        }, {});
+
+        // eslint-disable-next-line consistent-return
+        return localSocketInstances;
+    }, [JSON.stringify(hosts)]);
+
+    const providerValue = useMemo(() => {
+        return {
+            setIdentity,
+            identity,
+            setHeaders,
+            sockets,
+            open,
+            headers,
+            error,
+        };
+    }, [identity, setHeaders, hosts, open, headers, error]);
 
     return (
-        <context.Provider
-            value={{
-                setIdentity,
-                identity,
-                setHeaders,
-                socket,
-                sockets,
-                open,
-                secOpen,
-                allOpen,
-                headers,
-                error,
-            }}
-        >
-            <Web3Provider>{props.children}</Web3Provider>
+        <context.Provider value={providerValue}>
+            <Web3Provider>{children}</Web3Provider>
         </context.Provider>
     );
 };

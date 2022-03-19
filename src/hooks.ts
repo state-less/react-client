@@ -22,6 +22,8 @@ import {
     parseSocketResponse,
     request,
 } from './lib/util/socket';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+import { assertGetSingleHost, getSingleHost, isSingleHost } from './lib/util';
 
 let stateCount = 0;
 
@@ -78,8 +80,13 @@ const useStore = (store, key) => {
     const [atom, setAtom] = useState(null);
 };
 
-export const useStream = (name, def) => {
-    const { socket, open } = useContext(context);
+export const useStream = (name, def, host: string) => {
+    const { sockets, open } = useContext(context);
+
+    host = assertGetSingleHost(sockets, host);
+
+    const socket = sockets[host];
+
     const id = useMemo(() => v4(), []);
     const [data, setData] = useState(def || null);
 
@@ -127,9 +134,21 @@ export const useServerState = (clientDefaultValue, options) => {
         requestType = 'request',
         ...rest
     } = options;
+
+    let { host = null } = options;
+
     const ctx = useContext(context);
     try {
-        const { socket, open } = ctx;
+        const { sockets, open } = ctx;
+
+        host = assertGetSingleHost(sockets, host);
+
+        const socket = sockets[host];
+
+        if (!socket)
+            throw new Error(
+                `Passed non existing host to useComponent. Please verify you defined '${host}' in your provider`
+            );
 
         const defaultState = useMemo(
             () => ({
@@ -172,16 +191,6 @@ export const useServerState = (clientDefaultValue, options) => {
             extendState({ loading });
         };
 
-        const setStateEvent = useMemo(() => genSetStateEventName(id), [id]);
-        const createStateEvent = useMemo(
-            () => genCreateStateEventName(clientId),
-            [clientId]
-        );
-        const errorEvent = useMemo(
-            () => genErrorEventName(clientId),
-            [clientId]
-        );
-
         const onTimeout = () => {
             setState((state) => {
                 const { id } = state;
@@ -200,7 +209,7 @@ export const useServerState = (clientDefaultValue, options) => {
         useEffect(() => {
             let to;
             const onPageShow = () => {
-                orgLogger.info`Subscribing to state ${key}`;
+                orgLogger.debug`Subscribing to state ${key}`;
                 emit(socket, {
                     action: EVENT_USE_STATE,
                     key,
@@ -377,10 +386,13 @@ export const useServerState = (clientDefaultValue, options) => {
     }
 };
 
-export const useResponse = (fn, action, keepAlive) => {
+export const useResponse = (fn, action, { keepAlive = false, host = null }) => {
     const ctx = useContext(context);
 
-    const { socket } = ctx;
+    const { sockets } = ctx;
+
+    host = assertGetSingleHost(sockets, host);
+    const socket = sockets[host];
 
     const [id, setId] = useState(null);
 
@@ -416,6 +428,7 @@ type UseComponentOptions = {
     suspend?: boolean;
     scope: string;
     props: Record<string, any>;
+    host?: string;
 };
 
 /**
@@ -431,6 +444,7 @@ export const useComponent = (
         suspend = false,
         scope = DEFAULT_SCOPE,
         props: clientProps,
+        host = null,
         ...rest
     }: UseComponentOptions,
     rendered: Record<string, any>
@@ -438,7 +452,17 @@ export const useComponent = (
     const ctx = useContext(context);
 
     try {
-        const { socket, sockets, open, secOpen, allOpen, headers } = ctx;
+        const { sockets, open, headers } = ctx;
+
+        // eslint-disable-next-line no-param-reassign
+        host = assertGetSingleHost(sockets, host);
+
+        const socket = sockets[host];
+
+        if (!socket)
+            throw new Error(
+                `Passed non existing host to useComponent. Please verify you defined '${host}' in your provider`
+            );
 
         const defaultState = useMemo(
             () => ({
@@ -452,7 +476,6 @@ export const useComponent = (
         );
 
         let atm;
-
         if (!componentAtoms.has(`${scope}:${componentKey}`)) {
             atm = atom({ defaultState });
             loadingStates[`${scope}:${componentKey}`] = false;
@@ -460,6 +483,7 @@ export const useComponent = (
         } else {
             atm = componentAtoms.get(`${scope}:${componentKey}`);
         }
+
         const [internalState, setState]: [InternalState, (v: any) => void] =
             useAtom(atm);
 
@@ -522,19 +546,16 @@ export const useComponent = (
                             [handler]: async (...args) => {
                                 const id = v4();
                                 try {
-                                    const res = await request(
-                                        [socket, ...sockets],
-                                        {
-                                            action: 'call',
-                                            props: clientProps,
-                                            id,
-                                            componentKey,
-                                            name: action.props.name,
-                                            handler,
-                                            args,
-                                            headers,
-                                        }
-                                    );
+                                    const res = await request(socket, {
+                                        action: 'call',
+                                        props: clientProps,
+                                        id,
+                                        componentKey,
+                                        name: action.props.name,
+                                        handler,
+                                        args,
+                                        headers,
+                                    });
                                     return res;
                                 } catch (err) {
                                     const errObj = new Error(err.message);
@@ -624,18 +645,6 @@ export const useComponent = (
                 setLoading(true);
             }
 
-            // secOpen.forEach((open, i) => {
-            //     if (open) {
-            //         const socket = sockets[i];
-            //         emit(socket, {
-            //             action: EVENT_USE_COMPONENT,
-            //             key: componentKey,
-            //             scope: scope || 'base',
-            //             options: { ...rest },
-            //         });
-            //     }
-            // });
-
             () => {
                 off(socket, 'message', onRender);
                 off(socket, 'message', onError);
@@ -693,22 +702,3 @@ export const useComponent = (
         throw e;
     }
 };
-
-// export const useServerAtom = (atm, clientDefaultValue, options) => {
-//     const { useAtom } = useContext(context);
-
-//     const [state, setState] = useServerState(clientDefaultValue, options);
-//     const [value, setAtomValue] = useAtom(atm);
-
-//     useEffect(() => {
-//         setAtomValue(state);
-//     }, [state]);
-
-//     return [value, setAtomValue];
-// };
-
-// const Test = () => {
-//     useServerState('test', {
-//         strict,
-//     });
-// };

@@ -1,31 +1,26 @@
 import React, { createContext } from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import { noopSync } from './lib/util';
 
 type Identity = Record<string, any>;
 type Headers = Record<string, any>;
 
 export type ClientContext = {
-    socket: ReconnectingWebSocket;
-    sockets: ReconnectingWebSocket[];
+    sockets: Record<string, ReconnectingWebSocket>;
     open: boolean;
-    /** @deprecated */
-    secOpen: boolean[];
-    allOpen: boolean;
     headers: Headers;
     setHeaders: (headers: Headers) => void;
     identity: Identity | null;
     setIdentity: (id: Identity) => void;
     error?: Error;
 };
+
 export const context: React.Context<ClientContext> = createContext({
-    socket: null,
-    sockets: [],
-    secOpen: [],
+    sockets: {},
     open: false,
-    allOpen: false,
     headers: {},
-    setHeaders: () => {},
+    setHeaders: noopSync,
     identity: null,
-    setIdentity: () => {},
+    setIdentity: noopSync,
     error: null,
 });

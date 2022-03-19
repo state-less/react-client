@@ -7,16 +7,15 @@ exports.context = void 0;
 
 var _react = require("react");
 
+var _util = require("./lib/util");
+
 var context = (0, _react.createContext)({
-  socket: null,
-  sockets: [],
-  secOpen: [],
+  sockets: {},
   open: false,
-  allOpen: false,
   headers: {},
-  setHeaders: function setHeaders() {},
+  setHeaders: _util.noopSync,
   identity: null,
-  setIdentity: function setIdentity() {},
+  setIdentity: _util.noopSync,
   error: null
 });
 exports.context = context;

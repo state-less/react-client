@@ -3,12 +3,8 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 declare type Identity = Record<string, any>;
 declare type Headers = Record<string, any>;
 export declare type ClientContext = {
-    socket: ReconnectingWebSocket;
-    sockets: ReconnectingWebSocket[];
+    sockets: Record<string, ReconnectingWebSocket>;
     open: boolean;
-    /** @deprecated */
-    secOpen: boolean[];
-    allOpen: boolean;
     headers: Headers;
     setHeaders: (headers: Headers) => void;
     identity: Identity | null;

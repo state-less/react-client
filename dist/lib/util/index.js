@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.truncateMid = exports.noopSync = void 0;
+exports.truncateMid = exports.noopSync = exports.isSingleHost = exports.getSingleHost = exports.assertGetSingleHost = void 0;
 
 /* eslint-disable no-void */
 
@@ -26,3 +26,29 @@ var noopSync = function noopSync() {
 };
 
 exports.noopSync = noopSync;
+
+var isSingleHost = function isSingleHost(hosts) {
+  return Object.keys(hosts).length === 1;
+};
+
+exports.isSingleHost = isSingleHost;
+
+var getSingleHost = function getSingleHost(hosts) {
+  return Object.keys(hosts)[0];
+};
+
+exports.getSingleHost = getSingleHost;
+
+var assertGetSingleHost = function assertGetSingleHost(sockets, host) {
+  if (host === null) {
+    if (isSingleHost(sockets)) {
+      host = getSingleHost(sockets);
+    } else {
+      throw new Error("Missing required prop 'host' when using multiple hosts.");
+    }
+  }
+
+  return host;
+};
+
+exports.assertGetSingleHost = assertGetSingleHost;
