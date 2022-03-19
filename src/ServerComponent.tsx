@@ -82,7 +82,7 @@ export const useProps = () => {
 // }
 
 export const ServerComponent = (props) => {
-    const { name, scope, children, index = 0, ...clientProps } = props;
+    const { name, scope, children, host, index = 0, ...clientProps } = props;
     const parentCtx = useContext(internalContext);
 
     let rendered;
@@ -98,7 +98,8 @@ export const ServerComponent = (props) => {
     }
     const component = useComponent(
         name,
-        { scope, props: clientProps },
+
+        { scope, props: clientProps, host },
         rendered
     );
     const { props: serverProps = {}, resolved, error, loading } = component;

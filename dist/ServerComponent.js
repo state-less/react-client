@@ -15,7 +15,7 @@ var _logger = require("./lib/logger");
 
 var _jsxRuntime = require("react/jsx-runtime");
 
-var _excluded = ["name", "scope", "children", "index"],
+var _excluded = ["name", "scope", "children", "host", "index"],
     _excluded2 = ["children"];
 
 var _templateObject;
@@ -121,6 +121,7 @@ var ServerComponent = function ServerComponent(props) {
   var name = props.name,
       scope = props.scope,
       children = props.children,
+      host = props.host,
       _props$index = props.index,
       index = _props$index === void 0 ? 0 : _props$index,
       clientProps = _objectWithoutProperties(props, _excluded);
@@ -141,7 +142,8 @@ var ServerComponent = function ServerComponent(props) {
 
   var component = (0, _hooks.useComponent)(name, {
     scope: scope,
-    props: clientProps
+    props: clientProps,
+    host: host
   }, rendered);
   var _component$props = component.props,
       serverProps = _component$props === void 0 ? {} : _component$props,
