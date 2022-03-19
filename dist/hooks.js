@@ -741,6 +741,7 @@ var useComponent = function useComponent(componentKey, _ref7, rendered) {
       var serverProps = ((_ref9 = componentState || rendered) === null || _ref9 === void 0 ? void 0 : _ref9.props) || {};
       var state = serverProps[propKey] || {};
       var resolvedState = useServerState(state.value, {
+        host: host,
         key: state.key,
         scope: state.scope,
         id: state.id,

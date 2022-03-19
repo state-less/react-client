@@ -519,6 +519,7 @@ export const useComponent = (
             const state = serverProps[propKey] || {};
 
             const resolvedState = useServerState(state.value, {
+                host,
                 key: state.key,
                 scope: state.scope,
                 id: state.id,
