@@ -712,6 +712,7 @@ var useComponent = function useComponent(componentKey, _ref7, rendered) {
     var _useServerState = useServerState(component, {
       key: componentKey,
       scope: 'public',
+      host: host,
       defer: !component && !rendered,
       requestType: 'subscribe',
       rendered: rendered

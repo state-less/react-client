@@ -494,6 +494,7 @@ export const useComponent = (
         const [componentState] = useServerState(component, {
             key: componentKey,
             scope: 'public',
+            host,
             defer: !component && !rendered,
             requestType: 'subscribe',
             rendered,
