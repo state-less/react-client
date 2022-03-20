@@ -262,8 +262,10 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       };
     }, []);
     var atm;
+    var uniqueAtomKey = "".concat(host, ":").concat(scope, ":").concat(key, ":").concat(rest.id);
+    ;
 
-    if (!atoms.has("".concat(scope, ":").concat(key, ":").concat(rest.id))) {
+    if (!atoms.has(uniqueAtomKey)) {
       atm = (0, _jotai.atom)({
         defaultState: defaultState,
         clientId: increaseCount(),
@@ -271,9 +273,9 @@ var useServerState = function useServerState(clientDefaultValue, options) {
       }); // Because multiple hooks may access the same component we need to bypass the react render cycle
 
       stateLoadingStates["".concat(scope, ":").concat(key)] = false;
-      atoms.set("".concat(scope, ":").concat(key, ":").concat(rest.id), atm);
+      atoms.set(uniqueAtomKey, atm);
     } else {
-      atm = atoms.get("".concat(scope, ":").concat(key, ":").concat(rest.id));
+      atm = atoms.get(uniqueAtomKey);
     }
 
     var _useAtom = (0, _jotai.useAtom)(atm),
@@ -680,16 +682,17 @@ var useComponent = function useComponent(componentKey, _ref7, rendered) {
         loading: false
       };
     }, []);
+    var uniqueAtomKey = "".concat(host, ":").concat(scope, ":").concat(componentKey);
     var atm;
 
-    if (!componentAtoms.has("".concat(scope, ":").concat(componentKey))) {
+    if (!componentAtoms.has(uniqueAtomKey)) {
       atm = (0, _jotai.atom)({
         defaultState: defaultState
       });
-      loadingStates["".concat(scope, ":").concat(componentKey)] = false;
-      componentAtoms.set("".concat(scope, ":").concat(componentKey), atm);
+      loadingStates[uniqueAtomKey] = false;
+      componentAtoms.set(uniqueAtomKey, atm);
     } else {
-      atm = componentAtoms.get("".concat(scope, ":").concat(componentKey));
+      atm = componentAtoms.get(uniqueAtomKey);
     }
 
     var _useAtom3 = (0, _jotai.useAtom)(atm),
@@ -835,9 +838,9 @@ var useComponent = function useComponent(componentKey, _ref7, rendered) {
       var onError;
       var onLog;
 
-      if (open && !props && !error && !loadingStates["".concat(scope, ":").concat(componentKey)]) {
+      if (open && !props && !error && !loadingStates[uniqueAtomKey]) {
         to = setTimeout(onTimeout, 15000);
-        loadingStates["".concat(scope, ":").concat(componentKey)] = true;
+        loadingStates[uniqueAtomKey] = true;
 
         onRender = /*#__PURE__*/function () {
           var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(event) {

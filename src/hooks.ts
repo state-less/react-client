@@ -160,8 +160,9 @@ export const useServerState = (clientDefaultValue, options) => {
             []
         );
         let atm;
+        const uniqueAtomKey = `${host}:${scope}:${key}:${rest.id}`;;
 
-        if (!atoms.has(`${scope}:${key}:${rest.id}`)) {
+        if (!atoms.has(uniqueAtomKey)) {
             atm = atom({
                 defaultState,
                 clientId: increaseCount(),
@@ -170,9 +171,9 @@ export const useServerState = (clientDefaultValue, options) => {
 
             // Because multiple hooks may access the same component we need to bypass the react render cycle
             stateLoadingStates[`${scope}:${key}`] = false;
-            atoms.set(`${scope}:${key}:${rest.id}`, atm);
+            atoms.set(uniqueAtomKey, atm);
         } else {
-            atm = atoms.get(`${scope}:${key}:${rest.id}`);
+            atm = atoms.get(uniqueAtomKey);
         }
 
         const [state, setState]: [InternalState, (v) => void] = useAtom(atm);
@@ -475,13 +476,15 @@ export const useComponent = (
             []
         );
 
+        const uniqueAtomKey = `${host}:${scope}:${componentKey}`;
+
         let atm;
-        if (!componentAtoms.has(`${scope}:${componentKey}`)) {
+        if (!componentAtoms.has(uniqueAtomKey)) {
             atm = atom({ defaultState });
-            loadingStates[`${scope}:${componentKey}`] = false;
-            componentAtoms.set(`${scope}:${componentKey}`, atm);
+            loadingStates[uniqueAtomKey] = false;
+            componentAtoms.set(uniqueAtomKey, atm);
         } else {
-            atm = componentAtoms.get(`${scope}:${componentKey}`);
+            atm = componentAtoms.get(uniqueAtomKey);
         }
 
         const [internalState, setState]: [InternalState, (v: any) => void] =
@@ -580,14 +583,9 @@ export const useComponent = (
             let onRender;
             let onError;
             let onLog;
-            if (
-                open &&
-                !props &&
-                !error &&
-                !loadingStates[`${scope}:${componentKey}`]
-            ) {
+            if (open && !props && !error && !loadingStates[uniqueAtomKey]) {
                 to = setTimeout(onTimeout, 15000);
-                loadingStates[`${scope}:${componentKey}`] = true;
+                loadingStates[uniqueAtomKey] = true;
                 onRender = async (event) => {
                     try {
                         const eventData = await consume(event);

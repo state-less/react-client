@@ -98,7 +98,6 @@ export const ServerComponent = (props) => {
     }
     const component = useComponent(
         name,
-
         { scope, props: clientProps, host },
         rendered
     );
