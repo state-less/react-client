@@ -20,7 +20,7 @@ export const noopSync = () => {
 type Hosts = Record<string, string>;
 type Sockets = Record<string, ReconnectingWebSocket>;
 
-export const isSingleHost = (hosts: Sockets) => Object.keys(hosts).length === 1;
+export const isSingleHost = (hosts: Sockets) => Object.keys(hosts).length < 2;
 export const getSingleHost = (hosts: Sockets | Hosts) => Object.keys(hosts)[0];
 export const assertGetSingleHost = (sockets: Sockets, host: string) => {
     if (host === null) {

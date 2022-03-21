@@ -92,7 +92,7 @@ var useNoopStrat = function useNoopStrat() {
 var useAuth = function useAuth() {
   var useStrategy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : useNoopStrat;
 
-  var _ref = arguments.length > 1 ? arguments[1] : undefined,
+  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
       _ref$auto = _ref.auto,
       auto = _ref$auto === void 0 ? false : _ref$auto,
       _ref$host = _ref.host,
@@ -175,7 +175,7 @@ var useAuth = function useAuth() {
     };
   }, [headers === null || headers === void 0 ? void 0 : headers.Authorization]); // eslint-disable-next-line no-param-reassign
 
-  host = (0, _util.assertGetSingleHost)(sockets, host);
+  if (!host) host = (0, _util.assertGetSingleHost)(sockets, host);
   var socket = sockets[host];
 
   function authenticate() {
@@ -397,7 +397,7 @@ var MainProvider = function MainProvider(props) {
       identity = _useState8[0],
       setIdentity = _useState8[1];
 
-  if (!hosts) throw new Error("Missing property 'hosts' in Provider.");
+  if (!Object.keys(hosts).length) throw new Error("Missing property 'hosts' in Provider.");
   var sockets = (0, _react.useMemo)(function () {
     if (typeof window === 'undefined' || typeof _reconnectingWebsocket.default === 'undefined') return;
     var hostNames = Object.keys(hosts);

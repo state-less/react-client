@@ -2,12 +2,12 @@
 import { ClientContext } from './context';
 import { Web3Context } from './Web3';
 export declare const useClientContext: () => ClientContext & Web3Context;
-export declare const useAuth: (useStrategy: () => {
+export declare const useAuth: (useStrategy?: () => {
     authenticate: () => never;
     logout: () => void;
     id: any;
     strategy: any;
-}, { auto, host }: {
+}, { auto, host }?: {
     auto?: boolean;
     host?: any;
 }) => {

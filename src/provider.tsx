@@ -45,7 +45,7 @@ type Strategy = {
 };
 export const useAuth = (
     useStrategy = useNoopStrat,
-    { auto = false, host = null }
+    { auto = false, host = null } = {}
 ) => {
     const { open, sockets, headers, setHeaders, setIdentity, identity } =
         useContext(context);
@@ -97,7 +97,8 @@ export const useAuth = (
     }, [headers?.Authorization]);
 
     // eslint-disable-next-line no-param-reassign
-    host = assertGetSingleHost(sockets, host);
+    if (!host) host = assertGetSingleHost(sockets, host);
+
     const socket = sockets[host];
 
     async function authenticate(...args) {
@@ -198,7 +199,8 @@ const MainProvider = (props) => {
     const [error, setError] = useState(null);
     const [identity, setIdentity] = useState(null);
 
-    if (!hosts) throw new Error("Missing property 'hosts' in Provider.");
+    if (!Object.keys(hosts).length)
+        throw new Error("Missing property 'hosts' in Provider.");
 
     const sockets = useMemo(() => {
         if (

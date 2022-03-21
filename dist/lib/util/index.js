@@ -28,7 +28,7 @@ var noopSync = function noopSync() {
 exports.noopSync = noopSync;
 
 var isSingleHost = function isSingleHost(hosts) {
-  return Object.keys(hosts).length === 1;
+  return Object.keys(hosts).length < 2;
 };
 
 exports.isSingleHost = isSingleHost;
