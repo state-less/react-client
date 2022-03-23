@@ -253,6 +253,7 @@ const MainProvider = (props) => {
             sockets,
             open,
             headers,
+            hosts,
             error,
         };
     }, [identity, setHeaders, hosts, open, headers, error]);

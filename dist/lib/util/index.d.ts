@@ -1,4 +1,4 @@
-import ReconnectingWebSocket from "reconnecting-websocket";
+import ReconnectingWebSocket from 'reconnecting-websocket';
 /**
  * Truncates the middle of a string.
  * @param str - The string to truncate

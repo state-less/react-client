@@ -1,6 +1,6 @@
 /* eslint-disable no-void */
 
-import ReconnectingWebSocket from "reconnecting-websocket";
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 /**
  * Truncates the middle of a string.
@@ -23,14 +23,15 @@ type Sockets = Record<string, ReconnectingWebSocket>;
 export const isSingleHost = (hosts: Sockets) => Object.keys(hosts).length < 2;
 export const getSingleHost = (hosts: Sockets | Hosts) => Object.keys(hosts)[0];
 export const assertGetSingleHost = (sockets: Sockets, host: string) => {
-    if (host === null) {
+    let res = host;
+    if (res === null) {
         if (isSingleHost(sockets)) {
-            host = getSingleHost(sockets);
+            res = getSingleHost(sockets);
         } else {
             throw new Error(
                 `Missing required prop 'host' when using multiple hosts.`
             );
         }
     }
-    return host;
+    return res;
 };

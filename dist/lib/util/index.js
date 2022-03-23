@@ -40,15 +40,17 @@ var getSingleHost = function getSingleHost(hosts) {
 exports.getSingleHost = getSingleHost;
 
 var assertGetSingleHost = function assertGetSingleHost(sockets, host) {
-  if (host === null) {
+  var res = host;
+
+  if (res === null) {
     if (isSingleHost(sockets)) {
-      host = getSingleHost(sockets);
+      res = getSingleHost(sockets);
     } else {
       throw new Error("Missing required prop 'host' when using multiple hosts.");
     }
   }
 
-  return host;
+  return res;
 };
 
 exports.assertGetSingleHost = assertGetSingleHost;

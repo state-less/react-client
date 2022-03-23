@@ -437,6 +437,7 @@ var MainProvider = function MainProvider(props) {
       sockets: sockets,
       open: open,
       headers: headers,
+      hosts: hosts,
       error: error
     };
   }, [identity, setHeaders, hosts, open, headers, error]);
