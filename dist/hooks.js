@@ -263,7 +263,6 @@ var useServerState = function useServerState(clientDefaultValue, options) {
     }, []);
     var atm;
     var uniqueAtomKey = "".concat(host, ":").concat(scope, ":").concat(key, ":").concat(rest.id);
-    ;
 
     if (!atoms.has(uniqueAtomKey)) {
       atm = (0, _jotai.atom)({
@@ -391,8 +390,7 @@ var useServerState = function useServerState(clientDefaultValue, options) {
         }();
 
         (0, _socket.onMessage)(socket, onSetValue);
-        onPageShow();
-        window.addEventListener('pageshow', onPageShow);
+        onPageShow(); // window.addEventListener('pageshow', onPageShow);
       }
 
       return function () {

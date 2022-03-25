@@ -45,7 +45,7 @@ type Strategy = {
 };
 export const useAuth = (
     useStrategy = useNoopStrat,
-    { auto = false, host = null } = {}
+    { auto = true, host = null } = {}
 ) => {
     const { open, sockets, headers, setHeaders, setIdentity, identity } =
         useContext(context);

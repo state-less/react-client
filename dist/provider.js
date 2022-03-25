@@ -94,7 +94,7 @@ var useAuth = function useAuth() {
 
   var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
       _ref$auto = _ref.auto,
-      auto = _ref$auto === void 0 ? false : _ref$auto,
+      auto = _ref$auto === void 0 ? true : _ref$auto,
       _ref$host = _ref.host,
       host = _ref$host === void 0 ? null : _ref$host;
 

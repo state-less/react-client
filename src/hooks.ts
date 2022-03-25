@@ -160,7 +160,7 @@ export const useServerState = (clientDefaultValue, options) => {
             []
         );
         let atm;
-        const uniqueAtomKey = `${host}:${scope}:${key}:${rest.id}`;;
+        const uniqueAtomKey = `${host}:${scope}:${key}:${rest.id}`;
 
         if (!atoms.has(uniqueAtomKey)) {
             atm = atom({
@@ -255,7 +255,7 @@ export const useServerState = (clientDefaultValue, options) => {
                 onMessage(socket, onSetValue);
 
                 onPageShow();
-                window.addEventListener('pageshow', onPageShow);
+                // window.addEventListener('pageshow', onPageShow);
             }
 
             return () => {
