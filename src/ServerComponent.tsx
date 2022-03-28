@@ -124,12 +124,13 @@ export const ServerComponent = (props) => {
 
     Object.assign(mappedProps, { error, loading });
 
-    const serverPropsMemo = useMemo(() => {
-        return { ...serverProps, name };
-    }, [name, JSON.stringify(serverProps)]);
+    // const serverPropsMemo = useMemo(() => {
+    //     return { ...serverProps, name };
+    // }, [name, JSON.stringify(serverProps)]);
 
     return (
-        <internalContext.Provider value={serverPropsMemo}>
+        // eslint-disable-next-line react/jsx-no-constructed-context-values
+        <internalContext.Provider value={{ ...serverProps, name }}>
             <context.Provider value={mappedProps}>{children}</context.Provider>
         </internalContext.Provider>
     );
