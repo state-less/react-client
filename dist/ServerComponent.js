@@ -171,17 +171,17 @@ var ServerComponent = function ServerComponent(props) {
   Object.assign(mappedProps, {
     error: error,
     loading: loading
-  }); // const serverPropsMemo = useMemo(() => {
-  //     return { ...serverProps, name };
-  // }, [name, JSON.stringify(serverProps)]);
-
+  });
+  var serverPropsMemo = (0, _react.useMemo)(function () {
+    return _objectSpread(_objectSpread({}, serverProps), {}, {
+      name: name
+    });
+  }, [name, JSON.stringify(serverProps)]);
   return (
     /*#__PURE__*/
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     (0, _jsxRuntime.jsx)(internalContext.Provider, {
-      value: _objectSpread(_objectSpread({}, serverProps), {}, {
-        name: name
-      }),
+      value: serverPropsMemo,
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)(context.Provider, {
         value: mappedProps,
         children: children

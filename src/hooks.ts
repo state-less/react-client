@@ -496,7 +496,7 @@ export const useComponent = (
         const { component } = internalState;
         const [componentState] = useServerState(component, {
             key: componentKey,
-            scope: 'public',
+            scope: '$client',
             host,
             defer: !component && !rendered,
             requestType: 'subscribe',
