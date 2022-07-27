@@ -17,7 +17,6 @@
         "jotai": "^1.6.0",
         "jsonwebtoken": "^8.5.1",
         "l0g": "github:C5H8NNaO4/l0g",
-        "react": "^17.0.2",
         "reconnecting-websocket": "^4.4.0",
         "web3": "^1.7.1"
     },
