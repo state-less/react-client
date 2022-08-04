@@ -51,6 +51,12 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 var context = _react.default.createContext({});
 
 var internalContext = _react.default.createContext({});
+/**
+ * @description: A bound action handler that's directly mapped to a function on the serverside.
+ * Look at the documentation of the serverside component to see the arguments it expects.
+ * You can also import the type definitions from the serverside component if you're using typescript.
+ */
+
 
 var useAction = function useAction(name, handler) {
   var _action$props, _action$props2;
@@ -61,16 +67,25 @@ var useAction = function useAction(name, handler) {
   var action = children.find(function (child) {
     return child.component === 'Action' && child.props.name === name;
   });
-  if (!action) return function () {
+
+  if (!action) {
     _logger.orgLogger.scope('useAction').warning(_templateObject || (_templateObject = _taggedTemplateLiteral(["Handler '", "' not available. Are you sure your component is rendering this action on the server?"])), name);
-  };
+
+    return null;
+  }
 
   if (action && action !== null && action !== void 0 && (_action$props = action.props) !== null && _action$props !== void 0 && _action$props.fns && action !== null && action !== void 0 && (_action$props2 = action.props) !== null && _action$props2 !== void 0 && _action$props2.fns[handler]) {
-    if (action.props.disabled) action.props.fns[handler].disabled = true;
+    if (action.props.disabled) {
+      action.props.fns[handler].disabled = true;
+    }
+
     return action.props.fns[handler];
   }
 
-  if (action.props.disabled) action.handler.disabled = true;
+  if (action.props.disabled) {
+    action.handler.disabled = true;
+  }
+
   return action.handler;
 };
 

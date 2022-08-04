@@ -5,6 +5,9 @@ module.exports = {
                 extensions: ['.js', '.jsx', '.ts', '.tsx'],
             },
         },
+        react: {
+            version: 'detect',
+        },
     },
     env: {
         browser: true,
@@ -12,7 +15,6 @@ module.exports = {
     },
     extends: [
         'plugin:react/recommended',
-        'airbnb',
         'prettier',
         'plugin:prettier/recommended',
         'plugin:@typescript-eslint/recommended',
@@ -25,7 +27,7 @@ module.exports = {
         ecmaVersion: 'latest',
         sourceType: 'module',
     },
-    plugins: ['react', '@typescript-eslint', 'prettier'],
+    plugins: ['import', 'react', '@typescript-eslint', 'prettier'],
     rules: {
         'linebreak-style': 'off',
         'import/extensions': [

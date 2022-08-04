@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+
 import { useComponent } from './hooks';
 import { orgLogger } from './lib/logger';
 
@@ -11,7 +12,19 @@ const context = React.createContext({});
 const internalContext: React.Context<InternalContextProps> =
     React.createContext({});
 
-export const useAction = (name, handler) => {
+/**
+ * @description: A bound action handler that's directly mapped to a function on the serverside.
+ * Look at the documentation of the serverside component to see the arguments it expects.
+ * You can also import the type definitions from the serverside component if you're using typescript.
+ */
+interface Action<ActionArgs> {
+    (args: ActionArgs): Promise<any>;
+}
+
+export const useAction = <ActionArgs,>(
+    name,
+    handler
+): Action<ActionArgs> | null => {
     const ctx = useContext(internalContext);
     const { children = [] } = ctx;
 
@@ -19,18 +32,22 @@ export const useAction = (name, handler) => {
         return child.component === 'Action' && child.props.name === name;
     });
 
-    if (!action)
-        return () => {
-            orgLogger.scope('useAction')
-                .warning`Handler '${name}' not available. Are you sure your component is rendering this action on the server?`;
-        };
+    if (!action) {
+        orgLogger.scope('useAction')
+            .warning`Handler '${name}' not available. Are you sure your component is rendering this action on the server?`;
+        return null;
+    }
 
     if (action && action?.props?.fns && action?.props?.fns[handler]) {
-        if (action.props.disabled) action.props.fns[handler].disabled = true;
+        if (action.props.disabled) {
+            action.props.fns[handler].disabled = true;
+        }
         return action.props.fns[handler];
     }
 
-    if (action.props.disabled) action.handler.disabled = true;
+    if (action.props.disabled) {
+        action.handler.disabled = true;
+    }
 
     return action.handler;
 };
