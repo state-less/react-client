@@ -680,11 +680,12 @@ export const useComponent = (
         if (componentState instanceof Error) {
             throw componentState;
         }
+
         if (!component && internalState.loading) {
             if (suspend) {
                 throw new Promise(() => {});
             } else {
-                return defaultState;
+                return { ...defaultState, loading: internalState.loading };
             }
         }
 

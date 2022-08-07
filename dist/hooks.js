@@ -1009,7 +1009,9 @@ var useComponent = function useComponent(componentKey, _ref7, rendered) {
       if (suspend) {
         throw new Promise(function () {});
       } else {
-        return defaultState;
+        return _objectSpread(_objectSpread({}, defaultState), {}, {
+          loading: internalState.loading
+        });
       }
     }
 
