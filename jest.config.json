@@ -1,3 +1,4 @@
 {
-  "transformIgnorePatterns": ["/node_modules/"]
+  "transformIgnorePatterns": ["/node_modules/"],
+  "testEnvironment": "jsdom"
 }

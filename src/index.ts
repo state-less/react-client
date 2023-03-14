@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const UPDATE_STATE = gql`
   subscription MyQuery($key: ID!, $scope: String!) {
@@ -21,17 +21,33 @@ const STATE = gql`
   }
 `;
 
+const SET_STATE = gql`
+  mutation MyMutation($key: String, $scope: String, $value: JSON) {
+    setState(key: $key, scope: $scope, value: $value) {
+      key
+      id
+      value
+      scope
+    }
+  }
+`;
 type UseServerStateOptions = {
+  /** The *unique* serverside key of the state. */
   key: string;
+  /** The scope of the state. A state with the same key can exist in different scopes */
   scope: string;
+  initialValue?: any;
   client?: ApolloClient<any>;
 };
 
-export const useServerState = (
-  initialValue: any,
+export const useServerState = <ValueType>(
+  initialValue: ValueType,
   options: UseServerStateOptions
-) => {
-  const { key, scope, client } = options;
+): [ValueType, (value: ValueType) => void] => {
+  const { key, scope, client, initialValue: initialServerValue } = options;
+  const [optimisticValue, setOptimisticValue] = useState<ValueType | null>(
+    null
+  );
   const { data: queryData } = useQuery<{
     getState: { value: { props: any; children: any[] } };
   }>(STATE, {
@@ -50,7 +66,13 @@ export const useServerState = (
   });
 
   useEffect(() => {
-    // Update the cache with the subscription data
+    if (!client) {
+      console.warn(
+        'No client provided to useServerState. Check your provider.'
+      );
+      return;
+    }
+    setOptimisticValue(null);
     client.cache.modify({
       fields: {
         getState() {
@@ -60,10 +82,34 @@ export const useServerState = (
     });
   }, [subscriptionData?.updateState?.value]);
 
-  return [
-    queryData?.getState?.value || initialValue,
-    () => {
-      throw new Error('Not implemented yet!');
-    },
-  ];
+  const setValue = useMemo(() => {
+    return (value: ValueType) => {
+      if (!client) {
+        console.warn(
+          'No client provided to useServerState. Check your provider.'
+        );
+        setOptimisticValue(value);
+        return;
+      }
+
+      setOptimisticValue(value);
+      (async () => {
+        client.mutate({
+          mutation: SET_STATE,
+          variables: {
+            key,
+            scope,
+            value,
+          },
+        });
+        setOptimisticValue(null);
+      })();
+    };
+  }, [key, scope, client]);
+
+  if (optimisticValue !== null) {
+    return [optimisticValue, setValue];
+  }
+
+  return [(queryData?.getState?.value as ValueType) || initialValue, setValue];
 };
