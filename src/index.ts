@@ -22,7 +22,7 @@ const STATE = gql`
 `;
 
 const SET_STATE = gql`
-  mutation MyMutation($key: String, $scope: String, $value: JSON) {
+  mutation MyMutation($key: ID!, $scope: String!, $value: JSON) {
     setState(key: $key, scope: $scope, value: $value) {
       key
       id
