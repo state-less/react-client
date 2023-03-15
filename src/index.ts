@@ -1,4 +1,4 @@
-import { gql, getApolloContext } from '@apollo/client';
+import { gql, getApolloContext, ApolloError } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -43,7 +43,7 @@ type UseServerStateOptions = {
 export const useServerState = <ValueType>(
   initialValue: ValueType,
   options: UseServerStateOptions
-): [ValueType, (value: ValueType) => void] => {
+): [ValueType, (value: ValueType) => void, ApolloError] => {
   const { key, scope, client, initialValue: initialServerValue } = options;
   const { client: providedClient = null } = React.useContext(
     getApolloContext()
@@ -59,7 +59,7 @@ export const useServerState = <ValueType>(
   const [optimisticValue, setOptimisticValue] = useState<ValueType | null>(
     null
   );
-  const { data: queryData } = useQuery<{
+  const { data: queryData, error } = useQuery<{
     getState: { value: { props: any; children: any[] } };
   }>(GET_STATE, {
     client: actualClient,
@@ -105,8 +105,12 @@ export const useServerState = <ValueType>(
   }, [key, scope, actualClient]);
 
   if (optimisticValue !== null) {
-    return [optimisticValue, setValue];
+    return [optimisticValue, setValue, error];
   }
 
-  return [(queryData?.getState?.value as ValueType) || initialValue, setValue];
+  return [
+    (queryData?.getState?.value as ValueType) || initialValue,
+    setValue,
+    error,
+  ];
 };
