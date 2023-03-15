@@ -50,7 +50,8 @@ var useServerState = function useServerState(initialValue, options) {
       }
     }),
     queryData = _useQuery.data,
-    error = _useQuery.error;
+    error = _useQuery.error,
+    loading = _useQuery.loading;
   var _useSubscription = (0, _react.useSubscription)(UPDATE_STATE, {
       client: actualClient,
       variables: {
@@ -96,8 +97,14 @@ var useServerState = function useServerState(initialValue, options) {
     };
   }, [key, scope, actualClient]);
   if (optimisticValue !== null) {
-    return [optimisticValue, setValue, error];
+    return [optimisticValue, setValue, {
+      error: error,
+      loading: loading
+    }];
   }
-  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue, setValue, error];
+  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue, setValue, {
+    error: error,
+    loading: loading
+  }];
 };
 exports.useServerState = useServerState;

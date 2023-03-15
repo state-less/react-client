@@ -40,10 +40,15 @@ type UseServerStateOptions = {
   client?: ApolloClient<any>;
 };
 
+type UseServerStateInfo = {
+  error: ApolloError;
+  loading: boolean;
+};
+
 export const useServerState = <ValueType>(
   initialValue: ValueType,
   options: UseServerStateOptions
-): [ValueType, (value: ValueType) => void, ApolloError] => {
+): [ValueType, (value: ValueType) => void, UseServerStateInfo] => {
   const { key, scope, client, initialValue: initialServerValue } = options;
   const { client: providedClient = null } = React.useContext(
     getApolloContext()
@@ -59,7 +64,12 @@ export const useServerState = <ValueType>(
   const [optimisticValue, setOptimisticValue] = useState<ValueType | null>(
     null
   );
-  const { data: queryData, error } = useQuery<{
+
+  const {
+    data: queryData,
+    error,
+    loading,
+  } = useQuery<{
     getState: { value: { props: any; children: any[] } };
   }>(GET_STATE, {
     client: actualClient,
@@ -68,6 +78,7 @@ export const useServerState = <ValueType>(
       scope,
     },
   });
+
   const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
     client: actualClient,
     variables: {
@@ -105,12 +116,12 @@ export const useServerState = <ValueType>(
   }, [key, scope, actualClient]);
 
   if (optimisticValue !== null) {
-    return [optimisticValue, setValue, error];
+    return [optimisticValue, setValue, { error, loading }];
   }
 
   return [
     (queryData?.getState?.value as ValueType) || initialValue,
     setValue,
-    error,
+    { error, loading },
   ];
 };
