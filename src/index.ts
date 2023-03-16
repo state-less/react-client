@@ -4,7 +4,7 @@ import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 export const RENDER_COMPONENT = gql`
-  query MyQuery($key: ID!, $scope: String!, $props: JSON) {
+  query MyQuery($key: ID!, $props: JSON) {
     renderComponent(key: $key, props: $props) {
       rendered {
         __typename
