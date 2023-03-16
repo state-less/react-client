@@ -11,6 +11,8 @@ export const RENDER_COMPONENT = gql`
         __typename
         ... on Server {
           version
+          uptime
+          platform
           children {
             __typename
             ... on ServerSideProps {
