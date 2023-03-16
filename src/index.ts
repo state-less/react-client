@@ -159,7 +159,7 @@ export const useServerState = <ValueType>(
         },
       },
     });
-    setImmediate(setOptimisticValue, null);
+    setTimeout(setOptimisticValue, 0, null);
   }, [subscriptionData?.updateState?.value]);
 
   const setValue = useMemo(() => {
