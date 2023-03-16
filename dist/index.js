@@ -5,7 +5,7 @@ var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useServerState = exports.UPDATE_STATE = exports.SET_STATE = exports.GET_STATE = void 0;
+exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
@@ -14,26 +14,53 @@ var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/hel
 var _client = require("@apollo/client");
 var _react = require("@apollo/client/react");
 var _react2 = _interopRequireWildcard(require("react"));
-var _templateObject, _templateObject2, _templateObject3;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4;
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2["default"])(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-var UPDATE_STATE = (0, _client.gql)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
+var RENDER_COMPONENT = (0, _client.gql)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!, $props: JSON) {\n    renderComponent(key: $key, props: $props) {\n      rendered {\n        __typename\n        __typename\n        ... on Server {\n          version\n          children {\n            __typename\n            ... on ServerSideProps {\n              props\n              children\n            }\n          }\n        }\n      }\n    }\n  }\n"])));
+exports.RENDER_COMPONENT = RENDER_COMPONENT;
+var UPDATE_STATE = (0, _client.gql)(_templateObject2 || (_templateObject2 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.UPDATE_STATE = UPDATE_STATE;
-var GET_STATE = (0, _client.gql)(_templateObject2 || (_templateObject2 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!) {\n    getState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
+var GET_STATE = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!) {\n    getState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.GET_STATE = GET_STATE;
-var SET_STATE = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $scope: String!, $value: JSON) {\n    setState(key: $key, scope: $scope, value: $value) {\n      key\n      id\n      value\n      scope\n    }\n  }\n"])));
+var SET_STATE = (0, _client.gql)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $scope: String!, $value: JSON) {\n    setState(key: $key, scope: $scope, value: $value) {\n      key\n      id\n      value\n      scope\n    }\n  }\n"])));
 exports.SET_STATE = SET_STATE;
+var useComponent = function useComponent(key, options) {
+  var _queryData$renderComp;
+  var client = options.client;
+  var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
+    _React$useContext$cli = _React$useContext.client,
+    providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
+  var actualClient = providedClient || client;
+  if (!actualClient) {
+    throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
+  }
+  var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
+      client: actualClient,
+      variables: {
+        key: key,
+        props: options.props
+      }
+    }),
+    queryData = _useQuery.data,
+    error = _useQuery.error,
+    loading = _useQuery.loading;
+  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered) || {}, {
+    error: error,
+    loading: loading
+  }];
+};
+exports.useComponent = useComponent;
 var useServerState = function useServerState(initialValue, options) {
   var _subscriptionData$upd, _queryData$getState;
   var key = options.key,
     scope = options.scope,
-    client = options.client,
-    initialServerValue = options.initialValue;
-  var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
-    _React$useContext$cli = _React$useContext.client,
-    providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
+    client = options.client;
+  var _React$useContext2 = _react2["default"].useContext((0, _client.getApolloContext)()),
+    _React$useContext2$cl = _React$useContext2.client,
+    providedClient = _React$useContext2$cl === void 0 ? null : _React$useContext2$cl;
   var actualClient = providedClient || client;
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
@@ -42,16 +69,16 @@ var useServerState = function useServerState(initialValue, options) {
     _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
     optimisticValue = _useState2[0],
     setOptimisticValue = _useState2[1];
-  var _useQuery = (0, _react.useQuery)(GET_STATE, {
+  var _useQuery2 = (0, _react.useQuery)(GET_STATE, {
       client: actualClient,
       variables: {
         key: key,
         scope: scope
       }
     }),
-    queryData = _useQuery.data,
-    error = _useQuery.error,
-    loading = _useQuery.loading;
+    queryData = _useQuery2.data,
+    error = _useQuery2.error,
+    loading = _useQuery2.loading;
   var _useSubscription = (0, _react.useSubscription)(UPDATE_STATE, {
       client: actualClient,
       variables: {
