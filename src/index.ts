@@ -3,6 +3,27 @@ import { ApolloClient } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useState } from 'react';
 
+export const RENDER_COMPONENT = gql`
+  query MyQuery($key: ID!, $scope: String!, $props: JSON) {
+    renderComponent(key: $key, props: $props) {
+      rendered {
+        __typename
+        __typename
+        ... on Server {
+          version
+          children {
+            __typename
+            ... on ServerSideProps {
+              props
+              children
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_STATE = gql`
   subscription MyQuery($key: ID!, $scope: String!) {
     updateState(key: $key, scope: $scope) {
@@ -40,16 +61,57 @@ type UseServerStateOptions = {
   client?: ApolloClient<any>;
 };
 
+type UseComponentOptions = {
+  /** The *unique* serverside key of the component. */
+  key: string;
+  client?: ApolloClient<any>;
+  props?: any;
+};
+
 type UseServerStateInfo = {
   error: ApolloError;
   loading: boolean;
+};
+
+export const useComponent = (
+  key: string,
+  options: UseComponentOptions
+): [any, { error: ApolloError; loading: boolean }] => {
+  const { client } = options;
+  const { client: providedClient = null } = React.useContext(
+    getApolloContext()
+  );
+
+  const actualClient = providedClient || client;
+
+  if (!actualClient) {
+    throw new Error(
+      'No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.'
+    );
+  }
+
+  const {
+    data: queryData,
+    error,
+    loading,
+  } = useQuery<{
+    renderComponent: { rendered: any };
+  }>(RENDER_COMPONENT, {
+    client: actualClient,
+    variables: {
+      key,
+      props: options.props,
+    },
+  });
+
+  return [queryData?.renderComponent?.rendered || {}, { error, loading }];
 };
 
 export const useServerState = <ValueType>(
   initialValue: ValueType,
   options: UseServerStateOptions
 ): [ValueType, (value: ValueType) => void, UseServerStateInfo] => {
-  const { key, scope, client, initialValue: initialServerValue } = options;
+  const { key, scope, client } = options;
   const { client: providedClient = null } = React.useContext(
     getApolloContext()
   );
