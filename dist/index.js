@@ -114,8 +114,6 @@ var useServerState = function useServerState(initialValue, options) {
                 }
               });
             case 2:
-              setOptimisticValue(null);
-            case 3:
             case "end":
               return _context.stop();
           }

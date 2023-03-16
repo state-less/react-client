@@ -174,7 +174,7 @@ export const useServerState = <ValueType>(
             value,
           },
         });
-        setOptimisticValue(null);
+        // setOptimisticValue(null);
       })();
     };
   }, [key, scope, actualClient]);
