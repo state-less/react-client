@@ -152,7 +152,6 @@ export const useServerState = <ValueType>(
   });
 
   useEffect(() => {
-    setOptimisticValue(null);
     actualClient.cache.modify({
       fields: {
         getState() {
@@ -160,6 +159,7 @@ export const useServerState = <ValueType>(
         },
       },
     });
+    setImmediate(setOptimisticValue, null);
   }, [subscriptionData?.updateState?.value]);
 
   const setValue = useMemo(() => {
