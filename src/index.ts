@@ -131,7 +131,7 @@ export const useServerState = <ValueType>(
 
   const {
     data: queryData,
-    error,
+    error: apolloError,
     loading,
   } = useQuery<{
     getState: { value: { props: any; children: any[] } };
@@ -143,6 +143,7 @@ export const useServerState = <ValueType>(
     },
   });
 
+  const error = !queryData && !apolloError ? new Error('No data') : apolloError;
   const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
     client: actualClient,
     variables: {

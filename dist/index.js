@@ -77,8 +77,9 @@ var useServerState = function useServerState(initialValue, options) {
       }
     }),
     queryData = _useQuery2.data,
-    error = _useQuery2.error,
+    apolloError = _useQuery2.error,
     loading = _useQuery2.loading;
+  var error = !queryData && !apolloError ? new Error('No data') : apolloError;
   var _useSubscription = (0, _react.useSubscription)(UPDATE_STATE, {
       client: actualClient,
       variables: {
