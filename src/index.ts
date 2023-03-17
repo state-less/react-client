@@ -78,7 +78,7 @@ type UseServerStateInfo = {
 export const useComponent = (
   key: string,
   options: UseComponentOptions
-): [any, { error: ApolloError; loading: boolean }] => {
+): [any, { error: ApolloError | Error; loading: boolean }] => {
   const { client } = options;
   const { client: providedClient = null } = React.useContext(
     getApolloContext()
@@ -143,7 +143,10 @@ export const useServerState = <ValueType>(
     },
   });
 
-  const error = !queryData && !apolloError ? new Error('No data') : apolloError;
+  const error =
+    !queryData && !apolloError
+      ? new ApolloError({ errorMessage: 'No data' })
+      : apolloError;
   const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
     client: actualClient,
     variables: {
