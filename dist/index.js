@@ -79,7 +79,8 @@ var useServerState = function useServerState(initialValue, options) {
     queryData = _useQuery2.data,
     apolloError = _useQuery2.error,
     loading = _useQuery2.loading;
-  var error = !queryData && !apolloError ? new _client.ApolloError({
+  console.log('Err', queryData, apolloError);
+  var error = queryData !== null && queryData !== void 0 && queryData.getState && !apolloError ? new _client.ApolloError({
     errorMessage: 'No data'
   }) : apolloError;
   var _useSubscription = (0, _react.useSubscription)(UPDATE_STATE, {

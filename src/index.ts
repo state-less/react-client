@@ -143,8 +143,9 @@ export const useServerState = <ValueType>(
     },
   });
 
+  console.log('Err', queryData, apolloError);
   const error =
-    !queryData && !apolloError
+    queryData?.getState && !apolloError
       ? new ApolloError({ errorMessage: 'No data' })
       : apolloError;
   const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
