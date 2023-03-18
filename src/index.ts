@@ -7,13 +7,16 @@ export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
     renderComponent(key: $key, props: $props) {
       rendered {
-        __typename
+        ... on ServerSideProps {
+          props
+          children
+        }
         __typename
         ... on Server {
           version
           uptime
           platform
-          children {
+          components: children {
             __typename
             ... on ServerSideProps {
               props
