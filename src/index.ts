@@ -285,6 +285,7 @@ export const useServerState = <ValueType>(
           },
         });
         await response;
+        if (ref.current.signal.aborted) return;
         setOptimisticValue(null);
       })();
     };

@@ -219,8 +219,14 @@ var useServerState = function useServerState(initialValue, options) {
               _context3.next = 5;
               return response;
             case 5:
+              if (!ref.current.signal.aborted) {
+                _context3.next = 7;
+                break;
+              }
+              return _context3.abrupt("return");
+            case 7:
               setOptimisticValue(null);
-            case 6:
+            case 8:
             case "end":
               return _context3.stop();
           }
