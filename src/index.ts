@@ -8,6 +8,7 @@ export const RENDER_COMPONENT = gql`
     renderComponent(key: $key, props: $props) {
       rendered {
         ... on ServerSideProps {
+          key
           props
           children
         }
