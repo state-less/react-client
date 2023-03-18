@@ -38,6 +38,30 @@ export const UPDATE_STATE = gql`
   }
 `;
 
+export const UPDATE_COMPONENT = gql`
+  subscription MyQuery($key: ID!, $scope: String!) {
+    rendered {
+      ... on ServerSideProps {
+        props
+        children
+      }
+      __typename
+      ... on Server {
+        version
+        uptime
+        platform
+        components: children {
+          __typename
+          ... on ServerSideProps {
+            props
+            children
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GET_STATE = gql`
   query MyQuery($key: ID!, $scope: String!) {
     getState(key: $key, scope: $scope) {
@@ -114,6 +138,27 @@ export const useComponent = (
       props: options.props,
     },
   });
+
+  const { data: subscriptionData } = useSubscription(UPDATE_COMPONENT, {
+    client: actualClient,
+    variables: {
+      key,
+      scope: 'global',
+    },
+  });
+
+  useEffect(() => {
+    actualClient.cache.modify({
+      fields: {
+        getState() {
+          return {
+            ...queryData.renderComponent,
+            ...subscriptionData?.updateComponent,
+          };
+        },
+      },
+    });
+  }, [subscriptionData?.updateState?.value]);
 
   const inlined = inlineFunctions(
     queryData?.renderComponent?.rendered || { props: {}, children: [] },

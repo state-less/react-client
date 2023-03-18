@@ -5,16 +5,16 @@ var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
+exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _client = require("@apollo/client");
 var _react = require("@apollo/client/react");
 var _react2 = _interopRequireWildcard(require("react"));
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6;
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -23,14 +23,16 @@ var RENDER_COMPONENT = (0, _client.gql)(_templateObject || (_templateObject = (0
 exports.RENDER_COMPONENT = RENDER_COMPONENT;
 var UPDATE_STATE = (0, _client.gql)(_templateObject2 || (_templateObject2 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.UPDATE_STATE = UPDATE_STATE;
-var GET_STATE = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!) {\n    getState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
+var UPDATE_COMPONENT = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    rendered {\n      ... on ServerSideProps {\n        props\n        children\n      }\n      __typename\n      ... on Server {\n        version\n        uptime\n        platform\n        components: children {\n          __typename\n          ... on ServerSideProps {\n            props\n            children\n          }\n        }\n      }\n    }\n  }\n"])));
+exports.UPDATE_COMPONENT = UPDATE_COMPONENT;
+var GET_STATE = (0, _client.gql)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!) {\n    getState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.GET_STATE = GET_STATE;
-var SET_STATE = (0, _client.gql)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $scope: String!, $value: JSON) {\n    setState(key: $key, scope: $scope, value: $value) {\n      key\n      id\n      value\n      scope\n    }\n  }\n"])));
+var SET_STATE = (0, _client.gql)(_templateObject5 || (_templateObject5 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $scope: String!, $value: JSON) {\n    setState(key: $key, scope: $scope, value: $value) {\n      key\n      id\n      value\n      scope\n    }\n  }\n"])));
 exports.SET_STATE = SET_STATE;
-var CALL_FUNCTION = (0, _client.gql)(_templateObject5 || (_templateObject5 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
+var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp;
+  var _subscriptionData$upd, _queryData$renderComp;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
@@ -49,6 +51,23 @@ var useComponent = function useComponent(key, options) {
     queryData = _useQuery.data,
     error = _useQuery.error,
     loading = _useQuery.loading;
+  var _useSubscription = (0, _react.useSubscription)(UPDATE_COMPONENT, {
+      client: actualClient,
+      variables: {
+        key: key,
+        scope: 'global'
+      }
+    }),
+    subscriptionData = _useSubscription.data;
+  (0, _react2.useEffect)(function () {
+    actualClient.cache.modify({
+      fields: {
+        getState: function getState() {
+          return _objectSpread(_objectSpread({}, queryData.renderComponent), subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.updateComponent);
+        }
+      }
+    });
+  }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
   var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered) || {
     props: {},
     children: []
@@ -101,7 +120,7 @@ var inlineFunctions = function inlineFunctions(obj, actualClient) {
   return inlined;
 };
 var useServerState = function useServerState(initialValue, options) {
-  var _subscriptionData$upd, _queryData$getState;
+  var _subscriptionData$upd2, _queryData$getState;
   var key = options.key,
     scope = options.scope,
     client = options.client;
@@ -130,14 +149,14 @@ var useServerState = function useServerState(initialValue, options) {
   var error = queryData !== null && queryData !== void 0 && queryData.getState && !apolloError ? new _client.ApolloError({
     errorMessage: 'No data'
   }) : apolloError;
-  var _useSubscription = (0, _react.useSubscription)(UPDATE_STATE, {
+  var _useSubscription2 = (0, _react.useSubscription)(UPDATE_STATE, {
       client: actualClient,
       variables: {
         key: key,
         scope: scope
       }
     }),
-    subscriptionData = _useSubscription.data;
+    subscriptionData = _useSubscription2.data;
   (0, _react2.useEffect)(function () {
     actualClient.cache.modify({
       fields: {
@@ -147,7 +166,7 @@ var useServerState = function useServerState(initialValue, options) {
       }
     });
     setTimeout(setOptimisticValue, 0, null);
-  }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
+  }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd2 = subscriptionData.updateState) === null || _subscriptionData$upd2 === void 0 ? void 0 : _subscriptionData$upd2.value]);
   var setValue = (0, _react2.useMemo)(function () {
     return function (value) {
       setOptimisticValue(value);
