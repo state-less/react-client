@@ -47,12 +47,27 @@ var useComponent = function useComponent(key, options) {
     queryData = _useQuery.data,
     error = _useQuery.error,
     loading = _useQuery.loading;
-  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered) || {}, {
+  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered) || {});
+  return [inlined, {
     error: error,
     loading: loading
   }];
 };
 exports.useComponent = useComponent;
+var inlineFunctions = function inlineFunctions(obj) {
+  var inlined = JSON.parse(JSON.stringify(obj));
+  for (var _i = 0, _Object$entries = Object.entries(obj); _i < _Object$entries.length; _i++) {
+    var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
+      key = _Object$entries$_i[0],
+      val = _Object$entries$_i[1];
+    if (val.__typename === 'FunctionCall') {
+      inlined[key] = function () {
+        console.log('Hello from the client!');
+      };
+    }
+  }
+  return inlined;
+};
 var useServerState = function useServerState(initialValue, options) {
   var _subscriptionData$upd, _queryData$getState;
   var key = options.key,

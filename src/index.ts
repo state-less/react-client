@@ -109,7 +109,20 @@ export const useComponent = (
     },
   });
 
-  return [queryData?.renderComponent?.rendered || {}, { error, loading }];
+  const inlined = inlineFunctions(queryData?.renderComponent?.rendered || {});
+  return [inlined, { error, loading }];
+};
+
+const inlineFunctions = (obj: any) => {
+  const inlined = JSON.parse(JSON.stringify(obj));
+  for (const [key, val] of Object.entries(obj)) {
+    if (val.__typename === 'FunctionCall') {
+      inlined[key] = () => {
+        console.log('Hello from the client!');
+      };
+    }
+  }
+  return inlined;
 };
 
 export const useServerState = <ValueType>(
