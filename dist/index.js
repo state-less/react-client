@@ -33,7 +33,7 @@ var useComponent = function useComponent(key, options) {
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
-  var actualClient = providedClient || client;
+  var actualClient = client || providedClient;
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }

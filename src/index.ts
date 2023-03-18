@@ -87,7 +87,7 @@ export const useComponent = (
     getApolloContext()
   );
 
-  const actualClient = providedClient || client;
+  const actualClient = client || providedClient;
 
   if (!actualClient) {
     throw new Error(
