@@ -32,7 +32,7 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _subscriptionData$upd, _queryData$renderComp;
+  var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4, _subscriptionData$upd, _queryData$renderComp5;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
@@ -54,9 +54,10 @@ var useComponent = function useComponent(key, options) {
   var _useSubscription = (0, _react.useSubscription)(UPDATE_COMPONENT, {
       client: actualClient,
       variables: {
-        key: queryData.renderComponent.rendered.key || key,
+        key: (queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key) || key,
         scope: 'global'
-      }
+      },
+      skip: !(queryData !== null && queryData !== void 0 && (_queryData$renderComp3 = queryData.renderComponent) !== null && _queryData$renderComp3 !== void 0 && (_queryData$renderComp4 = _queryData$renderComp3.rendered) !== null && _queryData$renderComp4 !== void 0 && _queryData$renderComp4.key)
     }),
     subscriptionData = _useSubscription.data;
   (0, _react2.useEffect)(function () {
@@ -68,7 +69,7 @@ var useComponent = function useComponent(key, options) {
       }
     });
   }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
-  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered) || {
+  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered) || {
     props: {},
     children: []
   }, actualClient);
