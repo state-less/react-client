@@ -47,7 +47,10 @@ var useComponent = function useComponent(key, options) {
     queryData = _useQuery.data,
     error = _useQuery.error,
     loading = _useQuery.loading;
-  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered) || {});
+  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered) || {
+    props: {},
+    children: []
+  });
   return [inlined, {
     error: error,
     loading: loading

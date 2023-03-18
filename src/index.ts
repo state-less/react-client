@@ -109,7 +109,9 @@ export const useComponent = (
     },
   });
 
-  const inlined = inlineFunctions(queryData?.renderComponent?.rendered || {});
+  const inlined = inlineFunctions(
+    queryData?.renderComponent?.rendered || { props: {}, children: [] }
+  );
   return [inlined, { error, loading }];
 };
 
