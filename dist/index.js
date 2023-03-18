@@ -32,7 +32,7 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8;
+  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
@@ -97,14 +97,14 @@ var useComponent = function useComponent(key, options) {
       }, _callee);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
-  var inlined = (queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered) && inlineFunctions(queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered, actualClient) || {};
+  var inlined = (queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered) && inlineFunctions(queryData, actualClient) || {};
   return [inlined, {
     error: error,
     loading: loading
   }];
 };
 exports.useComponent = useComponent;
-var CallFunctionFactory = function CallFunctionFactory(actualClient, val) {
+var CallFunctionFactory = function CallFunctionFactory(actualClient, val, data) {
   return /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
     var _len,
       args,
@@ -130,10 +130,10 @@ var CallFunctionFactory = function CallFunctionFactory(actualClient, val) {
           response = _context2.sent;
           if (response.errors) {
             actualClient.cache.modify({
+              id: actualClient.cache.identify(data),
               fields: {
-                renderComponent: function renderComponent() {
-                  throw new Error(response.errors[0].message);
-                  // return { ...queryData.getState, ...subscriptionData?.updateState };
+                error: function error() {
+                  return response.errors[0];
                 }
               }
             });
@@ -146,7 +146,9 @@ var CallFunctionFactory = function CallFunctionFactory(actualClient, val) {
   }));
 };
 exports.CallFunctionFactory = CallFunctionFactory;
-var inlineFunctions = function inlineFunctions(obj, actualClient) {
+var inlineFunctions = function inlineFunctions(data, actualClient) {
+  var _data$renderComponent;
+  var obj = data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered;
   var inlined = JSON.parse(JSON.stringify(obj));
   if (!(obj !== null && obj !== void 0 && obj.props)) return inlined;
   for (var _i = 0, _Object$entries = Object.entries(obj.props); _i < _Object$entries.length; _i++) {
@@ -154,7 +156,7 @@ var inlineFunctions = function inlineFunctions(obj, actualClient) {
       key = _Object$entries$_i[0],
       val = _Object$entries$_i[1];
     if (val.__typename === 'FunctionCall') {
-      inlined.props[key] = CallFunctionFactory(actualClient, val);
+      inlined.props[key] = CallFunctionFactory(actualClient, val, data);
     }
   }
   return inlined;

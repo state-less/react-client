@@ -179,14 +179,18 @@ export const useComponent = (
 
   const inlined =
     (queryData?.renderComponent?.rendered &&
-      inlineFunctions(queryData?.renderComponent?.rendered, actualClient)) ||
+      inlineFunctions(queryData, actualClient)) ||
     {};
 
   return [inlined, { error, loading }];
 };
 
 export const CallFunctionFactory =
-  (actualClient: ApolloClient<any>, val: { component: string; name: string }) =>
+  (
+    actualClient: ApolloClient<any>,
+    val: { component: string; name: string },
+    data
+  ) =>
   async (...args) => {
     const response = await actualClient.mutate({
       mutation: CALL_FUNCTION,
@@ -199,22 +203,21 @@ export const CallFunctionFactory =
 
     if (response.errors) {
       actualClient.cache.modify({
+        id: actualClient.cache.identify(data),
         fields: {
-          renderComponent() {
-            throw new Error(response.errors[0].message);
-            // return { ...queryData.getState, ...subscriptionData?.updateState };
-          },
+          error: () => response.errors[0],
         },
       });
     }
   };
 
-const inlineFunctions = (obj: { props: Record<string, any> }, actualClient) => {
+const inlineFunctions = (data, actualClient) => {
+  const obj: { props: Record<string, any> } = data?.renderComponent?.rendered;
   const inlined = JSON.parse(JSON.stringify(obj));
   if (!obj?.props) return inlined;
   for (const [key, val] of Object.entries(obj.props)) {
     if (val.__typename === 'FunctionCall') {
-      inlined.props[key] = CallFunctionFactory(actualClient, val);
+      inlined.props[key] = CallFunctionFactory(actualClient, val, data);
     }
   }
   return inlined;

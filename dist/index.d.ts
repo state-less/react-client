@@ -31,6 +31,6 @@ export declare const useComponent: (key: string, options: UseComponentOptions) =
 export declare const CallFunctionFactory: (actualClient: ApolloClient<any>, val: {
     component: string;
     name: string;
-}) => (...args: any[]) => Promise<void>;
+}, data: any) => (...args: any[]) => Promise<void>;
 export declare const useServerState: <ValueType>(initialValue: ValueType, options: UseServerStateOptions) => [ValueType, (value: ValueType) => void, UseServerStateInfo];
 export {};
