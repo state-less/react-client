@@ -144,7 +144,7 @@ export const useComponent = (
   const { data: subscriptionData } = useSubscription(UPDATE_COMPONENT, {
     client: actualClient,
     variables: {
-      key,
+      key: queryData.renderComponent.rendered.key || key,
       scope: 'global',
     },
   });

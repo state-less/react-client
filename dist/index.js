@@ -54,7 +54,7 @@ var useComponent = function useComponent(key, options) {
   var _useSubscription = (0, _react.useSubscription)(UPDATE_COMPONENT, {
       client: actualClient,
       variables: {
-        key: key,
+        key: queryData.renderComponent.rendered.key || key,
         scope: 'global'
       }
     }),
