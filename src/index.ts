@@ -57,6 +57,12 @@ export const SET_STATE = gql`
     }
   }
 `;
+
+export const CALL_FUNCTION = gql`
+  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {
+    callFunction(key: $key, prop: $prop, args: $args)
+  }
+`;
 type UseServerStateOptions = {
   /** The *unique* serverside key of the state. */
   key: string;
@@ -110,17 +116,28 @@ export const useComponent = (
   });
 
   const inlined = inlineFunctions(
-    queryData?.renderComponent?.rendered || { props: {}, children: [] }
+    queryData?.renderComponent?.rendered || { props: {}, children: [] },
+    actualClient
   );
   return [inlined, { error, loading }];
 };
 
-const inlineFunctions = (obj: any) => {
+const inlineFunctions = (obj: { props: Record<string, any> }, actualClient) => {
   const inlined = JSON.parse(JSON.stringify(obj));
   for (const [key, val] of Object.entries(obj.props)) {
     if (val.__typename === 'FunctionCall') {
-      inlined.props[key] = () => {
+      inlined.props[key] = async (...args) => {
         console.log('Hello from the client!');
+
+        await actualClient.mutate({
+          mutation: CALL_FUNCTION,
+          variables: {
+            key: val.component,
+            prop: val.name,
+            args,
+          },
+        });
+        // setOptimisticValue(null);
       };
     }
   }
