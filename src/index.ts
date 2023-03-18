@@ -264,7 +264,6 @@ export const useServerState = <ValueType>(
         },
       },
     });
-    // setTimeout(setOptimisticValue, 0, null);
   }, [subscriptionData?.updateState?.value]);
 
   const setValue = useMemo(() => {
@@ -273,7 +272,7 @@ export const useServerState = <ValueType>(
       (async () => {
         ref.current.abort();
         ref.current = new AbortController();
-        actualClient.mutate({
+        const response = actualClient.mutate({
           mutation: SET_STATE,
           variables: {
             key,
@@ -286,9 +285,9 @@ export const useServerState = <ValueType>(
             },
           },
         });
-        // await response;
-        // if (ref.current.signal.aborted) return;
-        // setOptimisticValue(null);
+        await response;
+        if (ref.current.signal.aborted) return;
+        setTimeout(setOptimisticValue, 0, null);
       })();
     };
   }, [key, scope, actualClient]);

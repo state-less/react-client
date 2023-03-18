@@ -193,18 +193,18 @@ var useServerState = function useServerState(initialValue, options) {
         }
       }
     });
-    // setTimeout(setOptimisticValue, 0, null);
   }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
   var setValue = (0, _react2.useMemo)(function () {
     return function (value) {
       setOptimisticValue(value);
       (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+        var response;
         return _regenerator["default"].wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
               ref.current.abort();
               ref.current = new AbortController();
-              actualClient.mutate({
+              response = actualClient.mutate({
                 mutation: SET_STATE,
                 variables: {
                   key: key,
@@ -217,10 +217,17 @@ var useServerState = function useServerState(initialValue, options) {
                   }
                 }
               });
-              // await response;
-              // if (ref.current.signal.aborted) return;
-              // setOptimisticValue(null);
-            case 3:
+              _context3.next = 5;
+              return response;
+            case 5:
+              if (!ref.current.signal.aborted) {
+                _context3.next = 7;
+                break;
+              }
+              return _context3.abrupt("return");
+            case 7:
+              setTimeout(setOptimisticValue, 0, null);
+            case 8:
             case "end":
               return _context3.stop();
           }
