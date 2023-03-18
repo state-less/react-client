@@ -177,10 +177,11 @@ export const useComponent = (
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
 
-  const inlined = inlineFunctions(
-    queryData?.renderComponent?.rendered,
-    actualClient
-  );
+  const inlined =
+    (queryData?.renderComponent?.rendered &&
+      inlineFunctions(queryData?.renderComponent?.rendered, actualClient)) ||
+    null;
+
   return [inlined, { error, loading }];
 };
 
