@@ -219,6 +219,8 @@ var useServerState = function useServerState(initialValue, options) {
               _context3.next = 5;
               return response;
             case 5:
+              setOptimisticValue(null);
+            case 6:
             case "end":
               return _context3.stop();
           }

@@ -285,7 +285,7 @@ export const useServerState = <ValueType>(
           },
         });
         await response;
-        // setOptimisticValue(null);
+        setOptimisticValue(null);
       })();
     };
   }, [key, scope, actualClient]);
