@@ -142,31 +142,31 @@ export const useComponent = (
     },
   });
 
-  const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
-    client: actualClient,
-    variables: {
-      key: queryData?.renderComponent?.rendered?.key,
-      scope: 'global',
-    },
-    skip: !queryData?.renderComponent?.rendered?.key,
-    shouldResubscribe: true,
-  });
+  // const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
+  //   client: actualClient,
+  //   variables: {
+  //     key: queryData?.renderComponent?.rendered?.key,
+  //     scope: 'global',
+  //   },
+  //   skip: !queryData?.renderComponent?.rendered?.key,
+  //   shouldResubscribe: true,
+  // });
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const sub = await actualClient.subscribe({
-  //       query: UPDATE_COMPONENT,
-  //       variables: {
-  //         key: queryData?.renderComponent?.rendered?.key,
-  //         scope: 'global',
-  //       },
-  //     });
-  //     console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
-  //     sub.subscribe((a) => {
-  //       console.log('OBSERVED', a);
-  //     });
-  //   })();
-  // }, [queryData?.renderComponent?.rendered?.key]);
+  useEffect(() => {
+    (async () => {
+      const sub = await actualClient.subscribe({
+        query: UPDATE_COMPONENT,
+        variables: {
+          key: queryData?.renderComponent?.rendered?.key,
+          scope: 'global',
+        },
+      });
+      console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
+      sub.subscribe((a) => {
+        console.log('OBSERVED', a);
+      });
+    })();
+  }, [queryData?.renderComponent?.rendered?.key]);
 
   const inlined = inlineFunctions(
     queryData?.renderComponent?.rendered || { props: {}, children: [] },
