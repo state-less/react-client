@@ -128,12 +128,17 @@ var CallFunctionFactory = function CallFunctionFactory(actualClient, val) {
           });
         case 3:
           response = _context2.sent;
-          if (!response.errors) {
-            _context2.next = 6;
-            break;
+          if (response.errors) {
+            actualClient.cache.modify({
+              fields: {
+                getState: function getState() {
+                  throw new Error(response.errors[0].message);
+                  // return { ...queryData.getState, ...subscriptionData?.updateState };
+                }
+              }
+            });
           }
-          throw new Error(response.errors[0].message);
-        case 6:
+        case 5:
         case "end":
           return _context2.stop();
       }
