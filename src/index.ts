@@ -40,7 +40,7 @@ export const UPDATE_STATE = gql`
 
 export const UPDATE_COMPONENT = gql`
   subscription MyQuery($key: ID!, $scope: String!) {
-    updateState(key: $key, scope: $scope) {
+    updateComponent(key: $key, scope: $scope) {
       rendered {
         ... on ServerSideProps {
           props
