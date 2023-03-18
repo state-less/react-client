@@ -142,7 +142,6 @@ export const useComponent = (
   });
 
   useEffect(() => {
-    if (!queryData?.renderComponent?.rendered?.key) return;
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
@@ -151,7 +150,7 @@ export const useComponent = (
           scope: 'global',
         },
       });
-      console.log('SUBSCRIBED', sub);
+      console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((a) => {
         console.log('OBSERVED', a);
       });
