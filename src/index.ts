@@ -281,7 +281,9 @@ export const useServerState = <ValueType>(
             value,
           },
           context: {
-            signal: ref.current.signal,
+            fetchOptions: {
+              signal: ref.current.signal,
+            },
           },
         });
         // await response;

@@ -212,7 +212,9 @@ var useServerState = function useServerState(initialValue, options) {
                   value: value
                 },
                 context: {
-                  signal: ref.current.signal
+                  fetchOptions: {
+                    signal: ref.current.signal
+                  }
                 }
               });
               // await response;
