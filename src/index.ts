@@ -1,7 +1,7 @@
 import { gql, getApolloContext, ApolloError } from '@apollo/client';
 import { ApolloClient, Observable } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -219,7 +219,7 @@ export const useServerState = <ValueType>(
   );
 
   const actualClient = providedClient || client;
-
+  const ref = useRef(new AbortController());
   if (!actualClient) {
     throw new Error(
       'No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.'
@@ -271,14 +271,20 @@ export const useServerState = <ValueType>(
     return (value: ValueType) => {
       setOptimisticValue(value);
       (async () => {
-        await actualClient.mutate({
+        ref.current.abort();
+        ref.current = new AbortController();
+        const response = actualClient.mutate({
           mutation: SET_STATE,
           variables: {
             key,
             scope,
             value,
           },
+          context: {
+            signal: ref.current.signal,
+          },
         });
+        await response;
         // setOptimisticValue(null);
       })();
     };

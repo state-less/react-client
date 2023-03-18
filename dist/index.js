@@ -155,6 +155,7 @@ var useServerState = function useServerState(initialValue, options) {
     _React$useContext2$cl = _React$useContext2.client,
     providedClient = _React$useContext2$cl === void 0 ? null : _React$useContext2$cl;
   var actualClient = providedClient || client;
+  var ref = (0, _react2.useRef)(new AbortController());
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
@@ -198,19 +199,26 @@ var useServerState = function useServerState(initialValue, options) {
     return function (value) {
       setOptimisticValue(value);
       (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+        var response;
         return _regenerator["default"].wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
-              return actualClient.mutate({
+              ref.current.abort();
+              ref.current = new AbortController();
+              response = actualClient.mutate({
                 mutation: SET_STATE,
                 variables: {
                   key: key,
                   scope: scope,
                   value: value
+                },
+                context: {
+                  signal: ref.current.signal
                 }
               });
-            case 2:
+              _context3.next = 5;
+              return response;
+            case 5:
             case "end":
               return _context3.stop();
           }
