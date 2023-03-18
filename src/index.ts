@@ -1,5 +1,5 @@
 import { gql, getApolloContext, ApolloError } from '@apollo/client';
-import { ApolloClient } from '@apollo/client/core';
+import { ApolloClient, Observable } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -142,15 +142,19 @@ export const useComponent = (
   });
 
   useEffect(() => {
+    if (!queryData?.renderComponent?.rendered?.key) return;
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
-          key: queryData?.renderComponent?.rendered?.key || key,
+          key: queryData?.renderComponent?.rendered?.key,
           scope: 'global',
         },
       });
       console.log('SUBSCRIBED', sub);
+      sub.subscribe((a) => {
+        console.log('OBSERVED', a);
+      });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
 

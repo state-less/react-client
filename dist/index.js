@@ -32,7 +32,7 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp3, _queryData$renderComp4, _queryData$renderComp5;
+  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
@@ -52,8 +52,10 @@ var useComponent = function useComponent(key, options) {
     error = _useQuery.error,
     loading = _useQuery.loading;
   (0, _react2.useEffect)(function () {
+    var _queryData$renderComp, _queryData$renderComp2;
+    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key)) return;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
-      var _queryData$renderComp, _queryData$renderComp2;
+      var _queryData$renderComp3, _queryData$renderComp4;
       var sub;
       return _regenerator["default"].wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
@@ -62,21 +64,24 @@ var useComponent = function useComponent(key, options) {
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
-                key: (queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key) || key,
+                key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key,
                 scope: 'global'
               }
             });
           case 2:
             sub = _context.sent;
             console.log('SUBSCRIBED', sub);
-          case 4:
+            sub.subscribe(function (a) {
+              console.log('OBSERVED', a);
+            });
+          case 5:
           case "end":
             return _context.stop();
         }
       }, _callee);
     }))();
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key]);
-  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered) || {
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
+  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered) || {
     props: {},
     children: []
   }, actualClient);
