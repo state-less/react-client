@@ -115,9 +115,9 @@ export const useComponent = (
 
 const inlineFunctions = (obj: any) => {
   const inlined = JSON.parse(JSON.stringify(obj));
-  for (const [key, val] of Object.entries(obj)) {
+  for (const [key, val] of Object.entries(obj.props)) {
     if (val.__typename === 'FunctionCall') {
-      inlined[key] = () => {
+      inlined.props[key] = () => {
         console.log('Hello from the client!');
       };
     }

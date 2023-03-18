@@ -56,12 +56,12 @@ var useComponent = function useComponent(key, options) {
 exports.useComponent = useComponent;
 var inlineFunctions = function inlineFunctions(obj) {
   var inlined = JSON.parse(JSON.stringify(obj));
-  for (var _i = 0, _Object$entries = Object.entries(obj); _i < _Object$entries.length; _i++) {
+  for (var _i = 0, _Object$entries = Object.entries(obj.props); _i < _Object$entries.length; _i++) {
     var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
       key = _Object$entries$_i[0],
       val = _Object$entries$_i[1];
     if (val.__typename === 'FunctionCall') {
-      inlined[key] = function () {
+      inlined.props[key] = function () {
         console.log('Hello from the client!');
       };
     }
