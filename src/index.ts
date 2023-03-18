@@ -162,8 +162,17 @@ export const useComponent = (
         },
       });
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
-      sub.subscribe((a) => {
-        console.log('OBSERVED', a);
+      sub.subscribe((subscriptionData) => {
+        actualClient.cache.modify({
+          fields: {
+            getState() {
+              return {
+                ...queryData.renderComponent,
+                ...subscriptionData?.data?.updateComponent,
+              };
+            },
+          },
+        });
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
