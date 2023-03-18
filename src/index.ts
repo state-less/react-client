@@ -40,21 +40,23 @@ export const UPDATE_STATE = gql`
 
 export const UPDATE_COMPONENT = gql`
   subscription MyQuery($key: ID!, $scope: String!) {
-    rendered {
-      ... on ServerSideProps {
-        props
-        children
-      }
-      __typename
-      ... on Server {
-        version
-        uptime
-        platform
-        components: children {
-          __typename
-          ... on ServerSideProps {
-            props
-            children
+    updateState(key: $key, scope: $scope) {
+      rendered {
+        ... on ServerSideProps {
+          props
+          children
+        }
+        __typename
+        ... on Server {
+          version
+          uptime
+          platform
+          components: children {
+            __typename
+            ... on ServerSideProps {
+              props
+              children
+            }
           }
         }
       }
