@@ -193,7 +193,7 @@ var useServerState = function useServerState(initialValue, options) {
         }
       }
     });
-    setTimeout(setOptimisticValue, 0, null);
+    // setTimeout(setOptimisticValue, 0, null);
   }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
   var setValue = (0, _react2.useMemo)(function () {
     return function (value) {
