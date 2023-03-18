@@ -180,7 +180,7 @@ export const useComponent = (
   const inlined =
     (queryData?.renderComponent?.rendered &&
       inlineFunctions(queryData?.renderComponent?.rendered, actualClient)) ||
-    null;
+    {};
 
   return [inlined, { error, loading }];
 };
