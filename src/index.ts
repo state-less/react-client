@@ -200,7 +200,7 @@ export const CallFunctionFactory =
     if (response.errors) {
       actualClient.cache.modify({
         fields: {
-          getState() {
+          renderComponent() {
             throw new Error(response.errors[0].message);
             // return { ...queryData.getState, ...subscriptionData?.updateState };
           },

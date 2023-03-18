@@ -131,7 +131,7 @@ var CallFunctionFactory = function CallFunctionFactory(actualClient, val) {
           if (response.errors) {
             actualClient.cache.modify({
               fields: {
-                getState: function getState() {
+                renderComponent: function renderComponent() {
                   throw new Error(response.errors[0].message);
                   // return { ...queryData.getState, ...subscriptionData?.updateState };
                 }
