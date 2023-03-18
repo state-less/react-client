@@ -83,7 +83,7 @@ var useComponent = function useComponent(key, options) {
             sub.subscribe(function (subscriptionData) {
               actualClient.cache.modify({
                 fields: {
-                  getState: function getState() {
+                  renderComponent: function renderComponent() {
                     var _subscriptionData$dat;
                     return _objectSpread(_objectSpread({}, queryData.renderComponent), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent);
                   }

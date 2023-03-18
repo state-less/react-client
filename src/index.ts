@@ -165,7 +165,7 @@ export const useComponent = (
       sub.subscribe((subscriptionData) => {
         actualClient.cache.modify({
           fields: {
-            getState() {
+            renderComponent() {
               return {
                 ...queryData.renderComponent,
                 ...subscriptionData?.data?.updateComponent,
