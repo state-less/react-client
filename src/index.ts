@@ -142,21 +142,29 @@ export const useComponent = (
     },
   });
 
-  useEffect(() => {
-    (async () => {
-      const sub = await actualClient.subscribe({
-        query: UPDATE_COMPONENT,
-        variables: {
-          key: queryData?.renderComponent?.rendered?.key,
-          scope: 'global',
-        },
-      });
-      console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
-      sub.subscribe((a) => {
-        console.log('OBSERVED', a);
-      });
-    })();
-  }, [queryData?.renderComponent?.rendered?.key]);
+  const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
+    client: actualClient,
+    variables: {
+      key: queryData?.renderComponent?.rendered?.key,
+      scope: 'global',
+    },
+  });
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const sub = await actualClient.subscribe({
+  //       query: UPDATE_COMPONENT,
+  //       variables: {
+  //         key: queryData?.renderComponent?.rendered?.key,
+  //         scope: 'global',
+  //       },
+  //     });
+  //     console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
+  //     sub.subscribe((a) => {
+  //       console.log('OBSERVED', a);
+  //     });
+  //   })();
+  // }, [queryData?.renderComponent?.rendered?.key]);
 
   const inlined = inlineFunctions(
     queryData?.renderComponent?.rendered || { props: {}, children: [] },

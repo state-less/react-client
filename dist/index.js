@@ -8,8 +8,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _client = require("@apollo/client");
 var _react = require("@apollo/client/react");
@@ -32,7 +32,7 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7;
+  var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
@@ -51,35 +51,32 @@ var useComponent = function useComponent(key, options) {
     queryData = _useQuery.data,
     error = _useQuery.error,
     loading = _useQuery.loading;
-  (0, _react2.useEffect)(function () {
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
-      var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
-      var sub;
-      return _regenerator["default"].wrap(function _callee$(_context) {
-        while (1) switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return actualClient.subscribe({
-              query: UPDATE_COMPONENT,
-              variables: {
-                key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key,
-                scope: 'global'
-              }
-            });
-          case 2:
-            sub = _context.sent;
-            console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
-            sub.subscribe(function (a) {
-              console.log('OBSERVED', a);
-            });
-          case 5:
-          case "end":
-            return _context.stop();
-        }
-      }, _callee);
-    }))();
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
-  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered) || {
+  var _useSubscription = (0, _react.useSubscription)(UPDATE_STATE, {
+      client: actualClient,
+      variables: {
+        key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key,
+        scope: 'global'
+      }
+    }),
+    subscriptionData = _useSubscription.data;
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const sub = await actualClient.subscribe({
+  //       query: UPDATE_COMPONENT,
+  //       variables: {
+  //         key: queryData?.renderComponent?.rendered?.key,
+  //         scope: 'global',
+  //       },
+  //     });
+  //     console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
+  //     sub.subscribe((a) => {
+  //       console.log('OBSERVED', a);
+  //     });
+  //   })();
+  // }, [queryData?.renderComponent?.rendered?.key]);
+
+  var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : _queryData$renderComp3.rendered) || {
     props: {},
     children: []
   }, actualClient);
@@ -96,19 +93,19 @@ var inlineFunctions = function inlineFunctions(obj, actualClient) {
       key = _Object$entries$_i[0],
       val = _Object$entries$_i[1];
     if (val.__typename === 'FunctionCall') {
-      inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+      inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
         var _len,
           args,
           _key,
-          _args2 = arguments;
-        return _regenerator["default"].wrap(function _callee2$(_context2) {
-          while (1) switch (_context2.prev = _context2.next) {
+          _args = arguments;
+        return _regenerator["default"].wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
             case 0:
               console.log('Hello from the client!');
-              for (_len = _args2.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = _args2[_key];
+              for (_len = _args.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = _args[_key];
               }
-              _context2.next = 4;
+              _context.next = 4;
               return actualClient.mutate({
                 mutation: CALL_FUNCTION,
                 variables: {
@@ -119,9 +116,9 @@ var inlineFunctions = function inlineFunctions(obj, actualClient) {
               });
             case 4:
             case "end":
-              return _context2.stop();
+              return _context.stop();
           }
-        }, _callee2);
+        }, _callee);
       }));
     }
   };
@@ -160,14 +157,14 @@ var useServerState = function useServerState(initialValue, options) {
   var error = queryData !== null && queryData !== void 0 && queryData.getState && !apolloError ? new _client.ApolloError({
     errorMessage: 'No data'
   }) : apolloError;
-  var _useSubscription = (0, _react.useSubscription)(UPDATE_STATE, {
+  var _useSubscription2 = (0, _react.useSubscription)(UPDATE_STATE, {
       client: actualClient,
       variables: {
         key: key,
         scope: scope
       }
     }),
-    subscriptionData = _useSubscription.data;
+    subscriptionData = _useSubscription2.data;
   (0, _react2.useEffect)(function () {
     actualClient.cache.modify({
       fields: {
@@ -181,11 +178,11 @@ var useServerState = function useServerState(initialValue, options) {
   var setValue = (0, _react2.useMemo)(function () {
     return function (value) {
       setOptimisticValue(value);
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
-        return _regenerator["default"].wrap(function _callee3$(_context3) {
-          while (1) switch (_context3.prev = _context3.next) {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+        return _regenerator["default"].wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              _context3.next = 2;
+              _context2.next = 2;
               return actualClient.mutate({
                 mutation: SET_STATE,
                 variables: {
@@ -196,9 +193,9 @@ var useServerState = function useServerState(initialValue, options) {
               });
             case 2:
             case "end":
-              return _context3.stop();
+              return _context2.stop();
           }
-        }, _callee3);
+        }, _callee2);
       }))();
     };
   }, [key, scope, actualClient]);
