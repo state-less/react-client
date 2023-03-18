@@ -178,29 +178,31 @@ export const useComponent = (
   }, [queryData?.renderComponent?.rendered?.key]);
 
   const inlined = inlineFunctions(
-    queryData?.renderComponent?.rendered || { props: {}, children: [] },
+    queryData?.renderComponent?.rendered,
     actualClient
   );
   return [inlined, { error, loading }];
 };
 
+export const CallFunctionFactory =
+  (actualClient: ApolloClient<any>, val: { component: string; name: string }) =>
+  async (...args) => {
+    await actualClient.mutate({
+      mutation: CALL_FUNCTION,
+      variables: {
+        key: val.component,
+        prop: val.name,
+        args,
+      },
+    });
+  };
+
 const inlineFunctions = (obj: { props: Record<string, any> }, actualClient) => {
   const inlined = JSON.parse(JSON.stringify(obj));
+  if (!obj?.props) return inlined;
   for (const [key, val] of Object.entries(obj.props)) {
     if (val.__typename === 'FunctionCall') {
-      inlined.props[key] = async (...args) => {
-        console.log('Hello from the client!');
-
-        await actualClient.mutate({
-          mutation: CALL_FUNCTION,
-          variables: {
-            key: val.component,
-            prop: val.name,
-            args,
-          },
-        });
-        // setOptimisticValue(null);
-      };
+      inlined.props[key] = CallFunctionFactory(actualClient, val);
     }
   }
   return inlined;
