@@ -148,6 +148,8 @@ export const useComponent = (
       key: queryData?.renderComponent?.rendered?.key,
       scope: 'global',
     },
+    skip: !queryData?.renderComponent?.rendered?.key,
+    shouldResubscribe: true,
   });
 
   // useEffect(() => {
