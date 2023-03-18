@@ -188,7 +188,7 @@ export const useComponent = (
 export const CallFunctionFactory =
   (actualClient: ApolloClient<any>, val: { component: string; name: string }) =>
   async (...args) => {
-    await actualClient.mutate({
+    const response = await actualClient.mutate({
       mutation: CALL_FUNCTION,
       variables: {
         key: val.component,
@@ -196,6 +196,10 @@ export const CallFunctionFactory =
         args,
       },
     });
+
+    if (response.errors) {
+      throw new Error(response.errors[0].message);
+    }
   };
 
 const inlineFunctions = (obj: { props: Record<string, any> }, actualClient) => {

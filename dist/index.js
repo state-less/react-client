@@ -109,6 +109,7 @@ var CallFunctionFactory = function CallFunctionFactory(actualClient, val) {
     var _len,
       args,
       _key,
+      response,
       _args2 = arguments;
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
@@ -126,6 +127,13 @@ var CallFunctionFactory = function CallFunctionFactory(actualClient, val) {
             }
           });
         case 3:
+          response = _context2.sent;
+          if (!response.errors) {
+            _context2.next = 6;
+            break;
+          }
+          throw new Error(response.errors[0].message);
+        case 6:
         case "end":
           return _context2.stop();
       }
