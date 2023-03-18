@@ -141,14 +141,18 @@ export const useComponent = (
     },
   });
 
-  const { data: subscriptionData } = useSubscription(UPDATE_COMPONENT, {
-    client: actualClient,
-    variables: {
-      key: queryData?.renderComponent?.rendered?.key || key,
-      scope: 'global',
-    },
-    skip: !queryData?.renderComponent?.rendered?.key,
-  });
+  useEffect(() => {
+    (async () => {
+      const sub = await actualClient.subscribe({
+        query: UPDATE_COMPONENT,
+        variables: {
+          key: queryData?.renderComponent?.rendered?.key || key,
+          scope: 'global',
+        },
+      });
+      console.log('SUBSCRIBED', sub);
+    })();
+  }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
     actualClient.cache.modify({
