@@ -273,7 +273,7 @@ export const useServerState = <ValueType>(
       (async () => {
         ref.current.abort();
         ref.current = new AbortController();
-        const response = actualClient.mutate({
+        actualClient.mutate({
           mutation: SET_STATE,
           variables: {
             key,
@@ -284,9 +284,9 @@ export const useServerState = <ValueType>(
             signal: ref.current.signal,
           },
         });
-        await response;
-        if (ref.current.signal.aborted) return;
-        setOptimisticValue(null);
+        // await response;
+        // if (ref.current.signal.aborted) return;
+        // setOptimisticValue(null);
       })();
     };
   }, [key, scope, actualClient]);
