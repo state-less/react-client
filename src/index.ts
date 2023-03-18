@@ -154,19 +154,6 @@ export const useComponent = (
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
 
-  useEffect(() => {
-    actualClient.cache.modify({
-      fields: {
-        getState() {
-          return {
-            ...queryData.renderComponent,
-            ...subscriptionData?.updateComponent,
-          };
-        },
-      },
-    });
-  }, [subscriptionData?.updateState?.value]);
-
   const inlined = inlineFunctions(
     queryData?.renderComponent?.rendered || { props: {}, children: [] },
     actualClient

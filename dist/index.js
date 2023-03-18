@@ -7,8 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _client = require("@apollo/client");
@@ -32,7 +32,7 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp3, _queryData$renderComp4, _subscriptionData2, _subscriptionData2$up, _queryData$renderComp5;
+  var _queryData$renderComp3, _queryData$renderComp4, _queryData$renderComp5;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
@@ -76,16 +76,6 @@ var useComponent = function useComponent(key, options) {
       }, _callee);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key]);
-  (0, _react2.useEffect)(function () {
-    actualClient.cache.modify({
-      fields: {
-        getState: function getState() {
-          var _subscriptionData;
-          return _objectSpread(_objectSpread({}, queryData.renderComponent), (_subscriptionData = subscriptionData) === null || _subscriptionData === void 0 ? void 0 : _subscriptionData.updateComponent);
-        }
-      }
-    });
-  }, [(_subscriptionData2 = subscriptionData) === null || _subscriptionData2 === void 0 ? void 0 : (_subscriptionData2$up = _subscriptionData2.updateState) === null || _subscriptionData2$up === void 0 ? void 0 : _subscriptionData2$up.value]);
   var inlined = inlineFunctions((queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered) || {
     props: {},
     children: []
