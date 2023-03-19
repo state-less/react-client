@@ -114,7 +114,11 @@ export const useLocalStorage = (key: string, initialValue: any) => {
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      if (!item) {
+        localStorage.setItem(key, JSON.stringify(initialValue));
+        return initialValue;
+      }
+      return JSON.parse(item);
     } catch (error) {
       console.log(error);
       return initialValue;

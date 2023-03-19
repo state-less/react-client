@@ -36,7 +36,11 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
   var _useState = (0, _react2.useState)(function () {
       try {
         var item = window.localStorage.getItem(key);
-        return item ? JSON.parse(item) : initialValue;
+        if (!item) {
+          localStorage.setItem(key, JSON.stringify(initialValue));
+          return initialValue;
+        }
+        return JSON.parse(item);
       } catch (error) {
         console.log(error);
         return initialValue;
