@@ -172,7 +172,7 @@ export const useComponent = (
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
 
-  let inlined;
+  let inlined = queryData?.renderComponent?.rendered;
   if (queryData?.renderComponent?.rendered?.props) {
     const obj: { props: Record<string, any> } =
       queryData?.renderComponent?.rendered;

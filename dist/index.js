@@ -32,7 +32,7 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _lastMutationResult$e;
+  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _queryData$renderComp9, _lastMutationResult$e;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
@@ -95,10 +95,10 @@ var useComponent = function useComponent(key, options) {
       }, _callee);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
-  var inlined;
-  if (queryData !== null && queryData !== void 0 && (_queryData$renderComp7 = queryData.renderComponent) !== null && _queryData$renderComp7 !== void 0 && (_queryData$renderComp8 = _queryData$renderComp7.rendered) !== null && _queryData$renderComp8 !== void 0 && _queryData$renderComp8.props) {
-    var _queryData$renderComp9;
-    var obj = queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered;
+  var inlined = queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered;
+  if (queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && (_queryData$renderComp9 = _queryData$renderComp8.rendered) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.props) {
+    var _queryData$renderComp10;
+    var obj = queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered;
     inlined = JSON.parse(JSON.stringify(obj));
     var _loop = function _loop() {
       var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
