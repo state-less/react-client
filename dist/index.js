@@ -76,6 +76,9 @@ var useComponent = function useComponent(key, options) {
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
   console.log('LOCALSTORAGE', id, (0, _uuid.v4)());
+  (0, _react2.useEffect)(function () {
+    console.log('WTF');
+  });
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
       client: actualClient,
       variables: {
