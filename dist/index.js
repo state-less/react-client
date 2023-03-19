@@ -75,10 +75,6 @@ var useComponent = function useComponent(key, options) {
   var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)()),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
-  console.log('LOCALSTORAGE', id, (0, _uuid.v4)());
-  (0, _react2.useEffect)(function () {
-    console.log('WTF');
-  });
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
       client: actualClient,
       variables: {
@@ -86,7 +82,9 @@ var useComponent = function useComponent(key, options) {
         props: options.props
       },
       context: {
-        clientRequestId: id
+        headers: {
+          'X-Unique-Id': id
+        }
       }
     }),
     queryData = _useQuery.data,
@@ -221,7 +219,9 @@ var useServerState = function useServerState(initialValue, options) {
         scope: scope
       },
       context: {
-        clientRequestId: id
+        headers: {
+          'X-Unique-Id': id
+        }
       }
     }),
     queryData = _useQuery2.data,

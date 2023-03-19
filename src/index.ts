@@ -153,10 +153,7 @@ export const useComponent = (
     );
   }
   const [id] = useLocalStorage('id', v4());
-  console.log('LOCALSTORAGE', id, v4());
-  useEffect(() => {
-    console.log('WTF');
-  });
+
   const {
     data: queryData,
     error,
@@ -170,7 +167,9 @@ export const useComponent = (
       props: options.props,
     },
     context: {
-      clientRequestId: id,
+      headers: {
+        'X-Unique-Id': id,
+      },
     },
   });
 
@@ -269,7 +268,9 @@ export const useServerState = <ValueType>(
       scope,
     },
     context: {
-      clientRequestId: id,
+      headers: {
+        'X-Unique-Id': id,
+      },
     },
   });
 
