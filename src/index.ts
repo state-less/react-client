@@ -173,11 +173,11 @@ export const useComponent = (
   }, [queryData?.renderComponent?.rendered?.key]);
 
   let inlined;
-  if (queryData?.renderComponent?.rendered) {
+  if (queryData?.renderComponent?.rendered?.props) {
     const obj: { props: Record<string, any> } =
       queryData?.renderComponent?.rendered;
     inlined = JSON.parse(JSON.stringify(obj));
-    if (!obj?.props) return inlined;
+
     for (const [key, val] of Object.entries(obj.props)) {
       if (val.__typename === 'FunctionCall') {
         inlined.props[key] = async (...args) => {
