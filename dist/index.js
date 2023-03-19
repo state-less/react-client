@@ -5,7 +5,7 @@ var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
+exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
@@ -14,6 +14,7 @@ var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/hel
 var _client = require("@apollo/client");
 var _react = require("@apollo/client/react");
 var _react2 = _interopRequireWildcard(require("react"));
+var _uuid = require("uuid");
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6;
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -31,6 +32,31 @@ var SET_STATE = (0, _client.gql)(_templateObject5 || (_templateObject5 = (0, _ta
 exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
+var useLocalStorage = function useLocalStorage(key, initialValue) {
+  var _useState = (0, _react2.useState)(function () {
+      try {
+        var item = window.localStorage.getItem(key);
+        return item ? JSON.parse(item) : initialValue;
+      } catch (error) {
+        console.log(error);
+        return initialValue;
+      }
+    }),
+    _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
+    storedValue = _useState2[0],
+    setStoredValue = _useState2[1];
+  var setValue = function setValue(value) {
+    try {
+      var valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return [storedValue, setValue];
+};
+exports.useLocalStorage = useLocalStorage;
 var useComponent = function useComponent(key, options) {
   var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _queryData$renderComp9, _lastMutationResult$e;
   var _ref = options || {},
@@ -38,19 +64,25 @@ var useComponent = function useComponent(key, options) {
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
-  var _useState = (0, _react2.useState)(null),
-    _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
-    lastMutationResult = _useState2[0],
-    setLastMutationResult = _useState2[1];
+  var _useState3 = (0, _react2.useState)(null),
+    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
+    lastMutationResult = _useState4[0],
+    setLastMutationResult = _useState4[1];
   var actualClient = client || providedClient;
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
+  var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)()),
+    _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
+    id = _useLocalStorage2[0];
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
       client: actualClient,
       variables: {
         key: key,
         props: options.props
+      },
+      context: {
+        clientRequestId: id
       }
     }),
     queryData = _useQuery.data,
@@ -171,15 +203,21 @@ var useServerState = function useServerState(initialValue, options) {
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
-  var _useState3 = (0, _react2.useState)(null),
-    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
-    optimisticValue = _useState4[0],
-    setOptimisticValue = _useState4[1];
+  var _useState5 = (0, _react2.useState)(null),
+    _useState6 = (0, _slicedToArray2["default"])(_useState5, 2),
+    optimisticValue = _useState6[0],
+    setOptimisticValue = _useState6[1];
+  var _useLocalStorage3 = useLocalStorage('id', (0, _uuid.v4)()),
+    _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
+    id = _useLocalStorage4[0];
   var _useQuery2 = (0, _react.useQuery)(GET_STATE, {
       client: actualClient,
       variables: {
         key: key,
         scope: scope
+      },
+      context: {
+        clientRequestId: id
       }
     }),
     queryData = _useQuery2.data,

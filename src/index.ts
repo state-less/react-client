@@ -2,6 +2,7 @@ import { gql, getApolloContext, ApolloError } from '@apollo/client';
 import { ApolloClient, FetchResult, Observable } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { v4 } from 'uuid';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -109,6 +110,31 @@ type UseServerStateInfo = {
   loading: boolean;
 };
 
+export const useLocalStorage = (key: string, initialValue: any) => {
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.log(error);
+      return initialValue;
+    }
+  });
+
+  const setValue = (value: any) => {
+    try {
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return [storedValue, setValue];
+};
+
 export const useComponent = (
   key: string,
   options?: UseComponentOptions
@@ -126,6 +152,7 @@ export const useComponent = (
       'No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.'
     );
   }
+  const [id] = useLocalStorage('id', v4());
 
   const {
     data: queryData,
@@ -138,6 +165,9 @@ export const useComponent = (
     variables: {
       key,
       props: options.props,
+    },
+    context: {
+      clientRequestId: id,
     },
   });
 
@@ -221,6 +251,7 @@ export const useServerState = <ValueType>(
   const [optimisticValue, setOptimisticValue] = useState<ValueType | null>(
     null
   );
+  const [id] = useLocalStorage('id', v4());
 
   const {
     data: queryData,
@@ -233,6 +264,9 @@ export const useServerState = <ValueType>(
     variables: {
       key,
       scope,
+    },
+    context: {
+      clientRequestId: id,
     },
   });
 
