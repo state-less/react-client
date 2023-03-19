@@ -100,8 +100,6 @@ type UseServerStateOptions = {
 };
 
 type UseComponentOptions = {
-  /** The *unique* serverside key of the component. */
-  key: string;
   client?: ApolloClient<any>;
   props?: any;
 };
@@ -113,9 +111,9 @@ type UseServerStateInfo = {
 
 export const useComponent = (
   key: string,
-  options: UseComponentOptions
+  options?: UseComponentOptions
 ): [any, { error: ApolloError | Error; loading: boolean }] => {
-  const { client } = options;
+  const { client } = options || {};
   const { client: providedClient = null } = React.useContext(
     getApolloContext()
   );

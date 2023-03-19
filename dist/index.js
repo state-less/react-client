@@ -33,7 +33,8 @@ var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0,
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
   var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _queryData$renderComp9, _lastMutationResult$e;
-  var client = options.client;
+  var _ref = options || {},
+    client = _ref.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
