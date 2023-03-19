@@ -1,5 +1,5 @@
 import { gql, getApolloContext, ApolloError } from '@apollo/client';
-import { ApolloClient, Observable } from '@apollo/client/core';
+import { ApolloClient, FetchResult, Observable } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -119,7 +119,8 @@ export const useComponent = (
   const { client: providedClient = null } = React.useContext(
     getApolloContext()
   );
-
+  const [lastMutationResult, setLastMutationResult] =
+    useState<FetchResult>(null);
   const actualClient = client || providedClient;
 
   if (!actualClient) {
@@ -142,16 +143,10 @@ export const useComponent = (
     },
   });
 
-  // const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
-  //   client: actualClient,
-  //   variables: {
-  //     key: queryData?.renderComponent?.rendered?.key,
-  //     scope: 'global',
-  //   },
-  //   skip: !queryData?.renderComponent?.rendered?.key,
-  //   shouldResubscribe: true,
-  // });
-
+  /**
+   * This needs to be done manually because we don't have the key of the component before the query above finished.
+   * useSubscription doesn't work because it doesn't resubscribe if the key changes.
+   */
   useEffect(() => {
     (async () => {
       const sub = await actualClient.subscribe({
@@ -177,50 +172,37 @@ export const useComponent = (
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
 
-  const inlined =
-    (queryData?.renderComponent?.rendered &&
-      inlineFunctions(queryData, actualClient)) ||
-    {};
-
-  return [inlined, { error, loading }];
-};
-
-export const CallFunctionFactory =
-  (
-    actualClient: ApolloClient<any>,
-    val: { component: string; name: string },
-    data
-  ) =>
-  async (...args) => {
-    const response = await actualClient.mutate({
-      mutation: CALL_FUNCTION,
-      variables: {
-        key: val.component,
-        prop: val.name,
-        args,
-      },
-    });
-
-    if (response.errors) {
-      actualClient.cache.modify({
-        id: actualClient.cache.identify(data),
-        fields: {
-          error: () => response.errors[0],
-        },
-      });
+  let inlined;
+  if (queryData?.renderComponent?.rendered) {
+    const obj: { props: Record<string, any> } =
+      queryData?.renderComponent?.rendered;
+    inlined = JSON.parse(JSON.stringify(obj));
+    if (!obj?.props) return inlined;
+    for (const [key, val] of Object.entries(obj.props)) {
+      if (val.__typename === 'FunctionCall') {
+        inlined.props[key] = async (...args) => {
+          try {
+            const response = await actualClient.mutate({
+              mutation: CALL_FUNCTION,
+              variables: {
+                key: val.component,
+                prop: val.name,
+                args,
+              },
+            });
+            setLastMutationResult(response);
+          } catch (e) {
+            setLastMutationResult({ errors: [e] });
+          }
+        };
+      }
     }
-  };
-
-const inlineFunctions = (data, actualClient) => {
-  const obj: { props: Record<string, any> } = data?.renderComponent?.rendered;
-  const inlined = JSON.parse(JSON.stringify(obj));
-  if (!obj?.props) return inlined;
-  for (const [key, val] of Object.entries(obj.props)) {
-    if (val.__typename === 'FunctionCall') {
-      inlined.props[key] = CallFunctionFactory(actualClient, val, data);
-    }
+    return inlined;
   }
-  return inlined;
+
+  const anyError = error || lastMutationResult?.errors?.[0];
+
+  return [inlined, { error: anyError, loading }];
 };
 
 export const useServerState = <ValueType>(

@@ -5,11 +5,11 @@ var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CallFunctionFactory = exports.CALL_FUNCTION = void 0;
+exports.useServerState = exports.useComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _client = require("@apollo/client");
 var _react = require("@apollo/client/react");
@@ -32,11 +32,15 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7;
+  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _lastMutationResult$e;
   var client = options.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
+  var _useState = (0, _react2.useState)(null),
+    _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
+    lastMutationResult = _useState2[0],
+    setLastMutationResult = _useState2[1];
   var actualClient = client || providedClient;
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
@@ -52,16 +56,10 @@ var useComponent = function useComponent(key, options) {
     error = _useQuery.error,
     loading = _useQuery.loading;
 
-  // const { data: subscriptionData } = useSubscription(UPDATE_STATE, {
-  //   client: actualClient,
-  //   variables: {
-  //     key: queryData?.renderComponent?.rendered?.key,
-  //     scope: 'global',
-  //   },
-  //   skip: !queryData?.renderComponent?.rendered?.key,
-  //   shouldResubscribe: true,
-  // });
-
+  /**
+   * This needs to be done manually because we don't have the key of the component before the query above finished.
+   * useSubscription doesn't work because it doesn't resubscribe if the key changes.
+   */
   (0, _react2.useEffect)(function () {
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
       var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
@@ -97,70 +95,70 @@ var useComponent = function useComponent(key, options) {
       }, _callee);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
-  var inlined = (queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered) && inlineFunctions(queryData, actualClient) || {};
+  var inlined;
+  if (queryData !== null && queryData !== void 0 && (_queryData$renderComp7 = queryData.renderComponent) !== null && _queryData$renderComp7 !== void 0 && _queryData$renderComp7.rendered) {
+    var _queryData$renderComp8;
+    var obj = queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered;
+    inlined = JSON.parse(JSON.stringify(obj));
+    if (!(obj !== null && obj !== void 0 && obj.props)) return inlined;
+    var _loop = function _loop() {
+      var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
+        key = _Object$entries$_i[0],
+        val = _Object$entries$_i[1];
+      if (val.__typename === 'FunctionCall') {
+        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+          var _len,
+            args,
+            _key,
+            response,
+            _args2 = arguments;
+          return _regenerator["default"].wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.prev = 0;
+                for (_len = _args2.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args2[_key];
+                }
+                _context2.next = 4;
+                return actualClient.mutate({
+                  mutation: CALL_FUNCTION,
+                  variables: {
+                    key: val.component,
+                    prop: val.name,
+                    args: args
+                  }
+                });
+              case 4:
+                response = _context2.sent;
+                setLastMutationResult(response);
+                _context2.next = 11;
+                break;
+              case 8:
+                _context2.prev = 8;
+                _context2.t0 = _context2["catch"](0);
+                setLastMutationResult({
+                  errors: [_context2.t0]
+                });
+              case 11:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2, null, [[0, 8]]);
+        }));
+      }
+    };
+    for (var _i = 0, _Object$entries = Object.entries(obj.props); _i < _Object$entries.length; _i++) {
+      _loop();
+    }
+    return inlined;
+  }
+  var anyError = error || (lastMutationResult === null || lastMutationResult === void 0 ? void 0 : (_lastMutationResult$e = lastMutationResult.errors) === null || _lastMutationResult$e === void 0 ? void 0 : _lastMutationResult$e[0]);
   return [inlined, {
-    error: error,
+    error: anyError,
     loading: loading
   }];
 };
 exports.useComponent = useComponent;
-var CallFunctionFactory = function CallFunctionFactory(actualClient, val, data) {
-  return /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-    var _len,
-      args,
-      _key,
-      response,
-      _args2 = arguments;
-    return _regenerator["default"].wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          for (_len = _args2.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = _args2[_key];
-          }
-          _context2.next = 3;
-          return actualClient.mutate({
-            mutation: CALL_FUNCTION,
-            variables: {
-              key: val.component,
-              prop: val.name,
-              args: args
-            }
-          });
-        case 3:
-          response = _context2.sent;
-          if (response.errors) {
-            actualClient.cache.modify({
-              id: actualClient.cache.identify(data),
-              fields: {
-                error: function error() {
-                  return response.errors[0];
-                }
-              }
-            });
-          }
-        case 5:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2);
-  }));
-};
-exports.CallFunctionFactory = CallFunctionFactory;
-var inlineFunctions = function inlineFunctions(data, actualClient) {
-  var _data$renderComponent;
-  var obj = data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered;
-  var inlined = JSON.parse(JSON.stringify(obj));
-  if (!(obj !== null && obj !== void 0 && obj.props)) return inlined;
-  for (var _i = 0, _Object$entries = Object.entries(obj.props); _i < _Object$entries.length; _i++) {
-    var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
-      key = _Object$entries$_i[0],
-      val = _Object$entries$_i[1];
-    if (val.__typename === 'FunctionCall') {
-      inlined.props[key] = CallFunctionFactory(actualClient, val, data);
-    }
-  }
-  return inlined;
-};
 var useServerState = function useServerState(initialValue, options) {
   var _subscriptionData$upd, _queryData$getState;
   var key = options.key,
@@ -174,10 +172,10 @@ var useServerState = function useServerState(initialValue, options) {
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
-  var _useState = (0, _react2.useState)(null),
-    _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
-    optimisticValue = _useState2[0],
-    setOptimisticValue = _useState2[1];
+  var _useState3 = (0, _react2.useState)(null),
+    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
+    optimisticValue = _useState4[0],
+    setOptimisticValue = _useState4[1];
   var _useQuery2 = (0, _react.useQuery)(GET_STATE, {
       client: actualClient,
       variables: {
