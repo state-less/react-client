@@ -206,13 +206,23 @@ export const useComponent = (
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
 
-  let inlined = queryData?.renderComponent?.rendered;
-  if (queryData?.renderComponent?.rendered?.props) {
-    const obj: { props: Record<string, any> } =
-      queryData?.renderComponent?.rendered;
-    inlined = JSON.parse(JSON.stringify(obj));
+  const inlined = inline({
+    data: queryData?.renderComponent?.rendered,
+    actualClient,
+    setLastMutationResult,
+  });
 
-    for (const [key, val] of Object.entries(obj.props)) {
+  const anyError = error || lastMutationResult?.errors?.[0];
+
+  return [inlined, { error: anyError, loading }];
+};
+
+const inline = ({ data, actualClient, setLastMutationResult }) => {
+  let inlined: { props: Record<string, any>; children: any[] } = data;
+  if (data?.props) {
+    inlined = JSON.parse(JSON.stringify(data));
+
+    for (const [key, val] of Object.entries(inlined.props)) {
       if (val.__typename === 'FunctionCall') {
         inlined.props[key] = async (...args) => {
           try {
@@ -231,11 +241,17 @@ export const useComponent = (
         };
       }
     }
+
+    const children = inlined.children || [];
+    for (let i = 0; i < children.length; i++) {
+      inlined.children[i] = inline({
+        data: children[i],
+        actualClient,
+        setLastMutationResult,
+      });
+    }
   }
-
-  const anyError = error || lastMutationResult?.errors?.[0];
-
-  return [inlined, { error: anyError, loading }];
+  return inlined;
 };
 
 export const useServerState = <ValueType>(
