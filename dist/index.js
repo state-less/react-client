@@ -150,7 +150,6 @@ var useComponent = function useComponent(key, options) {
     for (var _i = 0, _Object$entries = Object.entries(obj.props); _i < _Object$entries.length; _i++) {
       _loop();
     }
-    return inlined;
   }
   var anyError = error || (lastMutationResult === null || lastMutationResult === void 0 ? void 0 : (_lastMutationResult$e = lastMutationResult.errors) === null || _lastMutationResult$e === void 0 ? void 0 : _lastMutationResult$e[0]);
   return [inlined, {

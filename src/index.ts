@@ -197,7 +197,6 @@ export const useComponent = (
         };
       }
     }
-    return inlined;
   }
 
   const anyError = error || lastMutationResult?.errors?.[0];
