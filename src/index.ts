@@ -153,7 +153,7 @@ export const useComponent = (
     );
   }
   const [id] = useLocalStorage('id', v4());
-
+  console.log('LOCALSTORAGE', id, v4());
   const {
     data: queryData,
     error,
