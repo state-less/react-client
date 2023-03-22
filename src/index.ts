@@ -223,7 +223,7 @@ const inline = ({ data, actualClient, setLastMutationResult }) => {
     inlined = JSON.parse(JSON.stringify(data));
 
     for (const [key, val] of Object.entries(inlined.props)) {
-      if (val.__typename === 'FunctionCall') {
+      if (val?.__typename === 'FunctionCall') {
         inlined.props[key] = async (...args) => {
           try {
             const response = await actualClient.mutate({
