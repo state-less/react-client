@@ -198,21 +198,22 @@ export const useComponent = (
           key,
           subscriptionData?.data?.updateComponent
         );
+        const data = client.cache.readQuery({
+          query: RENDER_COMPONENT,
+          variables: { key, props: options.props },
+        }) as any;
+
+        Object.assign(
+          data?.renderComponent?.rendered,
+          subscriptionData?.data?.updateComponent?.rendered
+        );
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
             key,
             props: options.props,
           },
-          data: {
-            renderComponent: {
-              ...subscriptionData?.data?.updateComponent,
-              rendered: {
-                ...queryData?.renderComponent?.rendered,
-                ...subscriptionData?.data?.updateComponent?.rendered,
-              },
-            },
-          },
+          data,
         });
         // actualClient.cache.modify({
         //   fields: {

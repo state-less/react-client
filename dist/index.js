@@ -62,7 +62,7 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
 };
 exports.useLocalStorage = useLocalStorage;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _lastMutationResult$e;
+  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _lastMutationResult$e;
   var _ref = options || {},
     client = _ref.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
@@ -119,19 +119,23 @@ var useComponent = function useComponent(key, options) {
             sub = _context.sent;
             console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
-              var _subscriptionData$dat, _subscriptionData$dat2, _queryData$renderComp5, _subscriptionData$dat3, _subscriptionData$dat4;
+              var _subscriptionData$dat, _data$renderComponent, _subscriptionData$dat2, _subscriptionData$dat3;
               console.log('Writing to kache', key, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent);
+              var data = client.cache.readQuery({
+                query: RENDER_COMPONENT,
+                variables: {
+                  key: key,
+                  props: options.props
+                }
+              });
+              Object.assign(data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat2 = subscriptionData.data) === null || _subscriptionData$dat2 === void 0 ? void 0 : (_subscriptionData$dat3 = _subscriptionData$dat2.updateComponent) === null || _subscriptionData$dat3 === void 0 ? void 0 : _subscriptionData$dat3.rendered);
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
                   key: key,
                   props: options.props
                 },
-                data: {
-                  renderComponent: _objectSpread(_objectSpread({}, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat2 = subscriptionData.data) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.updateComponent), {}, {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
-                  })
-                }
+                data: data
               });
               // actualClient.cache.modify({
               //   fields: {
@@ -150,9 +154,9 @@ var useComponent = function useComponent(key, options) {
         }
       }, _callee);
     }))();
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key]);
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
   var inlined = inline({
-    data: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered,
+    data: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered,
     actualClient: actualClient,
     setLastMutationResult: setLastMutationResult
   });
