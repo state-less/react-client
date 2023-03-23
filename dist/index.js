@@ -126,7 +126,9 @@ var useComponent = function useComponent(key, options) {
                   key: key,
                   props: options.props
                 },
-                data: subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent
+                data: {
+                  renderComponent: subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent
+                }
               });
               // actualClient.cache.modify({
               //   fields: {

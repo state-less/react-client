@@ -199,7 +199,9 @@ export const useComponent = (
             key,
             props: options.props,
           },
-          data: subscriptionData?.data?.updateComponent,
+          data: {
+            renderComponent: subscriptionData?.data?.updateComponent,
+          },
         });
         // actualClient.cache.modify({
         //   fields: {
