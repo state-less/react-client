@@ -162,7 +162,6 @@ export const useComponent = (
     data: queryData,
     error,
     loading,
-    refetch,
   } = useQuery<{
     renderComponent: { rendered: any };
   }>(RENDER_COMPONENT, {
@@ -171,6 +170,7 @@ export const useComponent = (
       key,
       props: options.props,
     },
+    fetchPolicy: 'cache-first',
     context: {
       headers: {
         'X-Unique-Id': id,
@@ -193,7 +193,21 @@ export const useComponent = (
       });
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
-        refetch();
+        actualClient.cache.writeQuery({
+          query: RENDER_COMPONENT,
+          variables: {
+            key,
+            props: options.props,
+          },
+          data: {
+            renderComponent: {
+              rendered: {
+                ...queryData?.renderComponent?.rendered,
+                ...subscriptionData?.data?.updateComponent?.rendered,
+              },
+            },
+          },
+        });
         // actualClient.cache.modify({
         //   fields: {
         //     renderComponent() {

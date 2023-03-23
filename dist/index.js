@@ -62,7 +62,7 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
 };
 exports.useLocalStorage = useLocalStorage;
 var useComponent = function useComponent(key, options) {
-  var _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp7, _lastMutationResult$e;
+  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _lastMutationResult$e;
   var _ref = options || {},
     client = _ref.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
@@ -85,6 +85,7 @@ var useComponent = function useComponent(key, options) {
         key: key,
         props: options.props
       },
+      fetchPolicy: 'cache-first',
       context: {
         headers: {
           'X-Unique-Id': id
@@ -93,8 +94,7 @@ var useComponent = function useComponent(key, options) {
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,
-    loading = _useQuery.loading,
-    refetch = _useQuery.refetch;
+    loading = _useQuery.loading;
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
@@ -119,7 +119,19 @@ var useComponent = function useComponent(key, options) {
             sub = _context.sent;
             console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
-              refetch();
+              var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
+              actualClient.cache.writeQuery({
+                query: RENDER_COMPONENT,
+                variables: {
+                  key: key,
+                  props: options.props
+                },
+                data: {
+                  renderComponent: {
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
+                  }
+                }
+              });
               // actualClient.cache.modify({
               //   fields: {
               //     renderComponent() {
@@ -137,9 +149,9 @@ var useComponent = function useComponent(key, options) {
         }
       }, _callee);
     }))();
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key]);
   var inlined = inline({
-    data: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered,
+    data: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered,
     actualClient: actualClient,
     setLastMutationResult: setLastMutationResult
   });
