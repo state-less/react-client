@@ -121,7 +121,7 @@ var useComponent = function useComponent(key, options) {
             sub.subscribe(function (subscriptionData) {
               var _subscriptionData$dat, _data$renderComponent, _subscriptionData$dat2, _subscriptionData$dat3;
               console.log('Writing to kache', key, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent);
-              var data = client.cache.readQuery({
+              var data = actualClient.cache.readQuery({
                 query: RENDER_COMPONENT,
                 variables: {
                   key: key,

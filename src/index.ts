@@ -198,7 +198,7 @@ export const useComponent = (
           key,
           subscriptionData?.data?.updateComponent
         );
-        const data = client.cache.readQuery({
+        const data = actualClient.cache.readQuery({
           query: RENDER_COMPONENT,
           variables: { key, props: options.props },
         }) as any;
