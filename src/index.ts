@@ -193,16 +193,24 @@ export const useComponent = (
       });
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
-        actualClient.cache.modify({
-          fields: {
-            renderComponent() {
-              return {
-                ...queryData.renderComponent,
-                ...subscriptionData?.data?.updateComponent,
-              };
-            },
+        actualClient.writeQuery({
+          query: RENDER_COMPONENT,
+          variables: {
+            key,
+            props: options.props,
           },
+          data: subscriptionData?.data?.updateComponent,
         });
+        // actualClient.cache.modify({
+        //   fields: {
+        //     renderComponent() {
+        //       return {
+        //         ...queryData.renderComponent,
+        //         ...subscriptionData?.data?.updateComponent,
+        //       };
+        //     },
+        //   },
+        // });
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);

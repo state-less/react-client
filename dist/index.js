@@ -119,14 +119,25 @@ var useComponent = function useComponent(key, options) {
             sub = _context.sent;
             console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
-              actualClient.cache.modify({
-                fields: {
-                  renderComponent: function renderComponent() {
-                    var _subscriptionData$dat;
-                    return _objectSpread(_objectSpread({}, queryData.renderComponent), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent);
-                  }
-                }
+              var _subscriptionData$dat;
+              actualClient.writeQuery({
+                query: RENDER_COMPONENT,
+                variables: {
+                  key: key,
+                  props: options.props
+                },
+                data: subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent
               });
+              // actualClient.cache.modify({
+              //   fields: {
+              //     renderComponent() {
+              //       return {
+              //         ...queryData.renderComponent,
+              //         ...subscriptionData?.data?.updateComponent,
+              //       };
+              //     },
+              //   },
+              // });
             });
           case 5:
           case "end":
