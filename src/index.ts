@@ -170,6 +170,7 @@ export const useComponent = (
       key,
       props: options.props,
     },
+    fetchPolicy: 'cache-first',
     context: {
       headers: {
         'X-Unique-Id': id,

@@ -85,6 +85,7 @@ var useComponent = function useComponent(key, options) {
         key: key,
         props: options.props
       },
+      fetchPolicy: 'cache-first',
       context: {
         headers: {
           'X-Unique-Id': id
