@@ -203,17 +203,20 @@ export const useComponent = (
           variables: { key, props: options.props },
         }) as any;
 
-        Object.assign(
-          data?.renderComponent?.rendered,
-          subscriptionData?.data?.updateComponent?.rendered
-        );
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
             key,
             props: options.props,
           },
-          data,
+          data: {
+            renderComponent: {
+              rendered: {
+                ...data?.renderComponent?.rendered,
+                ...subscriptionData?.data?.updateComponent?.rendered,
+              },
+            },
+          },
         });
         // actualClient.cache.modify({
         //   fields: {

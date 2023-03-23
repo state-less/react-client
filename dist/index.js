@@ -128,14 +128,17 @@ var useComponent = function useComponent(key, options) {
                   props: options.props
                 }
               });
-              Object.assign(data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat2 = subscriptionData.data) === null || _subscriptionData$dat2 === void 0 ? void 0 : (_subscriptionData$dat3 = _subscriptionData$dat2.updateComponent) === null || _subscriptionData$dat3 === void 0 ? void 0 : _subscriptionData$dat3.rendered);
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
                   key: key,
                   props: options.props
                 },
-                data: data
+                data: {
+                  renderComponent: {
+                    rendered: _objectSpread(_objectSpread({}, data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat2 = subscriptionData.data) === null || _subscriptionData$dat2 === void 0 ? void 0 : (_subscriptionData$dat3 = _subscriptionData$dat2.updateComponent) === null || _subscriptionData$dat3 === void 0 ? void 0 : _subscriptionData$dat3.rendered)
+                  }
+                }
               });
               // actualClient.cache.modify({
               //   fields: {
