@@ -205,7 +205,13 @@ export const useComponent = (
             props: options.props,
           },
           data: {
-            renderComponent: subscriptionData?.data?.updateComponent,
+            renderComponent: {
+              ...subscriptionData?.data?.updateComponent,
+              rendered: {
+                ...queryData?.renderComponent?.rendered,
+                ...subscriptionData?.data?.updateComponent?.rendered,
+              },
+            },
           },
         });
         // actualClient.cache.modify({
