@@ -162,6 +162,7 @@ export const useComponent = (
     data: queryData,
     error,
     loading,
+    refetch,
   } = useQuery<{
     renderComponent: { rendered: any };
   }>(RENDER_COMPONENT, {
@@ -193,31 +194,7 @@ export const useComponent = (
       });
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
-        console.log(
-          'Writing to kache',
-          key,
-          subscriptionData?.data?.updateComponent
-        );
-        const data = actualClient.cache.readQuery({
-          query: RENDER_COMPONENT,
-          variables: { key, props: options.props },
-        }) as any;
-
-        actualClient.cache.writeQuery({
-          query: RENDER_COMPONENT,
-          variables: {
-            key,
-            props: options.props,
-          },
-          data: {
-            renderComponent: {
-              rendered: {
-                ...data?.renderComponent?.rendered,
-                ...subscriptionData?.data?.updateComponent?.rendered,
-              },
-            },
-          },
-        });
+        refetch();
         // actualClient.cache.modify({
         //   fields: {
         //     renderComponent() {

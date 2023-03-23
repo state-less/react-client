@@ -94,7 +94,8 @@ var useComponent = function useComponent(key, options) {
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,
-    loading = _useQuery.loading;
+    loading = _useQuery.loading,
+    refetch = _useQuery.refetch;
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
@@ -119,27 +120,7 @@ var useComponent = function useComponent(key, options) {
             sub = _context.sent;
             console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
-              var _subscriptionData$dat, _data$renderComponent, _subscriptionData$dat2, _subscriptionData$dat3;
-              console.log('Writing to kache', key, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : _subscriptionData$dat.updateComponent);
-              var data = actualClient.cache.readQuery({
-                query: RENDER_COMPONENT,
-                variables: {
-                  key: key,
-                  props: options.props
-                }
-              });
-              actualClient.cache.writeQuery({
-                query: RENDER_COMPONENT,
-                variables: {
-                  key: key,
-                  props: options.props
-                },
-                data: {
-                  renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat2 = subscriptionData.data) === null || _subscriptionData$dat2 === void 0 ? void 0 : (_subscriptionData$dat3 = _subscriptionData$dat2.updateComponent) === null || _subscriptionData$dat3 === void 0 ? void 0 : _subscriptionData$dat3.rendered)
-                  }
-                }
-              });
+              refetch();
               // actualClient.cache.modify({
               //   fields: {
               //     renderComponent() {
