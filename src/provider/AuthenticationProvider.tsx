@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import { createContext } from 'react';
+import { getApolloContext, gql } from '@apollo/client';
+import { createContext, useContext } from 'react';
 import { useLocalStorage } from '..';
 
 export const authContext = createContext({
@@ -16,15 +16,21 @@ export const AUTHENTICATE = gql`
   }
 `;
 
-export const AuthProvider = ({ client }) => {
+export const AuthProvider = ({ children, client }) => {
+  const context = getApolloContext();
+  const { client: apolloClient } = useContext(context);
+
+  const actualClient = client || apolloClient;
+  
   const [auth, setAuth] = useLocalStorage('session', {
     id: null,
     signed: null,
   });
+
   const authenticate = async ({ strategy, data }) => {
     const {
       data: { authenticate },
-    } = await client.mutate({
+    } = await actualClient.mutate({
       mutation: AUTHENTICATE,
       variables: {
         strategy,
@@ -36,8 +42,8 @@ export const AuthProvider = ({ client }) => {
   };
 
   return (
-    <authContext.Provider
-      value={{ ...auth, authenticate }}
-    ></authContext.Provider>
+    <authContext.Provider value={{ ...auth, authenticate }}>
+      {children}
+    </authContext.Provider>
   );
 };

@@ -24,7 +24,12 @@ exports.authContext = authContext;
 var AUTHENTICATE = (0, _client.gql)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($strategy: String!, $data: JSON!) {\n    setState(strategy: $strategy, data: $data) {\n      id\n      signed\n    }\n  }\n"])));
 exports.AUTHENTICATE = AUTHENTICATE;
 var AuthProvider = function AuthProvider(_ref) {
-  var client = _ref.client;
+  var children = _ref.children,
+    client = _ref.client;
+  var context = (0, _client.getApolloContext)();
+  var _useContext = (0, _react.useContext)(context),
+    apolloClient = _useContext.client;
+  var actualClient = client || apolloClient;
   var _useLocalStorage = (0, _.useLocalStorage)('session', {
       id: null,
       signed: null
@@ -34,13 +39,13 @@ var AuthProvider = function AuthProvider(_ref) {
     setAuth = _useLocalStorage2[1];
   var authenticate = /*#__PURE__*/function () {
     var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(_ref2) {
-      var strategy, data, _yield$client$mutate, authenticate;
+      var strategy, data, _yield$actualClient$m, authenticate;
       return _regenerator["default"].wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             strategy = _ref2.strategy, data = _ref2.data;
             _context.next = 3;
-            return client.mutate({
+            return actualClient.mutate({
               mutation: AUTHENTICATE,
               variables: {
                 strategy: strategy,
@@ -48,8 +53,8 @@ var AuthProvider = function AuthProvider(_ref) {
               }
             });
           case 3:
-            _yield$client$mutate = _context.sent;
-            authenticate = _yield$client$mutate.data.authenticate;
+            _yield$actualClient$m = _context.sent;
+            authenticate = _yield$actualClient$m.data.authenticate;
             setAuth(authenticate);
           case 6:
           case "end":
@@ -65,6 +70,6 @@ var AuthProvider = function AuthProvider(_ref) {
     value: _objectSpread(_objectSpread({}, auth), {}, {
       authenticate: authenticate
     })
-  });
+  }, children);
 };
 exports.AuthProvider = AuthProvider;
