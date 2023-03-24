@@ -234,12 +234,20 @@ export const useComponent = (
   return [inlined, { error: anyError, loading }];
 };
 
-const inline = ({ data, actualClient, setLastMutationResult }) => {
+const inline = ({
+  data,
+  actualClient,
+  setLastMutationResult,
+}: {
+  data: { props: Record<string, any>; children: any[] };
+  actualClient: ApolloClient<any>;
+  setLastMutationResult: (val: any) => void;
+}) => {
   let inlined: { props: Record<string, any>; children: any[] } = data;
   if (data?.props) {
     inlined = cloneDeep(inlined);
-    for (const [key, val] of Object.entries(inlined.props)) {
-      console.log('Inlining', key, val.__typename);
+    for (const [key, val] of Object.entries(data.props)) {
+      console.log('Inlining', key, val.__typename, inlined.props);
       if (val?.__typename === 'FunctionCall') {
         console.log('Inlining function call');
         inlined.props[key] = async (...args) => {

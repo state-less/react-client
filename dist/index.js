@@ -174,7 +174,7 @@ var inline = function inline(_ref3) {
       var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
-      console.log('Inlining', key, val.__typename);
+      console.log('Inlining', key, val.__typename, inlined.props);
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
         console.log('Inlining function call');
         inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
@@ -218,7 +218,7 @@ var inline = function inline(_ref3) {
         }));
       }
     };
-    for (var _i = 0, _Object$entries = Object.entries(inlined.props); _i < _Object$entries.length; _i++) {
+    for (var _i = 0, _Object$entries = Object.entries(data.props); _i < _Object$entries.length; _i++) {
       _loop();
     }
     var children = inlined.children || [];
