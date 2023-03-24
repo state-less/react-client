@@ -168,7 +168,6 @@ var inline = function inline(_ref3) {
     setLastMutationResult = _ref3.setLastMutationResult;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
-    inlined = JSON.parse(JSON.stringify(data));
     var _loop = function _loop() {
       var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
         key = _Object$entries$_i[0],

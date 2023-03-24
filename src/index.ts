@@ -234,10 +234,8 @@ export const useComponent = (
 };
 
 const inline = ({ data, actualClient, setLastMutationResult }) => {
-  let inlined: { props: Record<string, any>; children: any[] } = data;
+  const inlined: { props: Record<string, any>; children: any[] } = data;
   if (data?.props) {
-    inlined = JSON.parse(JSON.stringify(data));
-
     for (const [key, val] of Object.entries(inlined.props)) {
       if (val?.__typename === 'FunctionCall') {
         inlined.props[key] = async (...args) => {
