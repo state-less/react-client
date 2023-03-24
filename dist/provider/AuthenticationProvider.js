@@ -71,6 +71,6 @@ var AuthProvider = function AuthProvider(_ref) {
     value: _objectSpread({
       authenticate: authenticate
     }, auth)
-  }, children);
+  });
 };
 exports.AuthProvider = AuthProvider;
