@@ -58,20 +58,21 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var atoms = {};
-var useLocalStorage = function useLocalStorage(key, initialValue) {
-  var keyAtom = atoms[key] || (atoms[key] = (0, _jotai.atom)(function () {
-    try {
-      var item = window.localStorage.getItem(key);
-      if (!item) {
-        localStorage.setItem(key, JSON.stringify(initialValue));
-        return initialValue;
-      }
-      return JSON.parse(item);
-    } catch (error) {
-      console.log(error);
+var getInitialValue = function getInitialValue(key, initialValue) {
+  try {
+    var item = window.localStorage.getItem(key);
+    if (!item) {
+      localStorage.setItem(key, JSON.stringify(initialValue));
       return initialValue;
     }
-  }));
+    return JSON.parse(item);
+  } catch (error) {
+    console.log(error);
+    return initialValue;
+  }
+};
+var useLocalStorage = function useLocalStorage(key, initialValue) {
+  var keyAtom = atoms[key] || (atoms[key] = (0, _jotai.atom)(getInitialValue(key, initialValue)));
   var _useAtom = (0, _jotai.useAtom)(keyAtom),
     _useAtom2 = (0, _slicedToArray2["default"])(_useAtom, 2),
     storedValue = _useAtom2[0],
