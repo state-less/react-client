@@ -174,7 +174,7 @@ var inline = function inline(_ref3) {
       var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
-      console.log('Inlining', key, val.__typename, inlined.props);
+      console.log('Inlining', key, val.__typename, data);
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
         console.log('Inlining function call');
         inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
