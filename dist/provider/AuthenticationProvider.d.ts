@@ -1,7 +1,11 @@
 import React from 'react';
 export declare const authContext: React.Context<{
-    id: any;
-    signed: any;
+    session: {
+        id: any;
+        token: any;
+        strategy: any;
+        strategies: any;
+    };
     authenticate: any;
 }>;
 export declare const AUTHENTICATE: import("@apollo/client").DocumentNode;

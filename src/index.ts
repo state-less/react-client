@@ -18,6 +18,7 @@ import {
   SetStateAction,
   WritableAtom,
 } from 'jotai/vanilla';
+import { initialSession } from './lib/instances';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -194,7 +195,7 @@ export const useComponent = (
     );
   }
   const [id] = useLocalStorage('id', v4());
-  const [session] = useLocalStorage('session', { id: null, signed: null });
+  const [session] = useLocalStorage('session', initialSession);
 
   const {
     data: queryData,
@@ -213,7 +214,7 @@ export const useComponent = (
     context: {
       headers: {
         'X-Unique-Id': id,
-        Authorization: session.signed ? `Bearer ${session.signed}` : undefined,
+        Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
     },
   });

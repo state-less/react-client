@@ -2,10 +2,10 @@ import { getApolloContext, gql } from '@apollo/client';
 import { createContext, useContext } from 'react';
 import { useLocalStorage } from '..';
 import React from 'react';
+import { initialSession } from '../lib/instances';
 
 export const authContext = createContext({
-  id: null,
-  signed: null,
+  session: initialSession,
   authenticate: null,
 });
 
@@ -13,8 +13,9 @@ export const AUTHENTICATE = gql`
   mutation MyMutation($strategy: String!, $data: JSON!) {
     authenticate(strategy: $strategy, data: $data) {
       id
-      signed
-      tokens
+      strategy
+      strategies
+      token
     }
   }
 `;
@@ -25,11 +26,7 @@ export const AuthProvider = ({ children, client }) => {
 
   const actualClient = client || apolloClient;
 
-  const [auth, setAuth] = useLocalStorage('session', {
-    id: null,
-    signed: null,
-    tokens: null,
-  });
+  const [auth, setAuth] = useLocalStorage('session', initialSession);
 
   const authenticate = async ({ strategy, data }) => {
     const {
@@ -46,7 +43,7 @@ export const AuthProvider = ({ children, client }) => {
   };
 
   return (
-    <authContext.Provider value={{ authenticate, ...auth }}>
+    <authContext.Provider value={{ authenticate, session: auth }}>
       {children}
     </authContext.Provider>
   );

@@ -28,6 +28,7 @@ var _react2 = _interopRequireWildcard(require("react"));
 var _uuid = require("uuid");
 var _utilities = require("@apollo/client/utilities");
 var _jotai = require("jotai");
+var _instances = require("./lib/instances");
 var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -107,10 +108,7 @@ var useComponent = function useComponent(key, options) {
   var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)()),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
-  var _useLocalStorage3 = useLocalStorage('session', {
-      id: null,
-      signed: null
-    }),
+  var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
@@ -123,7 +121,7 @@ var useComponent = function useComponent(key, options) {
       context: {
         headers: {
           'X-Unique-Id': id,
-          Authorization: session.signed ? "Bearer ".concat(session.signed) : undefined
+          Authorization: session.token ? "Bearer ".concat(session.token) : undefined
         }
       }
     }),
