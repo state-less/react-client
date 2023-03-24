@@ -3,6 +3,7 @@ import { ApolloClient, FetchResult, Observable } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { v4 } from 'uuid';
+import { cloneDeep } from '@apollo/client/utilities';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -234,10 +235,13 @@ export const useComponent = (
 };
 
 const inline = ({ data, actualClient, setLastMutationResult }) => {
-  const inlined: { props: Record<string, any>; children: any[] } = data;
+  let inlined: { props: Record<string, any>; children: any[] } = data;
   if (data?.props) {
+    inlined = cloneDeep(inlined);
     for (const [key, val] of Object.entries(inlined.props)) {
+      console.log('Inlining', key, val.__typename);
       if (val?.__typename === 'FunctionCall') {
+        console.log('Inlining function call');
         inlined.props[key] = async (...args) => {
           try {
             const response = await actualClient.mutate({

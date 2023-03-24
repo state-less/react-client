@@ -15,6 +15,7 @@ var _client = require("@apollo/client");
 var _react = require("@apollo/client/react");
 var _react2 = _interopRequireWildcard(require("react"));
 var _uuid = require("uuid");
+var _utilities = require("@apollo/client/utilities");
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6;
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -168,11 +169,14 @@ var inline = function inline(_ref3) {
     setLastMutationResult = _ref3.setLastMutationResult;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
+    inlined = (0, _utilities.cloneDeep)(inlined);
     var _loop = function _loop() {
       var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
+      console.log('Inlining', key, val.__typename);
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
+        console.log('Inlining function call');
         inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
           var _len,
             args,
