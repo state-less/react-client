@@ -1,5 +1,11 @@
 import { gql, getApolloContext, ApolloError } from '@apollo/client';
-import { ApolloClient, FetchResult, Observable } from '@apollo/client/core';
+import {
+  ApolloClient,
+  ApolloQueryResult,
+  FetchResult,
+  Observable,
+  OperationVariables,
+} from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { v4 } from 'uuid';
@@ -143,7 +149,20 @@ export const useLocalStorage = (key: string, initialValue: any) => {
 export const useComponent = (
   key: string,
   options?: UseComponentOptions
-): [any, { error: ApolloError | Error; loading: boolean }] => {
+): [
+  any,
+  {
+    error: ApolloError | Error;
+    loading: boolean;
+    refetch: (variables?: Partial<OperationVariables>) => Promise<
+      ApolloQueryResult<{
+        renderComponent: {
+          rendered: any;
+        };
+      }>
+    >;
+  }
+] => {
   const { client } = options || {};
   const { client: providedClient = null } = React.useContext(
     getApolloContext()
@@ -163,6 +182,7 @@ export const useComponent = (
     data: queryData,
     error,
     loading,
+    refetch,
   } = useQuery<{
     renderComponent: { rendered: any };
   }>(RENDER_COMPONENT, {
@@ -231,7 +251,7 @@ export const useComponent = (
 
   const anyError = error || lastMutationResult?.errors?.[0];
 
-  return [inlined, { error: anyError, loading }];
+  return [inlined, { error: anyError, loading, refetch }];
 };
 
 const inline = ({

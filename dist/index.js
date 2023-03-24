@@ -95,7 +95,8 @@ var useComponent = function useComponent(key, options) {
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,
-    loading = _useQuery.loading;
+    loading = _useQuery.loading,
+    refetch = _useQuery.refetch;
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
@@ -159,7 +160,8 @@ var useComponent = function useComponent(key, options) {
   var anyError = error || (lastMutationResult === null || lastMutationResult === void 0 ? void 0 : (_lastMutationResult$e = lastMutationResult.errors) === null || _lastMutationResult$e === void 0 ? void 0 : _lastMutationResult$e[0]);
   return [inlined, {
     error: anyError,
-    loading: loading
+    loading: loading,
+    refetch: refetch
   }];
 };
 exports.useComponent = useComponent;
