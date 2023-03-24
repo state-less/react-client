@@ -14,6 +14,7 @@ export const AUTHENTICATE = gql`
     authenticate(strategy: $strategy, data: $data) {
       id
       signed
+      tokens
     }
   }
 `;
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children, client }) => {
   const [auth, setAuth] = useLocalStorage('session', {
     id: null,
     signed: null,
+    tokens: null,
   });
 
   const authenticate = async ({ strategy, data }) => {

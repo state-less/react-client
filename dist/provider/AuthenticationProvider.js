@@ -25,7 +25,7 @@ var authContext = /*#__PURE__*/(0, _react.createContext)({
   authenticate: null
 });
 exports.authContext = authContext;
-var AUTHENTICATE = (0, _client.gql)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($strategy: String!, $data: JSON!) {\n    authenticate(strategy: $strategy, data: $data) {\n      id\n      signed\n    }\n  }\n"])));
+var AUTHENTICATE = (0, _client.gql)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($strategy: String!, $data: JSON!) {\n    authenticate(strategy: $strategy, data: $data) {\n      id\n      signed\n      tokens\n    }\n  }\n"])));
 exports.AUTHENTICATE = AUTHENTICATE;
 var AuthProvider = function AuthProvider(_ref) {
   var children = _ref.children,
@@ -36,7 +36,8 @@ var AuthProvider = function AuthProvider(_ref) {
   var actualClient = client || apolloClient;
   var _useLocalStorage = (0, _.useLocalStorage)('session', {
       id: null,
-      signed: null
+      signed: null,
+      tokens: null
     }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 2),
     auth = _useLocalStorage2[0],
