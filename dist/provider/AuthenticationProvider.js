@@ -18,7 +18,8 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2["default"])(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var authContext = /*#__PURE__*/(0, _react.createContext)({
   id: null,
-  signed: null
+  signed: null,
+  authenticate: null
 });
 exports.authContext = authContext;
 var AUTHENTICATE = (0, _client.gql)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($strategy: String!, $data: JSON!) {\n    setState(strategy: $strategy, data: $data) {\n      id\n      signed\n    }\n  }\n"])));
@@ -67,9 +68,9 @@ var AuthProvider = function AuthProvider(_ref) {
     };
   }();
   return /*#__PURE__*/React.createElement(authContext.Provider, {
-    value: _objectSpread(_objectSpread({}, auth), {}, {
+    value: _objectSpread({
       authenticate: authenticate
-    })
+    }, auth)
   }, children);
 };
 exports.AuthProvider = AuthProvider;

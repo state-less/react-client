@@ -5,6 +5,7 @@ import { useLocalStorage } from '..';
 export const authContext = createContext({
   id: null,
   signed: null,
+  authenticate: null,
 });
 
 export const AUTHENTICATE = gql`
@@ -21,7 +22,7 @@ export const AuthProvider = ({ children, client }) => {
   const { client: apolloClient } = useContext(context);
 
   const actualClient = client || apolloClient;
-  
+
   const [auth, setAuth] = useLocalStorage('session', {
     id: null,
     signed: null,
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children, client }) => {
   };
 
   return (
-    <authContext.Provider value={{ ...auth, authenticate }}>
+    <authContext.Provider value={{ authenticate, ...auth }}>
       {children}
     </authContext.Provider>
   );
