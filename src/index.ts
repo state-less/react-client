@@ -247,9 +247,7 @@ const inline = ({
   if (data?.props) {
     inlined = cloneDeep(inlined);
     for (const [key, val] of Object.entries(data.props)) {
-      console.log('Inlining', key, val.__typename, data);
       if (val?.__typename === 'FunctionCall') {
-        console.log('Inlining function call');
         inlined.props[key] = async (...args) => {
           try {
             const response = await actualClient.mutate({
