@@ -27,6 +27,7 @@ var _react = require("@apollo/client/react");
 var _react2 = _interopRequireWildcard(require("react"));
 var _uuid = require("uuid");
 var _utilities = require("@apollo/client/utilities");
+var _jotai = require("jotai");
 var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -56,23 +57,25 @@ var SET_STATE = (0, _client.gql)(_templateObject5 || (_templateObject5 = (0, _ta
 exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
+var atoms = {};
 var useLocalStorage = function useLocalStorage(key, initialValue) {
-  var _useState = (0, _react2.useState)(function () {
-      try {
-        var item = window.localStorage.getItem(key);
-        if (!item) {
-          localStorage.setItem(key, JSON.stringify(initialValue));
-          return initialValue;
-        }
-        return JSON.parse(item);
-      } catch (error) {
-        console.log(error);
+  var keyAtom = atoms[key] || (atoms[key] = (0, _jotai.atom)(function () {
+    try {
+      var item = window.localStorage.getItem(key);
+      if (!item) {
+        localStorage.setItem(key, JSON.stringify(initialValue));
         return initialValue;
       }
-    }),
-    _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
-    storedValue = _useState2[0],
-    setStoredValue = _useState2[1];
+      return JSON.parse(item);
+    } catch (error) {
+      console.log(error);
+      return initialValue;
+    }
+  }));
+  var _useAtom = (0, _jotai.useAtom)(keyAtom),
+    _useAtom2 = (0, _slicedToArray2["default"])(_useAtom, 2),
+    storedValue = _useAtom2[0],
+    setStoredValue = _useAtom2[1];
   var setValue = function setValue(value) {
     try {
       var valueToStore = value instanceof Function ? value(storedValue) : value;
@@ -92,10 +95,10 @@ var useComponent = function useComponent(key, options) {
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
-  var _useState3 = (0, _react2.useState)(null),
-    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
-    lastMutationResult = _useState4[0],
-    setLastMutationResult = _useState4[1];
+  var _useState = (0, _react2.useState)(null),
+    _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
+    lastMutationResult = _useState2[0],
+    setLastMutationResult = _useState2[1];
   var actualClient = client || providedClient;
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
@@ -103,6 +106,12 @@ var useComponent = function useComponent(key, options) {
   var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)()),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
+  var _useLocalStorage3 = useLocalStorage('session', {
+      id: null,
+      signed: null
+    }),
+    _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
+    session = _useLocalStorage4[0];
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
       client: actualClient,
       variables: {
@@ -112,7 +121,8 @@ var useComponent = function useComponent(key, options) {
       fetchPolicy: 'cache-first',
       context: {
         headers: {
-          'X-Unique-Id': id
+          'X-Unique-Id': id,
+          Authorization: session.signed ? "Bearer ".concat(session.signed) : undefined
         }
       }
     }),
@@ -268,13 +278,13 @@ var useServerState = function useServerState(initialValue, options) {
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
-  var _useState5 = (0, _react2.useState)(null),
-    _useState6 = (0, _slicedToArray2["default"])(_useState5, 2),
-    optimisticValue = _useState6[0],
-    setOptimisticValue = _useState6[1];
-  var _useLocalStorage3 = useLocalStorage('id', (0, _uuid.v4)()),
-    _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
-    id = _useLocalStorage4[0];
+  var _useState3 = (0, _react2.useState)(null),
+    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
+    optimisticValue = _useState4[0],
+    setOptimisticValue = _useState4[1];
+  var _useLocalStorage5 = useLocalStorage('id', (0, _uuid.v4)()),
+    _useLocalStorage6 = (0, _slicedToArray2["default"])(_useLocalStorage5, 1),
+    id = _useLocalStorage6[0];
   var _useQuery2 = (0, _react.useQuery)(GET_STATE, {
       client: actualClient,
       variables: {
@@ -290,7 +300,6 @@ var useServerState = function useServerState(initialValue, options) {
     queryData = _useQuery2.data,
     apolloError = _useQuery2.error,
     loading = _useQuery2.loading;
-  console.log('Err', queryData, apolloError);
   var error = queryData !== null && queryData !== void 0 && queryData.getState && !apolloError ? new _client.ApolloError({
     errorMessage: 'No data'
   }) : apolloError;

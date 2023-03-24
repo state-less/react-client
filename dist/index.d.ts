@@ -22,7 +22,7 @@ type UseServerStateInfo = {
     error: ApolloError;
     loading: boolean;
 };
-export declare const useLocalStorage: (key: string, initialValue: any) => any[];
+export declare const useLocalStorage: <T>(key: string, initialValue: T) => [T, (val: T) => void];
 export declare const useComponent: (key: string, options?: UseComponentOptions) => [any, {
     error: ApolloError | Error;
     loading: boolean;

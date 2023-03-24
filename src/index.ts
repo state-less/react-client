@@ -10,6 +10,14 @@ import { useQuery, useSubscription } from '@apollo/client/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { v4 } from 'uuid';
 import { cloneDeep } from '@apollo/client/utilities';
+import { useAtom } from 'jotai';
+import { atom } from 'jotai';
+import {
+  Atom,
+  PrimitiveAtom,
+  SetStateAction,
+  WritableAtom,
+} from 'jotai/vanilla';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -117,22 +125,29 @@ type UseServerStateInfo = {
   loading: boolean;
 };
 
-export const useLocalStorage = (key: string, initialValue: any) => {
-  const [storedValue, setStoredValue] = useState(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      if (!item) {
-        localStorage.setItem(key, JSON.stringify(initialValue));
+const atoms: Record<string, PrimitiveAtom<unknown>> = {};
+export const useLocalStorage = <T>(
+  key: string,
+  initialValue: T
+): [T, (val: T) => void] => {
+  const keyAtom =
+    (atoms[key] as PrimitiveAtom<T>) ||
+    (atoms[key] = atom(() => {
+      try {
+        const item = window.localStorage.getItem(key);
+        if (!item) {
+          localStorage.setItem(key, JSON.stringify(initialValue));
+          return initialValue;
+        }
+        return JSON.parse(item);
+      } catch (error) {
+        console.log(error);
         return initialValue;
       }
-      return JSON.parse(item);
-    } catch (error) {
-      console.log(error);
-      return initialValue;
-    }
-  });
+    }) as PrimitiveAtom<T>);
+  const [storedValue, setStoredValue] = useAtom(keyAtom as PrimitiveAtom<T>);
 
-  const setValue = (value: any) => {
+  const setValue = (value: T) => {
     try {
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
@@ -177,6 +192,7 @@ export const useComponent = (
     );
   }
   const [id] = useLocalStorage('id', v4());
+  const [session] = useLocalStorage('session', { id: null, signed: null });
 
   const {
     data: queryData,
@@ -195,6 +211,7 @@ export const useComponent = (
     context: {
       headers: {
         'X-Unique-Id': id,
+        Authorization: session.signed ? `Bearer ${session.signed}` : undefined,
       },
     },
   });
@@ -318,7 +335,6 @@ export const useServerState = <ValueType>(
     null
   );
   const [id] = useLocalStorage('id', v4());
-
   const {
     data: queryData,
     error: apolloError,
@@ -338,7 +354,6 @@ export const useServerState = <ValueType>(
     },
   });
 
-  console.log('Err', queryData, apolloError);
   const error =
     queryData?.getState && !apolloError
       ? new ApolloError({ errorMessage: 'No data' })
