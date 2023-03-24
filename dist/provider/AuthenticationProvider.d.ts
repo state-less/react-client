@@ -1,5 +1,5 @@
-/// <reference types="react" />
-export declare const authContext: import("react").Context<{
+import React from 'react';
+export declare const authContext: React.Context<{
     id: any;
     signed: any;
     authenticate: any;

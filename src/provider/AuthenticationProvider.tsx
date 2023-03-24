@@ -1,6 +1,7 @@
 import { getApolloContext, gql } from '@apollo/client';
 import { createContext, useContext } from 'react';
 import { useLocalStorage } from '..';
+import React from 'react';
 
 export const authContext = createContext({
   id: null,
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children, client }) => {
 
   return (
     <authContext.Provider value={{ authenticate, ...auth }}>
-      {/* {children} */}
+      {children}
     </authContext.Provider>
   );
 };
