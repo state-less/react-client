@@ -1,3 +1,5 @@
+import { ApolloClient } from '@apollo/client';
+import { PropsWithChildren } from 'react';
 import React from 'react';
 export declare const authContext: React.Context<{
     session: {
@@ -9,7 +11,6 @@ export declare const authContext: React.Context<{
     authenticate: any;
 }>;
 export declare const AUTHENTICATE: import("@apollo/client").DocumentNode;
-export declare const AuthProvider: ({ children, client }: {
-    children: any;
-    client: any;
-}) => JSX.Element;
+export declare const AuthProvider: ({ children, client, }: PropsWithChildren<{
+    client?: ApolloClient<any>;
+}>) => JSX.Element;

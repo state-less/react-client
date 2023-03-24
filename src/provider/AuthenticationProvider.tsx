@@ -1,5 +1,5 @@
-import { getApolloContext, gql } from '@apollo/client';
-import { createContext, useContext } from 'react';
+import { ApolloClient, getApolloContext, gql } from '@apollo/client';
+import { createContext, PropsWithChildren, ReactNode, useContext } from 'react';
 import { useLocalStorage } from '..';
 import React from 'react';
 import { initialSession } from '../lib/instances';
@@ -20,7 +20,10 @@ export const AUTHENTICATE = gql`
   }
 `;
 
-export const AuthProvider = ({ children, client }) => {
+export const AuthProvider = ({
+  children,
+  client,
+}: PropsWithChildren<{ client?: ApolloClient<any> }>) => {
   const context = getApolloContext();
   const { client: apolloClient } = useContext(context);
 
