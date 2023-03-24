@@ -11,7 +11,7 @@ export const authContext = createContext({
 
 export const AUTHENTICATE = gql`
   mutation MyMutation($strategy: String!, $data: JSON!) {
-    setState(strategy: $strategy, data: $data) {
+    authenticate(strategy: $strategy, data: $data) {
       id
       signed
     }
