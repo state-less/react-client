@@ -134,7 +134,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _lastMutationResult$e;
+  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp9, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref3 = options || {},
     client = _ref3.client;
@@ -167,7 +167,8 @@ var useComponent = function useComponent(key) {
           'X-Unique-Id': id,
           Authorization: session.token ? "Bearer ".concat(session.token) : undefined
         }
-      }
+      },
+      skip: !!(options !== null && options !== void 0 && options.data)
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,
@@ -218,8 +219,23 @@ var useComponent = function useComponent(key) {
       }, _callee2);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key]);
+  (0, _react2.useEffect)(function () {
+    var _queryData$renderComp8;
+    actualClient.cache.writeQuery({
+      query: RENDER_COMPONENT,
+      variables: {
+        key: key,
+        props: options.props
+      },
+      data: {
+        renderComponent: {
+          rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered), options === null || options === void 0 ? void 0 : options.data)
+        }
+      }
+    });
+  }, [options === null || options === void 0 ? void 0 : options.data]);
   var inlined = inline({
-    data: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered,
+    data: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered,
     actualClient: actualClient,
     setLastMutationResult: setLastMutationResult
   });

@@ -118,6 +118,7 @@ type UseServerStateOptions = {
 
 type UseComponentOptions = {
   client?: ApolloClient<any>;
+  data?: any;
   props?: any;
 };
 
@@ -241,6 +242,7 @@ export const useComponent = (
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
     },
+    skip: !!options?.data,
   });
 
   /**
@@ -276,6 +278,24 @@ export const useComponent = (
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
+
+  useEffect(() => {
+    actualClient.cache.writeQuery({
+      query: RENDER_COMPONENT,
+      variables: {
+        key,
+        props: options.props,
+      },
+      data: {
+        renderComponent: {
+          rendered: {
+            ...queryData?.renderComponent?.rendered,
+            ...options?.data,
+          },
+        },
+      },
+    });
+  }, [options?.data]);
 
   const inlined = inline({
     data: queryData?.renderComponent?.rendered,

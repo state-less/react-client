@@ -16,6 +16,7 @@ type UseServerStateOptions = {
 };
 type UseComponentOptions = {
     client?: ApolloClient<any>;
+    data?: any;
     props?: any;
 };
 type UseServerStateInfo = {
