@@ -167,8 +167,7 @@ var useComponent = function useComponent(key) {
           'X-Unique-Id': id,
           Authorization: session.token ? "Bearer ".concat(session.token) : undefined
         }
-      },
-      skip: !!(options !== null && options !== void 0 && options.data)
+      }
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,

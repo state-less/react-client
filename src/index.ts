@@ -242,7 +242,6 @@ export const useComponent = (
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
     },
-    skip: !!options?.data,
   });
 
   /**
