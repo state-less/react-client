@@ -176,7 +176,7 @@ export const renderComponent = async (
       key,
       props: options.props,
     },
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'network-only',
     context: {
       // headers: {
       //   'X-Unique-Id': id,

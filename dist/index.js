@@ -106,7 +106,7 @@ var renderComponent = /*#__PURE__*/function () {
               key: key,
               props: options.props
             },
-            fetchPolicy: 'cache-first',
+            fetchPolicy: 'network-only',
             context: {
               // headers: {
               //   'X-Unique-Id': id,
