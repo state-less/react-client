@@ -297,8 +297,13 @@ export const useComponent = (
     });
   }, [options?.data]);
 
+  const inlineData =
+    options?.data && !queryData?.renderComponent?.rendered
+      ? options?.data
+      : queryData?.renderComponent?.rendered;
+
   const inlined = inline({
-    data: queryData?.renderComponent?.rendered,
+    data: inlineData,
     actualClient,
     setLastMutationResult,
   });
