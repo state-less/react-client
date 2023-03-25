@@ -93,6 +93,7 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
 exports.useLocalStorage = useLocalStorage;
 var renderComponent = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
+    var _data$renderComponent;
     var _ref2, client, _yield$client$query, data, error;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
@@ -117,12 +118,11 @@ var renderComponent = /*#__PURE__*/function () {
           _yield$client$query = _context.sent;
           data = _yield$client$query.data;
           error = _yield$client$query.error;
-          console.log('DATA', data, error);
           return _context.abrupt("return", {
-            data: data,
+            data: data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered,
             error: error
           });
-        case 8:
+        case 7:
         case "end":
           return _context.stop();
       }

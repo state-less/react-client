@@ -185,9 +185,7 @@ export const renderComponent = async (
     },
   });
 
-  console.log('DATA', data, error);
-
-  return { data, error };
+  return { data: data?.renderComponent?.rendered, error };
 };
 
 export const useComponent = (
