@@ -166,7 +166,7 @@ export const useLocalStorage = <T>(
 
 export const useComponent = (
   key: string,
-  options?: UseComponentOptions
+  options: UseComponentOptions = {}
 ): [
   any,
   {

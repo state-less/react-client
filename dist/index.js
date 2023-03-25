@@ -90,8 +90,9 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
   return [storedValue, setValue];
 };
 exports.useLocalStorage = useLocalStorage;
-var useComponent = function useComponent(key, options) {
+var useComponent = function useComponent(key) {
   var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _lastMutationResult$e;
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref = options || {},
     client = _ref.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
