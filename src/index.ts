@@ -238,7 +238,7 @@ export const useComponent = (
           query: RENDER_COMPONENT,
           variables: {
             key,
-            props: options.props,
+            props: options?.props,
           },
           data: {
             renderComponent: {

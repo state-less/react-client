@@ -158,7 +158,7 @@ var useComponent = function useComponent(key, options) {
                 query: RENDER_COMPONENT,
                 variables: {
                   key: key,
-                  props: options.props
+                  props: options === null || options === void 0 ? void 0 : options.props
                 },
                 data: {
                   renderComponent: {
