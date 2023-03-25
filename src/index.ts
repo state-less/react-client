@@ -242,7 +242,6 @@ export const useComponent = (
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
     },
-    skip: !!options?.data,
   });
 
   /**
@@ -251,8 +250,7 @@ export const useComponent = (
    */
   useEffect(() => {
     (async () => {
-      const key =
-        queryData?.renderComponent?.rendered?.key || options?.data?.key;
+      const key = queryData?.renderComponent?.rendered?.key;
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
@@ -270,7 +268,6 @@ export const useComponent = (
           data: {
             renderComponent: {
               rendered: {
-                key,
                 ...queryData?.renderComponent?.rendered,
                 ...subscriptionData?.data?.updateComponent?.rendered,
               },
@@ -279,7 +276,7 @@ export const useComponent = (
         });
       });
     })();
-  }, [queryData?.renderComponent?.rendered?.key, options?.data?.key]);
+  }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
     actualClient.cache.writeQuery({
