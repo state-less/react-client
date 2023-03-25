@@ -208,7 +208,7 @@ export const useComponent = (
     client: actualClient,
     variables: {
       key,
-      props: options.props,
+      props: options?.props || {},
     },
     fetchPolicy: 'cache-first',
     context: {
@@ -249,16 +249,6 @@ export const useComponent = (
             },
           },
         });
-        // actualClient.cache.modify({
-        //   fields: {
-        //     renderComponent() {
-        //       return {
-        //         ...queryData.renderComponent,
-        //         ...subscriptionData?.data?.updateComponent,
-        //       };
-        //     },
-        //   },
-        // });
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);

@@ -115,7 +115,7 @@ var useComponent = function useComponent(key, options) {
       client: actualClient,
       variables: {
         key: key,
-        props: options.props
+        props: (options === null || options === void 0 ? void 0 : options.props) || {}
       },
       fetchPolicy: 'cache-first',
       context: {
@@ -166,16 +166,6 @@ var useComponent = function useComponent(key, options) {
                   }
                 }
               });
-              // actualClient.cache.modify({
-              //   fields: {
-              //     renderComponent() {
-              //       return {
-              //         ...queryData.renderComponent,
-              //         ...subscriptionData?.data?.updateComponent,
-              //       };
-              //     },
-              //   },
-              // });
             });
           case 5:
           case "end":
