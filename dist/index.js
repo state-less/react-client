@@ -115,7 +115,7 @@ var useComponent = function useComponent(key, options) {
       client: actualClient,
       variables: {
         key: key,
-        props: (options === null || options === void 0 ? void 0 : options.props) || {}
+        props: options.props
       },
       fetchPolicy: 'cache-first',
       context: {
@@ -158,7 +158,7 @@ var useComponent = function useComponent(key, options) {
                 query: RENDER_COMPONENT,
                 variables: {
                   key: key,
-                  props: options === null || options === void 0 ? void 0 : options.props
+                  props: options.props
                 },
                 data: {
                   renderComponent: {

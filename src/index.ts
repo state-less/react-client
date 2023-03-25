@@ -208,7 +208,7 @@ export const useComponent = (
     client: actualClient,
     variables: {
       key,
-      props: options?.props || {},
+      props: options.props,
     },
     fetchPolicy: 'cache-first',
     context: {
@@ -238,7 +238,7 @@ export const useComponent = (
           query: RENDER_COMPONENT,
           variables: {
             key,
-            props: options?.props,
+            props: options.props,
           },
           data: {
             renderComponent: {
