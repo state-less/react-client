@@ -297,10 +297,9 @@ export const useComponent = (
     });
   }, [options?.data]);
 
-  const inlineData =
-    loading && options?.data
-      ? options?.data
-      : queryData?.renderComponent?.rendered;
+  const inlineData = options?.data
+    ? options?.data
+    : queryData?.renderComponent?.rendered;
 
   const inlined = inline({
     data: inlineData,
