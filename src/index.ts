@@ -278,24 +278,6 @@ export const useComponent = (
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
 
-  useEffect(() => {
-    actualClient.cache.writeQuery({
-      query: RENDER_COMPONENT,
-      variables: {
-        key,
-        props: options.props,
-      },
-      data: {
-        renderComponent: {
-          rendered: {
-            ...queryData?.renderComponent?.rendered,
-            ...options?.data,
-          },
-        },
-      },
-    });
-  }, [options?.data]);
-
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
       ? options?.data
