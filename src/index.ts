@@ -409,7 +409,7 @@ export const useServerState = <ValueType>(
         setTimeout(setOptimisticValue, 0, null);
       })();
     };
-  }, [key, scope, actualClient]);
+  }, [key, scope, actualClient, queryData?.getState?.value]);
 
   if (optimisticValue !== null) {
     return [optimisticValue, setValue, { error, loading }];

@@ -265,7 +265,7 @@ var inline = function inline(_ref3) {
   return inlined;
 };
 var useServerState = function useServerState(initialValue, options) {
-  var _subscriptionData$upd, _queryData$getState2;
+  var _subscriptionData$upd, _queryData$getState2, _queryData$getState3;
   var key = options.key,
     scope = options.scope,
     client = options.client;
@@ -364,14 +364,14 @@ var useServerState = function useServerState(initialValue, options) {
         }, _callee3);
       }))();
     };
-  }, [key, scope, actualClient]);
+  }, [key, scope, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value]);
   if (optimisticValue !== null) {
     return [optimisticValue, setValue, {
       error: error,
       loading: loading
     }];
   }
-  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value) || initialValue, setValue, {
+  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$getState3 = queryData.getState) === null || _queryData$getState3 === void 0 ? void 0 : _queryData$getState3.value) || initialValue, setValue, {
     error: error,
     loading: loading
   }];
