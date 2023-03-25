@@ -134,7 +134,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp9, _lastMutationResult$e;
+  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp9, _queryData$renderComp10, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref3 = options || {},
     client = _ref3.client;
@@ -234,7 +234,7 @@ var useComponent = function useComponent(key) {
       }
     });
   }, [options === null || options === void 0 ? void 0 : options.data]);
-  var inlineData = options !== null && options !== void 0 && options.data ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered;
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
