@@ -134,7 +134,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp9, _queryData$renderComp10, _lastMutationResult$e;
+  var _queryData$renderComp4, _queryData$renderComp5, _options$data2, _queryData$renderComp7, _queryData$renderComp8, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref3 = options || {},
     client = _ref3.client;
@@ -181,24 +181,24 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-      var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
-      var sub;
+      var _queryData$renderComp, _queryData$renderComp2, _options$data;
+      var key, sub;
       return _regenerator["default"].wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.next = 2;
+            key = (queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key) || (options === null || options === void 0 ? void 0 : (_options$data = options.data) === null || _options$data === void 0 ? void 0 : _options$data.key);
+            _context2.next = 3;
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
-                key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key,
+                key: key,
                 scope: 'global'
               }
             });
-          case 2:
+          case 3:
             sub = _context2.sent;
-            console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
-              var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
+              var _queryData$renderComp3, _subscriptionData$dat, _subscriptionData$dat2;
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
@@ -207,7 +207,7 @@ var useComponent = function useComponent(key) {
                 },
                 data: {
                   renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : _queryData$renderComp3.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
                   }
                 }
               });
@@ -218,9 +218,9 @@ var useComponent = function useComponent(key) {
         }
       }, _callee2);
     }))();
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key]);
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp4 = queryData.renderComponent) === null || _queryData$renderComp4 === void 0 ? void 0 : (_queryData$renderComp5 = _queryData$renderComp4.rendered) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.key, options === null || options === void 0 ? void 0 : (_options$data2 = options.data) === null || _options$data2 === void 0 ? void 0 : _options$data2.key]);
   (0, _react2.useEffect)(function () {
-    var _queryData$renderComp8;
+    var _queryData$renderComp6;
     actualClient.cache.writeQuery({
       query: RENDER_COMPONENT,
       variables: {
@@ -229,12 +229,12 @@ var useComponent = function useComponent(key) {
       },
       data: {
         renderComponent: {
-          rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered), options === null || options === void 0 ? void 0 : options.data)
+          rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.rendered), options === null || options === void 0 ? void 0 : options.data)
         }
       }
     });
   }, [options === null || options === void 0 ? void 0 : options.data]);
-  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered;
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp7 = queryData.renderComponent) !== null && _queryData$renderComp7 !== void 0 && _queryData$renderComp7.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,

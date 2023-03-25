@@ -251,14 +251,15 @@ export const useComponent = (
    */
   useEffect(() => {
     (async () => {
+      const key =
+        queryData?.renderComponent?.rendered?.key || options?.data?.key;
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
-          key: queryData?.renderComponent?.rendered?.key,
+          key,
           scope: 'global',
         },
       });
-      console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
@@ -277,7 +278,7 @@ export const useComponent = (
         });
       });
     })();
-  }, [queryData?.renderComponent?.rendered?.key]);
+  }, [queryData?.renderComponent?.rendered?.key, options?.data?.key]);
 
   useEffect(() => {
     actualClient.cache.writeQuery({
