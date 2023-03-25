@@ -265,7 +265,7 @@ var inline = function inline(_ref3) {
   return inlined;
 };
 var useServerState = function useServerState(initialValue, options) {
-  var _subscriptionData$upd, _queryData$getState;
+  var _subscriptionData$upd, _queryData$getState2;
   var key = options.key,
     scope = options.scope,
     client = options.client;
@@ -321,7 +321,12 @@ var useServerState = function useServerState(initialValue, options) {
   }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
   var setValue = (0, _react2.useMemo)(function () {
     return function (value) {
-      setOptimisticValue(value);
+      var actualValue = value;
+      if (typeof value === 'function') {
+        var _queryData$getState;
+        actualValue = value((queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue);
+      }
+      setOptimisticValue(actualValue);
       (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
         var response;
         return _regenerator["default"].wrap(function _callee3$(_context3) {
@@ -334,7 +339,7 @@ var useServerState = function useServerState(initialValue, options) {
                 variables: {
                   key: key,
                   scope: scope,
-                  value: value
+                  value: actualValue
                 },
                 context: {
                   fetchOptions: {
@@ -366,7 +371,7 @@ var useServerState = function useServerState(initialValue, options) {
       loading: loading
     }];
   }
-  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue, setValue, {
+  return [(queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value) || initialValue, setValue, {
     error: error,
     loading: loading
   }];

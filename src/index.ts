@@ -381,7 +381,13 @@ export const useServerState = <ValueType>(
 
   const setValue = useMemo(() => {
     return (value: ValueType) => {
-      setOptimisticValue(value);
+      let actualValue = value;
+      if (typeof value === 'function') {
+        actualValue = value(
+          (queryData?.getState?.value as ValueType) || initialValue
+        );
+      }
+      setOptimisticValue(actualValue);
       (async () => {
         ref.current.abort();
         ref.current = new AbortController();
@@ -390,7 +396,7 @@ export const useServerState = <ValueType>(
           variables: {
             key,
             scope,
-            value,
+            value: actualValue,
           },
           context: {
             fetchOptions: {
