@@ -164,6 +164,32 @@ export const useLocalStorage = <T>(
   return [storedValue, setValue];
 };
 
+export const renderComponent = async (
+  key: string,
+  options: UseComponentOptions
+) => {
+  const { client } = options || {};
+
+  const { data, error } = await client.query({
+    query: RENDER_COMPONENT,
+    variables: {
+      key,
+      props: options.props,
+    },
+    fetchPolicy: 'cache-first',
+    context: {
+      // headers: {
+      //   'X-Unique-Id': id,
+      //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
+      // },
+    },
+  });
+
+  console.log('DATA', data, error);
+
+  return { data, error };
+};
+
 export const useComponent = (
   key: string,
   options: UseComponentOptions = {}
