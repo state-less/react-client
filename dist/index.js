@@ -234,8 +234,9 @@ var useComponent = function useComponent(key) {
       }
     });
   }, [options === null || options === void 0 ? void 0 : options.data]);
+  var inlineData = loading && options !== null && options !== void 0 && options.data ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered;
   var inlined = inline({
-    data: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered,
+    data: inlineData,
     actualClient: actualClient,
     setLastMutationResult: setLastMutationResult
   });
