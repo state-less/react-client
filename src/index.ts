@@ -270,6 +270,7 @@ export const useComponent = (
           data: {
             renderComponent: {
               rendered: {
+                key,
                 ...queryData?.renderComponent?.rendered,
                 ...subscriptionData?.data?.updateComponent?.rendered,
               },
