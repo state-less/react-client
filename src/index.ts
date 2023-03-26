@@ -61,6 +61,7 @@ export const UPDATE_COMPONENT = gql`
     updateComponent(key: $key, scope: $scope) {
       rendered {
         ... on ServerSideProps {
+          key
           props
           children
         }
@@ -250,6 +251,8 @@ export const useComponent = (
    */
   useEffect(() => {
     (async () => {
+      const key =
+        queryData?.renderComponent?.rendered?.key || options?.data?.key;
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
@@ -276,7 +279,7 @@ export const useComponent = (
         });
       });
     })();
-  }, [queryData?.renderComponent?.rendered?.key]);
+  }, [queryData?.renderComponent?.rendered?.key, options?.data?.key]);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
