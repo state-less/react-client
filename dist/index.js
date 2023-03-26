@@ -134,7 +134,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _queryData$renderComp6, _queryData$renderComp7, _queryData$renderComp8, _queryData$renderComp9, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp9, _queryData$renderComp10, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref3 = options || {},
     client = _ref3.client;
@@ -167,7 +167,8 @@ var useComponent = function useComponent(key) {
           'X-Unique-Id': id,
           Authorization: session.token ? "Bearer ".concat(session.token) : undefined
         }
-      }
+      },
+      skip: !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key)
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,
@@ -218,7 +219,52 @@ var useComponent = function useComponent(key) {
       }, _callee2);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key]);
-  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && _queryData$renderComp8.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered;
+
+  /**
+   * This needs to be done manually because we don't have the key of the component before the query above finished.
+   * useSubscription doesn't work because it doesn't resubscribe if the key changes.
+   */
+  (0, _react2.useEffect)(function () {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+      var _options$data2, _options$data3;
+      var sub;
+      return _regenerator["default"].wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return actualClient.subscribe({
+              query: UPDATE_COMPONENT,
+              variables: {
+                key: options === null || options === void 0 ? void 0 : (_options$data2 = options.data) === null || _options$data2 === void 0 ? void 0 : _options$data2.key,
+                scope: 'global'
+              }
+            });
+          case 2:
+            sub = _context3.sent;
+            console.log('SUBSCRIBED Hydrated', options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.key);
+            sub.subscribe(function (subscriptionData) {
+              var _queryData$renderComp8, _subscriptionData$dat3, _subscriptionData$dat4;
+              actualClient.cache.writeQuery({
+                query: RENDER_COMPONENT,
+                variables: {
+                  key: key,
+                  props: options.props
+                },
+                data: {
+                  renderComponent: {
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
+                  }
+                }
+              });
+            });
+          case 5:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3);
+    }))();
+  }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
@@ -232,10 +278,10 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref5) {
-  var data = _ref5.data,
-    actualClient = _ref5.actualClient,
-    setLastMutationResult = _ref5.setLastMutationResult;
+var inline = function inline(_ref6) {
+  var data = _ref6.data,
+    actualClient = _ref6.actualClient,
+    setLastMutationResult = _ref6.setLastMutationResult;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -244,20 +290,20 @@ var inline = function inline(_ref5) {
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
-        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
           var _len,
             args,
             _key,
             response,
-            _args3 = arguments;
-          return _regenerator["default"].wrap(function _callee3$(_context3) {
-            while (1) switch (_context3.prev = _context3.next) {
+            _args4 = arguments;
+          return _regenerator["default"].wrap(function _callee4$(_context4) {
+            while (1) switch (_context4.prev = _context4.next) {
               case 0:
-                _context3.prev = 0;
-                for (_len = _args3.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                  args[_key] = _args3[_key];
+                _context4.prev = 0;
+                for (_len = _args4.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args4[_key];
                 }
-                _context3.next = 4;
+                _context4.next = 4;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -267,21 +313,21 @@ var inline = function inline(_ref5) {
                   }
                 });
               case 4:
-                response = _context3.sent;
+                response = _context4.sent;
                 setLastMutationResult(response);
-                _context3.next = 11;
+                _context4.next = 11;
                 break;
               case 8:
-                _context3.prev = 8;
-                _context3.t0 = _context3["catch"](0);
+                _context4.prev = 8;
+                _context4.t0 = _context4["catch"](0);
                 setLastMutationResult({
-                  errors: [_context3.t0]
+                  errors: [_context4.t0]
                 });
               case 11:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
-          }, _callee3, null, [[0, 8]]);
+          }, _callee4, null, [[0, 8]]);
         }));
       }
     };
@@ -362,10 +408,10 @@ var useServerState = function useServerState(initialValue, options) {
         actualValue = value((queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue);
       }
       setOptimisticValue(actualValue);
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
         var response;
-        return _regenerator["default"].wrap(function _callee4$(_context4) {
-          while (1) switch (_context4.prev = _context4.next) {
+        return _regenerator["default"].wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
             case 0:
               ref.current.abort();
               ref.current = new AbortController();
@@ -382,21 +428,21 @@ var useServerState = function useServerState(initialValue, options) {
                   }
                 }
               });
-              _context4.next = 5;
+              _context5.next = 5;
               return response;
             case 5:
               if (!ref.current.signal.aborted) {
-                _context4.next = 7;
+                _context5.next = 7;
                 break;
               }
-              return _context4.abrupt("return");
+              return _context5.abrupt("return");
             case 7:
               setTimeout(setOptimisticValue, 0, null);
             case 8:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     };
   }, [key, scope, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value]);

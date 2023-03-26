@@ -243,6 +243,7 @@ export const useComponent = (
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
     },
+    skip: !!options?.data?.key,
   });
 
   /**
@@ -278,6 +279,40 @@ export const useComponent = (
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
+
+  /**
+   * This needs to be done manually because we don't have the key of the component before the query above finished.
+   * useSubscription doesn't work because it doesn't resubscribe if the key changes.
+   */
+  useEffect(() => {
+    (async () => {
+      const sub = await actualClient.subscribe({
+        query: UPDATE_COMPONENT,
+        variables: {
+          key: options?.data?.key,
+          scope: 'global',
+        },
+      });
+      console.log('SUBSCRIBED Hydrated', options?.data?.key);
+      sub.subscribe((subscriptionData) => {
+        actualClient.cache.writeQuery({
+          query: RENDER_COMPONENT,
+          variables: {
+            key,
+            props: options.props,
+          },
+          data: {
+            renderComponent: {
+              rendered: {
+                ...queryData?.renderComponent?.rendered,
+                ...subscriptionData?.data?.updateComponent?.rendered,
+              },
+            },
+          },
+        });
+      });
+    })();
+  }, [options?.data?.key]);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
