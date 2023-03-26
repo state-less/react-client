@@ -245,7 +245,7 @@ export const useComponent = (
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
     },
-    skip: skip,
+    skip: !!options?.data?.key,
   });
 
   /**
@@ -263,24 +263,22 @@ export const useComponent = (
       });
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
-        setSkip(false);
-        setTimeout(() => {
-          actualClient.cache.writeQuery({
-            query: RENDER_COMPONENT,
-            variables: {
-              key,
-              props: options.props,
-            },
-            data: {
-              renderComponent: {
-                rendered: {
-                  ...queryData?.renderComponent?.rendered,
-                  ...subscriptionData?.data?.updateComponent?.rendered,
-                },
+        actualClient.cache.writeQuery({
+          query: RENDER_COMPONENT,
+          variables: {
+            key,
+            props: options.props,
+          },
+          data: {
+            renderComponent: {
+              rendered: {
+                ...queryData?.renderComponent?.rendered,
+                ...subscriptionData?.data?.updateComponent?.rendered,
               },
             },
-          });
-        }, 0);
+          },
+        });
+        setSkip(false);
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
@@ -300,6 +298,7 @@ export const useComponent = (
       });
       console.log('SUBSCRIBED Hydrated', options?.data?.key);
       sub.subscribe((subscriptionData) => {
+        setSkip(false);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
