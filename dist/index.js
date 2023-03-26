@@ -202,20 +202,22 @@ var useComponent = function useComponent(key) {
             sub = _context2.sent;
             console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
-              var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
-              actualClient.cache.writeQuery({
-                query: RENDER_COMPONENT,
-                variables: {
-                  key: key,
-                  props: options.props
-                },
-                data: {
-                  renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
-                  }
-                }
-              });
               setSkip(false);
+              setTimeout(function () {
+                var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
+                actualClient.cache.writeQuery({
+                  query: RENDER_COMPONENT,
+                  variables: {
+                    key: key,
+                    props: options.props
+                  },
+                  data: {
+                    renderComponent: {
+                      rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
+                    }
+                  }
+                });
+              }, 0);
             });
           case 5:
           case "end":

@@ -263,22 +263,24 @@ export const useComponent = (
       });
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
-        actualClient.cache.writeQuery({
-          query: RENDER_COMPONENT,
-          variables: {
-            key,
-            props: options.props,
-          },
-          data: {
-            renderComponent: {
-              rendered: {
-                ...queryData?.renderComponent?.rendered,
-                ...subscriptionData?.data?.updateComponent?.rendered,
+        setSkip(false);
+        setTimeout(() => {
+          actualClient.cache.writeQuery({
+            query: RENDER_COMPONENT,
+            variables: {
+              key,
+              props: options.props,
+            },
+            data: {
+              renderComponent: {
+                rendered: {
+                  ...queryData?.renderComponent?.rendered,
+                  ...subscriptionData?.data?.updateComponent?.rendered,
+                },
               },
             },
-          },
-        });
-        setSkip(false);
+          });
+        }, 0);
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
