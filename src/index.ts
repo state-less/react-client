@@ -250,9 +250,9 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   useEffect(() => {
+    const key = queryData?.renderComponent?.rendered?.key || options?.data?.key;
+    if (!key) return;
     (async () => {
-      const key =
-        queryData?.renderComponent?.rendered?.key || options?.data?.key;
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
@@ -260,7 +260,7 @@ export const useComponent = (
           scope: 'global',
         },
       });
-      console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
+      console.log('SUBSCRIBED', key);
       sub.subscribe((subscriptionData) => {
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
