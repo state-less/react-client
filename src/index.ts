@@ -213,6 +213,8 @@ export const useComponent = (
   );
   const [lastMutationResult, setLastMutationResult] =
     useState<FetchResult>(null);
+
+  const [skip, setSkip] = useState(!!options?.data?.key);
   const actualClient = client || providedClient;
 
   if (!actualClient) {
@@ -243,7 +245,7 @@ export const useComponent = (
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
     },
-    skip: !!options?.data?.key,
+    skip: skip,
   });
 
   /**
@@ -276,6 +278,7 @@ export const useComponent = (
             },
           },
         });
+        setSkip(false);
       });
     })();
   }, [queryData?.renderComponent?.rendered?.key]);

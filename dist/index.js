@@ -145,6 +145,10 @@ var useComponent = function useComponent(key) {
     _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
     lastMutationResult = _useState2[0],
     setLastMutationResult = _useState2[1];
+  var _useState3 = (0, _react2.useState)(!!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key)),
+    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
+    skip = _useState4[0],
+    setSkip = _useState4[1];
   var actualClient = client || providedClient;
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
@@ -168,7 +172,7 @@ var useComponent = function useComponent(key) {
           Authorization: session.token ? "Bearer ".concat(session.token) : undefined
         }
       },
-      skip: !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key)
+      skip: skip
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,
@@ -211,6 +215,7 @@ var useComponent = function useComponent(key) {
                   }
                 }
               });
+              setSkip(false);
             });
           case 5:
           case "end":
@@ -358,10 +363,10 @@ var useServerState = function useServerState(initialValue, options) {
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
-  var _useState3 = (0, _react2.useState)(null),
-    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
-    optimisticValue = _useState4[0],
-    setOptimisticValue = _useState4[1];
+  var _useState5 = (0, _react2.useState)(null),
+    _useState6 = (0, _slicedToArray2["default"])(_useState5, 2),
+    optimisticValue = _useState6[0],
+    setOptimisticValue = _useState6[1];
   var _useLocalStorage5 = useLocalStorage('id', (0, _uuid.v4)()),
     _useLocalStorage6 = (0, _slicedToArray2["default"])(_useLocalStorage5, 1),
     id = _useLocalStorage6[0];
