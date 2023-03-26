@@ -256,7 +256,7 @@ export const useComponent = (
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
-          key: queryData?.renderComponent?.rendered?.key,
+          key: key,
           scope: 'global',
         },
       });
