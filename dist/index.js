@@ -134,7 +134,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _options$data2, _queryData$renderComp6, _queryData$renderComp7, _options$data5, _queryData$renderComp9, _queryData$renderComp10, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp9, _queryData$renderComp10, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref3 = options || {},
     client = _ref3.client;
@@ -172,7 +172,7 @@ var useComponent = function useComponent(key) {
           Authorization: session.token ? "Bearer ".concat(session.token) : undefined
         }
       },
-      skip: !!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key)
+      skip: skip
     }),
     queryData = _useQuery.data,
     error = _useQuery.error,
@@ -231,7 +231,7 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
-      var _options$data3, _options$data4;
+      var _options$data2, _options$data3;
       var sub;
       return _regenerator["default"].wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
@@ -240,13 +240,13 @@ var useComponent = function useComponent(key) {
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
-                key: options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.key,
+                key: options === null || options === void 0 ? void 0 : (_options$data2 = options.data) === null || _options$data2 === void 0 ? void 0 : _options$data2.key,
                 scope: 'global'
               }
             });
           case 2:
             sub = _context3.sent;
-            console.log('SUBSCRIBED Hydrated', options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key);
+            console.log('SUBSCRIBED Hydrated', options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.key);
             sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp8, _subscriptionData$dat3, _subscriptionData$dat4;
               setSkip(false);
@@ -269,7 +269,7 @@ var useComponent = function useComponent(key) {
         }
       }, _callee3);
     }))();
-  }, [options === null || options === void 0 ? void 0 : (_options$data5 = options.data) === null || _options$data5 === void 0 ? void 0 : _options$data5.key]);
+  }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
   var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered;
   var inlined = inline({
     data: inlineData,
