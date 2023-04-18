@@ -1,6 +1,2 @@
-export declare const initialSession: {
-    id: any;
-    token: any;
-    strategy: any;
-    strategies: any;
-};
+import { Session } from './types';
+export declare const initialSession: Session;

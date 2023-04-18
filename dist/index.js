@@ -290,7 +290,9 @@ var useComponent = function useComponent(key) {
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
-    setLastMutationResult: setLastMutationResult
+    setLastMutationResult: setLastMutationResult,
+    id: id,
+    session: session
   });
   var anyError = error || (lastMutationResult === null || lastMutationResult === void 0 ? void 0 : (_lastMutationResult$e = lastMutationResult.errors) === null || _lastMutationResult$e === void 0 ? void 0 : _lastMutationResult$e[0]);
   return [inlined, {
@@ -303,7 +305,9 @@ exports.useComponent = useComponent;
 var inline = function inline(_ref6) {
   var data = _ref6.data,
     actualClient = _ref6.actualClient,
-    setLastMutationResult = _ref6.setLastMutationResult;
+    setLastMutationResult = _ref6.setLastMutationResult,
+    id = _ref6.id,
+    session = _ref6.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -332,6 +336,12 @@ var inline = function inline(_ref6) {
                     key: val.component,
                     prop: val.name,
                     args: args
+                  },
+                  context: {
+                    headers: {
+                      'X-Unique-Id': id,
+                      Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                    }
                   }
                 });
               case 4:
@@ -361,7 +371,9 @@ var inline = function inline(_ref6) {
       inlined.children[i] = inline({
         data: children[i],
         actualClient: actualClient,
-        setLastMutationResult: setLastMutationResult
+        setLastMutationResult: setLastMutationResult,
+        id: id,
+        session: session
       });
     }
   }

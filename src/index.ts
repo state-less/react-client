@@ -19,6 +19,7 @@ import {
   WritableAtom,
 } from 'jotai/vanilla';
 import { initialSession } from './lib/instances';
+import { Session } from './lib/types';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -352,6 +353,8 @@ export const useComponent = (
     data: inlineData,
     actualClient,
     setLastMutationResult,
+    id,
+    session,
   });
 
   const anyError = error || lastMutationResult?.errors?.[0];
@@ -363,10 +366,14 @@ const inline = ({
   data,
   actualClient,
   setLastMutationResult,
+  id,
+  session,
 }: {
   data: { props: Record<string, any>; children: any[] };
   actualClient: ApolloClient<any>;
   setLastMutationResult: (val: any) => void;
+  id: string;
+  session: Session;
 }) => {
   let inlined: { props: Record<string, any>; children: any[] } = data;
   if (data?.props) {
@@ -381,6 +388,14 @@ const inline = ({
                 key: val.component,
                 prop: val.name,
                 args,
+              },
+              context: {
+                headers: {
+                  'X-Unique-Id': id,
+                  Authorization: session.token
+                    ? `Bearer ${session.token}`
+                    : undefined,
+                },
               },
             });
             setLastMutationResult(response);
@@ -397,6 +412,8 @@ const inline = ({
         data: children[i],
         actualClient,
         setLastMutationResult,
+        id,
+        session,
       });
     }
   }
