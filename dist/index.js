@@ -242,6 +242,12 @@ var useComponent = function useComponent(key) {
               variables: {
                 key: options === null || options === void 0 ? void 0 : (_options$data2 = options.data) === null || _options$data2 === void 0 ? void 0 : _options$data2.key,
                 scope: 'global'
+              },
+              context: {
+                headers: {
+                  'X-Unique-Id': id,
+                  Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                }
               }
             });
           case 2:

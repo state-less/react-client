@@ -295,6 +295,14 @@ export const useComponent = (
           key: options?.data?.key,
           scope: 'global',
         },
+        context: {
+          headers: {
+            'X-Unique-Id': id,
+            Authorization: session.token
+              ? `Bearer ${session.token}`
+              : undefined,
+          },
+        },
       });
       console.log('SUBSCRIBED Hydrated', options?.data?.key);
       sub.subscribe((subscriptionData) => {
