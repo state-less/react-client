@@ -57,8 +57,13 @@ export const UPDATE_STATE = gql`
 `;
 
 export const UPDATE_COMPONENT = gql`
-  subscription MyQuery($key: ID!, $scope: String!) {
-    updateComponent(key: $key, scope: $scope) {
+  subscription MyQuery(
+    $key: ID!
+    $scope: String!
+    $id: String!
+    $bearer: String
+  ) {
+    updateComponent(key: $key, scope: $scope, $id, $bearer) {
       rendered {
         ... on ServerSideProps {
           key
@@ -260,6 +265,7 @@ export const useComponent = (
           key: queryData?.renderComponent?.rendered?.key,
           scope: 'global',
           Authorization: session.token ? `Bearer ${session.token}` : undefined,
+          id,
         },
         context: {
           headers: {
@@ -304,6 +310,7 @@ export const useComponent = (
           key: options?.data?.key,
           scope: 'global',
           Authorization: session.token ? `Bearer ${session.token}` : undefined,
+          id,
         },
         context: {
           headers: {

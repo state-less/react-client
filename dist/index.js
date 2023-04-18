@@ -51,7 +51,7 @@ var RENDER_COMPONENT = (0, _client.gql)(_templateObject || (_templateObject = (0
 exports.RENDER_COMPONENT = RENDER_COMPONENT;
 var UPDATE_STATE = (0, _client.gql)(_templateObject2 || (_templateObject2 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.UPDATE_STATE = UPDATE_STATE;
-var UPDATE_COMPONENT = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateComponent(key: $key, scope: $scope) {\n      rendered {\n        ... on ServerSideProps {\n          key\n          props\n          children\n        }\n        __typename\n        ... on Server {\n          version\n          uptime\n          platform\n          components: children {\n            __typename\n            ... on ServerSideProps {\n              props\n              children\n            }\n          }\n        }\n      }\n    }\n  }\n"])));
+var UPDATE_COMPONENT = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery(\n    $key: ID!\n    $scope: String!\n    $id: String!\n    $bearer: String\n  ) {\n    updateComponent(key: $key, scope: $scope, $id, $bearer) {\n      rendered {\n        ... on ServerSideProps {\n          key\n          props\n          children\n        }\n        __typename\n        ... on Server {\n          version\n          uptime\n          platform\n          components: children {\n            __typename\n            ... on ServerSideProps {\n              props\n              children\n            }\n          }\n        }\n      }\n    }\n  }\n"])));
 exports.UPDATE_COMPONENT = UPDATE_COMPONENT;
 var GET_STATE = (0, _client.gql)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!) {\n    getState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.GET_STATE = GET_STATE;
@@ -196,7 +196,8 @@ var useComponent = function useComponent(key) {
               variables: {
                 key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key,
                 scope: 'global',
-                Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                Authorization: session.token ? "Bearer ".concat(session.token) : undefined,
+                id: id
               },
               context: {
                 headers: {
@@ -249,7 +250,8 @@ var useComponent = function useComponent(key) {
               variables: {
                 key: options === null || options === void 0 ? void 0 : (_options$data2 = options.data) === null || _options$data2 === void 0 ? void 0 : _options$data2.key,
                 scope: 'global',
-                Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                Authorization: session.token ? "Bearer ".concat(session.token) : undefined,
+                id: id
               },
               context: {
                 headers: {
