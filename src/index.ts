@@ -63,7 +63,7 @@ export const UPDATE_COMPONENT = gql`
     $id: String!
     $bearer: String
   ) {
-    updateComponent(key: $key, scope: $scope, $id, $bearer) {
+    updateComponent(key: $key, scope: $scope, id: $id, bearer: $bearer) {
       rendered {
         ... on ServerSideProps {
           key
