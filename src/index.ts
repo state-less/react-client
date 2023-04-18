@@ -260,6 +260,14 @@ export const useComponent = (
           key: queryData?.renderComponent?.rendered?.key,
           scope: 'global',
         },
+        context: {
+          headers: {
+            'X-Unique-Id': id,
+            Authorization: session.token
+              ? `Bearer ${session.token}`
+              : undefined,
+          },
+        },
       });
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
@@ -285,7 +293,7 @@ export const useComponent = (
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
-   * useSubscription doesn't work because it doesn't resubscribe if the key changes.
+   * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   useEffect(() => {
     (async () => {

@@ -196,6 +196,12 @@ var useComponent = function useComponent(key) {
               variables: {
                 key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key,
                 scope: 'global'
+              },
+              context: {
+                headers: {
+                  'X-Unique-Id': id,
+                  Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                }
               }
             });
           case 2:
@@ -227,7 +233,7 @@ var useComponent = function useComponent(key) {
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
-   * useSubscription doesn't work because it doesn't resubscribe if the key changes.
+   * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   (0, _react2.useEffect)(function () {
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
