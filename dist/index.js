@@ -195,7 +195,8 @@ var useComponent = function useComponent(key) {
               query: UPDATE_COMPONENT,
               variables: {
                 key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : (_queryData$renderComp2 = _queryData$renderComp.rendered) === null || _queryData$renderComp2 === void 0 ? void 0 : _queryData$renderComp2.key,
-                scope: 'global'
+                scope: 'global',
+                Authorization: session.token ? "Bearer ".concat(session.token) : undefined
               },
               context: {
                 headers: {
@@ -247,7 +248,8 @@ var useComponent = function useComponent(key) {
               query: UPDATE_COMPONENT,
               variables: {
                 key: options === null || options === void 0 ? void 0 : (_options$data2 = options.data) === null || _options$data2 === void 0 ? void 0 : _options$data2.key,
-                scope: 'global'
+                scope: 'global',
+                Authorization: session.token ? "Bearer ".concat(session.token) : undefined
               },
               context: {
                 headers: {

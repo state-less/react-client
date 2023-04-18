@@ -259,6 +259,7 @@ export const useComponent = (
         variables: {
           key: queryData?.renderComponent?.rendered?.key,
           scope: 'global',
+          Authorization: session.token ? `Bearer ${session.token}` : undefined,
         },
         context: {
           headers: {
@@ -302,6 +303,7 @@ export const useComponent = (
         variables: {
           key: options?.data?.key,
           scope: 'global',
+          Authorization: session.token ? `Bearer ${session.token}` : undefined,
         },
         context: {
           headers: {
