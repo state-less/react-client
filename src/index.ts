@@ -475,7 +475,11 @@ export const useServerState = <ValueType>(
 
   useEffect(() => {
     actualClient.cache.modify({
-      id: actualClient.cache.identify({ __typename: 'Query', id: cacheId }),
+      id: actualClient.cache.identify({
+        __typename: 'Query',
+        variables: { key, scope },
+        query: GET_STATE,
+      }),
       fields: {
         getState() {
           return { ...queryData.getState, ...subscriptionData?.updateState };

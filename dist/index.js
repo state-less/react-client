@@ -431,7 +431,11 @@ var useServerState = function useServerState(initialValue, options) {
     actualClient.cache.modify({
       id: actualClient.cache.identify({
         __typename: 'Query',
-        id: cacheId
+        variables: {
+          key: key,
+          scope: scope
+        },
+        query: GET_STATE
       }),
       fields: {
         getState: function getState() {
