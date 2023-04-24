@@ -428,19 +428,26 @@ var useServerState = function useServerState(initialValue, options) {
     }),
     subscriptionData = _useSubscription.data;
   (0, _react2.useEffect)(function () {
-    actualClient.cache.modify({
-      id: actualClient.cache.identify({
-        __typename: 'Query',
-        variables: {
-          key: key,
-          scope: scope
-        },
-        query: GET_STATE
-      }),
-      fields: {
-        getState: function getState() {
-          return _objectSpread(_objectSpread({}, queryData.getState), subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.updateState);
-        }
+    // actualClient.cache.modify({
+    //   id: actualClient.cache.identify({
+    //     __typename: 'Query',
+    //     variables: { key, scope },
+    //     query: GET_STATE,
+    //   }),
+    //   fields: {
+    //     getState() {
+    //       return { ...queryData.getState, ...subscriptionData?.updateState };
+    //     },
+    //   },
+    // });
+    actualClient.writeQuery({
+      query: GET_STATE,
+      variables: {
+        key: key,
+        scope: scope
+      },
+      data: {
+        getState: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : queryData.getState), subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.updateState)
       }
     });
   }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
