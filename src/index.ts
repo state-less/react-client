@@ -440,6 +440,7 @@ export const useServerState = <ValueType>(
     null
   );
   const [id] = useLocalStorage('id', v4());
+  const cacheId = `GetData:${key}:${scope}`;
   const {
     data: queryData,
     error: apolloError,
@@ -456,6 +457,7 @@ export const useServerState = <ValueType>(
       headers: {
         'X-Unique-Id': id,
       },
+      customCacheKey: cacheId,
     },
   });
 
@@ -473,6 +475,7 @@ export const useServerState = <ValueType>(
 
   useEffect(() => {
     actualClient.cache.modify({
+      id: actualClient.cache.identify({ __typename: 'Query', id: cacheId }),
       fields: {
         getState() {
           return { ...queryData.getState, ...subscriptionData?.updateState };

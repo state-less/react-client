@@ -399,6 +399,7 @@ var useServerState = function useServerState(initialValue, options) {
   var _useLocalStorage5 = useLocalStorage('id', (0, _uuid.v4)()),
     _useLocalStorage6 = (0, _slicedToArray2["default"])(_useLocalStorage5, 1),
     id = _useLocalStorage6[0];
+  var cacheId = "GetData:".concat(key, ":").concat(scope);
   var _useQuery2 = (0, _react.useQuery)(GET_STATE, {
       client: actualClient,
       variables: {
@@ -408,7 +409,8 @@ var useServerState = function useServerState(initialValue, options) {
       context: {
         headers: {
           'X-Unique-Id': id
-        }
+        },
+        customCacheKey: cacheId
       }
     }),
     queryData = _useQuery2.data,
@@ -427,6 +429,10 @@ var useServerState = function useServerState(initialValue, options) {
     subscriptionData = _useSubscription.data;
   (0, _react2.useEffect)(function () {
     actualClient.cache.modify({
+      id: actualClient.cache.identify({
+        __typename: 'Query',
+        id: cacheId
+      }),
       fields: {
         getState: function getState() {
           return _objectSpread(_objectSpread({}, queryData.getState), subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.updateState);
