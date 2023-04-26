@@ -7,6 +7,7 @@ import { initialSession } from '../lib/instances';
 export const authContext = createContext({
   session: initialSession,
   authenticate: null,
+  logout: null,
 });
 
 export const AUTHENTICATE = gql`
@@ -45,8 +46,12 @@ export const AuthProvider = ({
     setAuth(authenticate);
   };
 
+  const logout = () => {
+    setAuth(initialSession);
+  };
+
   return (
-    <authContext.Provider value={{ authenticate, session: auth }}>
+    <authContext.Provider value={{ authenticate, session: auth, logout }}>
       {children}
     </authContext.Provider>
   );
