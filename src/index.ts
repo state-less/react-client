@@ -136,12 +136,15 @@ type UseServerStateInfo = {
 
 const atoms: Record<string, PrimitiveAtom<unknown>> = {};
 
-const getInitialValue = (key, initialValue) => {
+const getInitialValue = (key, initialValue, { cookie }) => {
   try {
     const item = window.localStorage.getItem(key);
     if (!item) {
       localStorage.setItem(key, JSON.stringify(initialValue));
       return initialValue;
+    }
+    if (cookie) {
+      document.cookie = `${cookie}=${initialValue}`;
     }
     return JSON.parse(item);
   } catch (error) {
@@ -156,7 +159,9 @@ export const useLocalStorage = <T>(
 ): [T, (val: T) => void] => {
   const keyAtom =
     (atoms[key] as PrimitiveAtom<T>) ||
-    (atoms[key] = atom(getInitialValue(key, initialValue)) as PrimitiveAtom<T>);
+    (atoms[key] = atom(
+      getInitialValue(key, initialValue, { cookie })
+    ) as PrimitiveAtom<T>);
   const [storedValue, setStoredValue] = useAtom(keyAtom as PrimitiveAtom<T>);
 
   const setValue = (value: T) => {

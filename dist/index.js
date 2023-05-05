@@ -60,12 +60,16 @@ exports.SET_STATE = SET_STATE;
 var CALL_FUNCTION = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var atoms = {};
-var getInitialValue = function getInitialValue(key, initialValue) {
+var getInitialValue = function getInitialValue(key, initialValue, _ref) {
+  var cookie = _ref.cookie;
   try {
     var item = window.localStorage.getItem(key);
     if (!item) {
       localStorage.setItem(key, JSON.stringify(initialValue));
       return initialValue;
+    }
+    if (cookie) {
+      document.cookie = "".concat(cookie, "=").concat(initialValue);
     }
     return JSON.parse(item);
   } catch (error) {
@@ -74,10 +78,12 @@ var getInitialValue = function getInitialValue(key, initialValue) {
   }
 };
 var useLocalStorage = function useLocalStorage(key, initialValue) {
-  var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
-    _ref$cookie = _ref.cookie,
-    cookie = _ref$cookie === void 0 ? null : _ref$cookie;
-  var keyAtom = atoms[key] || (atoms[key] = (0, _jotai.atom)(getInitialValue(key, initialValue)));
+  var _ref2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+    _ref2$cookie = _ref2.cookie,
+    cookie = _ref2$cookie === void 0 ? null : _ref2$cookie;
+  var keyAtom = atoms[key] || (atoms[key] = (0, _jotai.atom)(getInitialValue(key, initialValue, {
+    cookie: cookie
+  })));
   var _useAtom = (0, _jotai.useAtom)(keyAtom),
     _useAtom2 = (0, _slicedToArray2["default"])(_useAtom, 2),
     storedValue = _useAtom2[0],
@@ -98,13 +104,13 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
 };
 exports.useLocalStorage = useLocalStorage;
 var renderComponent = /*#__PURE__*/function () {
-  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
+  var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
     var _data$renderComponent;
-    var _ref3, client, _yield$client$query, data, error;
+    var _ref4, client, _yield$client$query, data, error;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          _ref3 = options || {}, client = _ref3.client;
+          _ref4 = options || {}, client = _ref4.client;
           _context.next = 3;
           return client.query({
             query: RENDER_COMPONENT,
@@ -135,15 +141,15 @@ var renderComponent = /*#__PURE__*/function () {
     }, _callee);
   }));
   return function renderComponent(_x, _x2) {
-    return _ref2.apply(this, arguments);
+    return _ref3.apply(this, arguments);
   };
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
   var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp9, _queryData$renderComp10, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _ref4 = options || {},
-    client = _ref4.client;
+  var _ref5 = options || {},
+    client = _ref5.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
@@ -310,12 +316,12 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref7) {
-  var data = _ref7.data,
-    actualClient = _ref7.actualClient,
-    setLastMutationResult = _ref7.setLastMutationResult,
-    id = _ref7.id,
-    session = _ref7.session;
+var inline = function inline(_ref8) {
+  var data = _ref8.data,
+    actualClient = _ref8.actualClient,
+    setLastMutationResult = _ref8.setLastMutationResult,
+    id = _ref8.id,
+    session = _ref8.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
