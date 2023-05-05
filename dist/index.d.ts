@@ -23,7 +23,9 @@ type UseServerStateInfo = {
     error: ApolloError;
     loading: boolean;
 };
-export declare const useLocalStorage: <T>(key: string, initialValue: T) => [T, (val: T) => void];
+export declare const useLocalStorage: <T>(key: string, initialValue: T, { cookie }?: {
+    cookie?: any;
+}) => [T, (val: T) => void];
 export declare const renderComponent: (key: string, options: UseComponentOptions) => Promise<{
     data: any;
     error: ApolloError;

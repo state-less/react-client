@@ -151,7 +151,8 @@ const getInitialValue = (key, initialValue) => {
 };
 export const useLocalStorage = <T>(
   key: string,
-  initialValue: T
+  initialValue: T,
+  { cookie = null } = {}
 ): [T, (val: T) => void] => {
   const keyAtom =
     (atoms[key] as PrimitiveAtom<T>) ||
@@ -164,6 +165,9 @@ export const useLocalStorage = <T>(
         value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      if (cookie) {
+        document.cookie = `${cookie}=${valueToStore}`;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -229,6 +233,7 @@ export const useComponent = (
     );
   }
   const [id] = useLocalStorage('id', v4());
+  document.cookie = 'id=' + id;
   const [session] = useLocalStorage('session', initialSession);
 
   const {
@@ -439,7 +444,7 @@ export const useServerState = <ValueType>(
   const [optimisticValue, setOptimisticValue] = useState<ValueType | null>(
     null
   );
-  const [id] = useLocalStorage('id', v4());
+  const [id] = useLocalStorage('id', v4(), { cookie: 'id' });
   const cacheId = `GetData:${key}:${scope}`;
   const {
     data: queryData,

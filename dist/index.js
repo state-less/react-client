@@ -74,6 +74,9 @@ var getInitialValue = function getInitialValue(key, initialValue) {
   }
 };
 var useLocalStorage = function useLocalStorage(key, initialValue) {
+  var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+    _ref$cookie = _ref.cookie,
+    cookie = _ref$cookie === void 0 ? null : _ref$cookie;
   var keyAtom = atoms[key] || (atoms[key] = (0, _jotai.atom)(getInitialValue(key, initialValue)));
   var _useAtom = (0, _jotai.useAtom)(keyAtom),
     _useAtom2 = (0, _slicedToArray2["default"])(_useAtom, 2),
@@ -84,6 +87,9 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
       var valueToStore = value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      if (cookie) {
+        document.cookie = "".concat(cookie, "=").concat(valueToStore);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -92,13 +98,13 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
 };
 exports.useLocalStorage = useLocalStorage;
 var renderComponent = /*#__PURE__*/function () {
-  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
+  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
     var _data$renderComponent;
-    var _ref2, client, _yield$client$query, data, error;
+    var _ref3, client, _yield$client$query, data, error;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          _ref2 = options || {}, client = _ref2.client;
+          _ref3 = options || {}, client = _ref3.client;
           _context.next = 3;
           return client.query({
             query: RENDER_COMPONENT,
@@ -129,15 +135,15 @@ var renderComponent = /*#__PURE__*/function () {
     }, _callee);
   }));
   return function renderComponent(_x, _x2) {
-    return _ref.apply(this, arguments);
+    return _ref2.apply(this, arguments);
   };
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
   var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp9, _queryData$renderComp10, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _ref3 = options || {},
-    client = _ref3.client;
+  var _ref4 = options || {},
+    client = _ref4.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
@@ -156,6 +162,7 @@ var useComponent = function useComponent(key) {
   var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)()),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
+  document.cookie = 'id=' + id;
   var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
@@ -302,12 +309,12 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref6) {
-  var data = _ref6.data,
-    actualClient = _ref6.actualClient,
-    setLastMutationResult = _ref6.setLastMutationResult,
-    id = _ref6.id,
-    session = _ref6.session;
+var inline = function inline(_ref7) {
+  var data = _ref7.data,
+    actualClient = _ref7.actualClient,
+    setLastMutationResult = _ref7.setLastMutationResult,
+    id = _ref7.id,
+    session = _ref7.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -396,7 +403,9 @@ var useServerState = function useServerState(initialValue, options) {
     _useState6 = (0, _slicedToArray2["default"])(_useState5, 2),
     optimisticValue = _useState6[0],
     setOptimisticValue = _useState6[1];
-  var _useLocalStorage5 = useLocalStorage('id', (0, _uuid.v4)()),
+  var _useLocalStorage5 = useLocalStorage('id', (0, _uuid.v4)(), {
+      cookie: 'id'
+    }),
     _useLocalStorage6 = (0, _slicedToArray2["default"])(_useLocalStorage5, 1),
     id = _useLocalStorage6[0];
   var cacheId = "GetData:".concat(key, ":").concat(scope);
