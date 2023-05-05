@@ -404,7 +404,7 @@ var useServerState = function useServerState(initialValue, options) {
     optimisticValue = _useState6[0],
     setOptimisticValue = _useState6[1];
   var _useLocalStorage5 = useLocalStorage('id', (0, _uuid.v4)(), {
-      cookie: 'id'
+      cookie: 'x-react-server-id'
     }),
     _useLocalStorage6 = (0, _slicedToArray2["default"])(_useLocalStorage5, 1),
     id = _useLocalStorage6[0];

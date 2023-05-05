@@ -444,7 +444,7 @@ export const useServerState = <ValueType>(
   const [optimisticValue, setOptimisticValue] = useState<ValueType | null>(
     null
   );
-  const [id] = useLocalStorage('id', v4(), { cookie: 'id' });
+  const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
   const cacheId = `GetData:${key}:${scope}`;
   const {
     data: queryData,
