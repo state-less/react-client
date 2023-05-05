@@ -159,10 +159,11 @@ var useComponent = function useComponent(key) {
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
-  var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)()),
+  var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)(), {
+      cookie: 'x-react-server-id'
+    }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
-  document.cookie = 'id=' + id;
   var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];

@@ -232,8 +232,8 @@ export const useComponent = (
       'No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.'
     );
   }
-  const [id] = useLocalStorage('id', v4());
-  document.cookie = 'id=' + id;
+  const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
+
   const [session] = useLocalStorage('session', initialSession);
 
   const {
