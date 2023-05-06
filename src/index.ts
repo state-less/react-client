@@ -281,6 +281,7 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   useEffect(() => {
+    if (!queryData?.renderComponent?.rendered?.key) return;
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
