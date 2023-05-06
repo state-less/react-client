@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 var _exportNames = {
   RENDER_COMPONENT: true,
   UNMOUNT_COMPONENT: true,
+  MOUNT_COMPONENT: true,
   UPDATE_STATE: true,
   UPDATE_COMPONENT: true,
   GET_STATE: true,
@@ -18,7 +19,7 @@ var _exportNames = {
   useComponent: true,
   useServerState: true
 };
-exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
+exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
@@ -43,7 +44,7 @@ Object.keys(_AuthenticationProvider).forEach(function (key) {
     }
   });
 });
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8;
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -52,15 +53,17 @@ var RENDER_COMPONENT = (0, _client.gql)(_templateObject || (_templateObject = (0
 exports.RENDER_COMPONENT = RENDER_COMPONENT;
 var UNMOUNT_COMPONENT = (0, _client.gql)(_templateObject2 || (_templateObject2 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!) {\n    unmountComponent(key: $key)\n  }\n"])));
 exports.UNMOUNT_COMPONENT = UNMOUNT_COMPONENT;
-var UPDATE_STATE = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
+var MOUNT_COMPONENT = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!) {\n    mountComponent(key: $key)\n  }\n"])));
+exports.MOUNT_COMPONENT = MOUNT_COMPONENT;
+var UPDATE_STATE = (0, _client.gql)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.UPDATE_STATE = UPDATE_STATE;
-var UPDATE_COMPONENT = (0, _client.gql)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery(\n    $key: ID!\n    $scope: String!\n    $id: String!\n    $bearer: String\n  ) {\n    updateComponent(key: $key, scope: $scope, id: $id, bearer: $bearer) {\n      rendered {\n        ... on ServerSideProps {\n          key\n          props\n          children\n        }\n        __typename\n        ... on Server {\n          version\n          uptime\n          platform\n          components: children {\n            __typename\n            ... on ServerSideProps {\n              props\n              children\n            }\n          }\n        }\n      }\n    }\n  }\n"])));
+var UPDATE_COMPONENT = (0, _client.gql)(_templateObject5 || (_templateObject5 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery(\n    $key: ID!\n    $scope: String!\n    $id: String!\n    $bearer: String\n  ) {\n    updateComponent(key: $key, scope: $scope, id: $id, bearer: $bearer) {\n      rendered {\n        ... on ServerSideProps {\n          key\n          props\n          children\n        }\n        __typename\n        ... on Server {\n          version\n          uptime\n          platform\n          components: children {\n            __typename\n            ... on ServerSideProps {\n              props\n              children\n            }\n          }\n        }\n      }\n    }\n  }\n"])));
 exports.UPDATE_COMPONENT = UPDATE_COMPONENT;
-var GET_STATE = (0, _client.gql)(_templateObject5 || (_templateObject5 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!) {\n    getState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
+var GET_STATE = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $scope: String!) {\n    getState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.GET_STATE = GET_STATE;
-var SET_STATE = (0, _client.gql)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $scope: String!, $value: JSON) {\n    setState(key: $key, scope: $scope, value: $value) {\n      key\n      id\n      value\n      scope\n    }\n  }\n"])));
+var SET_STATE = (0, _client.gql)(_templateObject7 || (_templateObject7 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $scope: String!, $value: JSON) {\n    setState(key: $key, scope: $scope, value: $value) {\n      key\n      id\n      value\n      scope\n    }\n  }\n"])));
 exports.SET_STATE = SET_STATE;
-var CALL_FUNCTION = (0, _client.gql)(_templateObject7 || (_templateObject7 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
+var CALL_FUNCTION = (0, _client.gql)(_templateObject8 || (_templateObject8 = (0, _taggedTemplateLiteral2["default"])(["\n  mutation MyMutation($key: ID!, $prop: String!, $args: JSON) {\n    callFunction(key: $key, prop: $prop, args: $args)\n  }\n"])));
 exports.CALL_FUNCTION = CALL_FUNCTION;
 var atoms = {};
 var getInitialValue = function getInitialValue(key, initialValue, _ref) {
@@ -305,15 +308,46 @@ var useComponent = function useComponent(key) {
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
   (0, _react2.useEffect)(function () {
     console.log('Component mounted', key);
+    if (actualClient) {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+        var cleaned;
+        return _regenerator["default"].wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return actualClient.query({
+                query: MOUNT_COMPONENT,
+                variables: {
+                  key: key,
+                  clientProps: options === null || options === void 0 ? void 0 : options.props
+                },
+                fetchPolicy: 'network-only',
+                context: {
+                  headers: {
+                    'X-Unique-Id': id,
+                    Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                  }
+                }
+              });
+            case 2:
+              cleaned = _context4.sent;
+              console.log('Unmounted', cleaned);
+            case 4:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
+      }))();
+    }
     return function () {
       console.log('Component unmounting', key, actualClient);
       if (actualClient) {
-        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
           var cleaned;
-          return _regenerator["default"].wrap(function _callee4$(_context4) {
-            while (1) switch (_context4.prev = _context4.next) {
+          return _regenerator["default"].wrap(function _callee5$(_context5) {
+            while (1) switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.next = 2;
+                _context5.next = 2;
                 return actualClient.query({
                   query: UNMOUNT_COMPONENT,
                   variables: {
@@ -328,13 +362,13 @@ var useComponent = function useComponent(key) {
                   }
                 });
               case 2:
-                cleaned = _context4.sent;
+                cleaned = _context5.sent;
                 console.log('Unmounted', cleaned);
               case 4:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
-          }, _callee4);
+          }, _callee5);
         }))();
       }
     };
@@ -355,12 +389,12 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref9) {
-  var data = _ref9.data,
-    actualClient = _ref9.actualClient,
-    setLastMutationResult = _ref9.setLastMutationResult,
-    id = _ref9.id,
-    session = _ref9.session;
+var inline = function inline(_ref10) {
+  var data = _ref10.data,
+    actualClient = _ref10.actualClient,
+    setLastMutationResult = _ref10.setLastMutationResult,
+    id = _ref10.id,
+    session = _ref10.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -369,20 +403,20 @@ var inline = function inline(_ref9) {
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
-        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
+        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
           var _len,
             args,
             _key,
             response,
-            _args5 = arguments;
-          return _regenerator["default"].wrap(function _callee5$(_context5) {
-            while (1) switch (_context5.prev = _context5.next) {
+            _args6 = arguments;
+          return _regenerator["default"].wrap(function _callee6$(_context6) {
+            while (1) switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.prev = 0;
-                for (_len = _args5.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                  args[_key] = _args5[_key];
+                _context6.prev = 0;
+                for (_len = _args6.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args6[_key];
                 }
-                _context5.next = 4;
+                _context6.next = 4;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -398,21 +432,21 @@ var inline = function inline(_ref9) {
                   }
                 });
               case 4:
-                response = _context5.sent;
+                response = _context6.sent;
                 setLastMutationResult(response);
-                _context5.next = 11;
+                _context6.next = 11;
                 break;
               case 8:
-                _context5.prev = 8;
-                _context5.t0 = _context5["catch"](0);
+                _context6.prev = 8;
+                _context6.t0 = _context6["catch"](0);
                 setLastMutationResult({
-                  errors: [_context5.t0]
+                  errors: [_context6.t0]
                 });
               case 11:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
-          }, _callee5, null, [[0, 8]]);
+          }, _callee6, null, [[0, 8]]);
         }));
       }
     };
@@ -514,10 +548,10 @@ var useServerState = function useServerState(initialValue, options) {
         actualValue = value((queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue);
       }
       setOptimisticValue(actualValue);
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7() {
         var response;
-        return _regenerator["default"].wrap(function _callee6$(_context6) {
-          while (1) switch (_context6.prev = _context6.next) {
+        return _regenerator["default"].wrap(function _callee7$(_context7) {
+          while (1) switch (_context7.prev = _context7.next) {
             case 0:
               ref.current.abort();
               ref.current = new AbortController();
@@ -534,21 +568,21 @@ var useServerState = function useServerState(initialValue, options) {
                   }
                 }
               });
-              _context6.next = 5;
+              _context7.next = 5;
               return response;
             case 5:
               if (!ref.current.signal.aborted) {
-                _context6.next = 7;
+                _context7.next = 7;
                 break;
               }
-              return _context6.abrupt("return");
+              return _context7.abrupt("return");
             case 7:
               setTimeout(setOptimisticValue, 0, null);
             case 8:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
-        }, _callee6);
+        }, _callee7);
       }))();
     };
   }, [key, scope, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value]);

@@ -2,6 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { ApolloClient, ApolloQueryResult, OperationVariables } from '@apollo/client/core';
 export declare const RENDER_COMPONENT: import("@apollo/client").DocumentNode;
 export declare const UNMOUNT_COMPONENT: import("@apollo/client").DocumentNode;
+export declare const MOUNT_COMPONENT: import("@apollo/client").DocumentNode;
 export declare const UPDATE_STATE: import("@apollo/client").DocumentNode;
 export declare const UPDATE_COMPONENT: import("@apollo/client").DocumentNode;
 export declare const GET_STATE: import("@apollo/client").DocumentNode;

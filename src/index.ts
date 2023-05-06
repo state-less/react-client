@@ -53,6 +53,11 @@ export const UNMOUNT_COMPONENT = gql`
     unmountComponent(key: $key)
   }
 `;
+export const MOUNT_COMPONENT = gql`
+  query MyQuery($key: ID!) {
+    mountComponent(key: $key)
+  }
+`;
 
 export const UPDATE_STATE = gql`
   subscription MyQuery($key: ID!, $scope: String!) {
@@ -362,6 +367,27 @@ export const useComponent = (
 
   useEffect(() => {
     console.log('Component mounted', key);
+    if (actualClient) {
+      (async () => {
+        const cleaned = await actualClient.query({
+          query: MOUNT_COMPONENT,
+          variables: {
+            key,
+            clientProps: options?.props,
+          },
+          fetchPolicy: 'network-only',
+          context: {
+            headers: {
+              'X-Unique-Id': id,
+              Authorization: session.token
+                ? `Bearer ${session.token}`
+                : undefined,
+            },
+          },
+        });
+        console.log('Unmounted', cleaned);
+      })();
+    }
     return () => {
       console.log('Component unmounting', key, actualClient);
       if (actualClient) {
