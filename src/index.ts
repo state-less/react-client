@@ -241,6 +241,7 @@ export const useComponent = (
     useState<FetchResult>(null);
 
   const [skip, setSkip] = useState(!!options?.data?.key);
+  const [subscribed, setSubcribed] = useState(false);
   const actualClient = client || providedClient;
 
   if (!actualClient) {
@@ -298,6 +299,7 @@ export const useComponent = (
           },
         },
       });
+      setSubcribed(true);
       console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
         actualClient.cache.writeQuery({
@@ -325,6 +327,7 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   useEffect(() => {
+    if (!options?.data?.key) return;
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
@@ -366,7 +369,7 @@ export const useComponent = (
   }, [options?.data?.key]);
 
   useEffect(() => {
-    if (!queryData?.renderComponent?.rendered?.key) return;
+    if (!queryData?.renderComponent?.rendered?.key || !subscribed) return;
     console.log(
       'Component mounted',
       key,
@@ -427,7 +430,7 @@ export const useComponent = (
         actualClient,
         queryData?.renderComponent?.rendered?.key
       );
-      if (!queryData?.renderComponent?.rendered?.key) return;
+      if (!queryData?.renderComponent?.rendered?.key || !subscribed) return;
 
       if (actualClient) {
         (async () => {
@@ -450,7 +453,7 @@ export const useComponent = (
         })();
       }
     };
-  }, [queryData?.renderComponent?.rendered?.key]);
+  }, [queryData?.renderComponent?.rendered?.key, subscribed]);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
