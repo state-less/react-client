@@ -414,7 +414,7 @@ export const useComponent = (
         })();
       }
     };
-  });
+  }, [queryData?.renderComponent?.rendered?.key]);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered

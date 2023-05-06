@@ -152,7 +152,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp13, _queryData$renderComp14, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp13, _queryData$renderComp14, _queryData$renderComp15, _queryData$renderComp16, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref5 = options || {},
     client = _ref5.client;
@@ -376,8 +376,8 @@ var useComponent = function useComponent(key) {
         }))();
       }
     };
-  });
-  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp13 = queryData.renderComponent) !== null && _queryData$renderComp13 !== void 0 && _queryData$renderComp13.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp14 = queryData.renderComponent) === null || _queryData$renderComp14 === void 0 ? void 0 : _queryData$renderComp14.rendered;
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp13 = queryData.renderComponent) === null || _queryData$renderComp13 === void 0 ? void 0 : (_queryData$renderComp14 = _queryData$renderComp13.rendered) === null || _queryData$renderComp14 === void 0 ? void 0 : _queryData$renderComp14.key]);
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp15 = queryData.renderComponent) !== null && _queryData$renderComp15 !== void 0 && _queryData$renderComp15.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp16 = queryData.renderComponent) === null || _queryData$renderComp16 === void 0 ? void 0 : _queryData$renderComp16.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
