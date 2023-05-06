@@ -48,6 +48,12 @@ export const RENDER_COMPONENT = gql`
   }
 `;
 
+export const UNMOUNT_COMPONENT = gql`
+  query MyQuery($key: ID!) {
+    unmountComponent(key: $key)
+  }
+`;
+
 export const UPDATE_STATE = gql`
   subscription MyQuery($key: ID!, $scope: String!) {
     updateState(key: $key, scope: $scope) {
@@ -231,6 +237,27 @@ export const useComponent = (
 
   const [skip, setSkip] = useState(!!options?.data?.key);
   const actualClient = client || providedClient;
+
+  useEffect(() => {
+    return () => {
+      if (actualClient) {
+        actualClient.query({
+          query: UNMOUNT_COMPONENT,
+          variables: {
+            key,
+          },
+          context: {
+            headers: {
+              'X-Unique-Id': id,
+              Authorization: session.token
+                ? `Bearer ${session.token}`
+                : undefined,
+            },
+          },
+        });
+      }
+    };
+  }, []);
 
   if (!actualClient) {
     throw new Error(
