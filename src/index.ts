@@ -366,6 +366,7 @@ export const useComponent = (
   }, [options?.data?.key]);
 
   useEffect(() => {
+    if (!queryData?.renderComponent?.rendered?.key) return;
     console.log('Component mounted', key);
     if (actualClient) {
       (async () => {
@@ -411,7 +412,7 @@ export const useComponent = (
         })();
       }
     };
-  }, []);
+  }, [queryData?.renderComponent?.rendered?.key]);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
