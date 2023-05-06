@@ -54,8 +54,8 @@ export const UNMOUNT_COMPONENT = gql`
   }
 `;
 export const MOUNT_COMPONENT = gql`
-  query MyQuery($key: ID!) {
-    mountComponent(key: $key)
+  query MyQuery($key: ID!, $props: JSON) {
+    mountComponent(key: $key, props: $props)
   }
 `;
 

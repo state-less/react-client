@@ -53,7 +53,7 @@ var RENDER_COMPONENT = (0, _client.gql)(_templateObject || (_templateObject = (0
 exports.RENDER_COMPONENT = RENDER_COMPONENT;
 var UNMOUNT_COMPONENT = (0, _client.gql)(_templateObject2 || (_templateObject2 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!) {\n    unmountComponent(key: $key)\n  }\n"])));
 exports.UNMOUNT_COMPONENT = UNMOUNT_COMPONENT;
-var MOUNT_COMPONENT = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!) {\n    mountComponent(key: $key)\n  }\n"])));
+var MOUNT_COMPONENT = (0, _client.gql)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n  query MyQuery($key: ID!, $props: JSON) {\n    mountComponent(key: $key, props: $props)\n  }\n"])));
 exports.MOUNT_COMPONENT = MOUNT_COMPONENT;
 var UPDATE_STATE = (0, _client.gql)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n  subscription MyQuery($key: ID!, $scope: String!) {\n    updateState(key: $key, scope: $scope) {\n      id\n      value\n    }\n  }\n"])));
 exports.UPDATE_STATE = UPDATE_STATE;
