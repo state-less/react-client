@@ -152,7 +152,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp13, _queryData$renderComp14, _queryData$renderComp15, _queryData$renderComp16, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp17, _queryData$renderComp18, _queryData$renderComp19, _queryData$renderComp20, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref5 = options || {},
     client = _ref5.client;
@@ -307,9 +307,9 @@ var useComponent = function useComponent(key) {
     }))();
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
   (0, _react2.useEffect)(function () {
-    var _queryData$renderComp9, _queryData$renderComp10;
+    var _queryData$renderComp9, _queryData$renderComp10, _queryData$renderComp11, _queryData$renderComp12;
     if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && (_queryData$renderComp10 = _queryData$renderComp9.rendered) !== null && _queryData$renderComp10 !== void 0 && _queryData$renderComp10.key)) return;
-    console.log('Component mounted', key);
+    console.log('Component mounted', key, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp11 = queryData.renderComponent) === null || _queryData$renderComp11 === void 0 ? void 0 : (_queryData$renderComp12 = _queryData$renderComp11.rendered) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.key);
     if (actualClient) {
       (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
         var cleaned;
@@ -342,9 +342,9 @@ var useComponent = function useComponent(key) {
       }))();
     }
     return function () {
-      var _queryData$renderComp11, _queryData$renderComp12;
-      console.log('Component unmounting', key, actualClient);
-      if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && (_queryData$renderComp12 = _queryData$renderComp11.rendered) !== null && _queryData$renderComp12 !== void 0 && _queryData$renderComp12.key)) return;
+      var _queryData$renderComp13, _queryData$renderComp14, _queryData$renderComp15, _queryData$renderComp16;
+      console.log('Component unmounting', key, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp13 = queryData.renderComponent) === null || _queryData$renderComp13 === void 0 ? void 0 : (_queryData$renderComp14 = _queryData$renderComp13.rendered) === null || _queryData$renderComp14 === void 0 ? void 0 : _queryData$renderComp14.key);
+      if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp15 = queryData.renderComponent) !== null && _queryData$renderComp15 !== void 0 && (_queryData$renderComp16 = _queryData$renderComp15.rendered) !== null && _queryData$renderComp16 !== void 0 && _queryData$renderComp16.key)) return;
       if (actualClient) {
         (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
           var cleaned;
@@ -376,8 +376,8 @@ var useComponent = function useComponent(key) {
         }))();
       }
     };
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp13 = queryData.renderComponent) === null || _queryData$renderComp13 === void 0 ? void 0 : (_queryData$renderComp14 = _queryData$renderComp13.rendered) === null || _queryData$renderComp14 === void 0 ? void 0 : _queryData$renderComp14.key]);
-  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp15 = queryData.renderComponent) !== null && _queryData$renderComp15 !== void 0 && _queryData$renderComp15.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp16 = queryData.renderComponent) === null || _queryData$renderComp16 === void 0 ? void 0 : _queryData$renderComp16.rendered;
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp17 = queryData.renderComponent) === null || _queryData$renderComp17 === void 0 ? void 0 : (_queryData$renderComp18 = _queryData$renderComp17.rendered) === null || _queryData$renderComp18 === void 0 ? void 0 : _queryData$renderComp18.key]);
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp19 = queryData.renderComponent) !== null && _queryData$renderComp19 !== void 0 && _queryData$renderComp19.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp20 = queryData.renderComponent) === null || _queryData$renderComp20 === void 0 ? void 0 : _queryData$renderComp20.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,

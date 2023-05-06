@@ -367,7 +367,11 @@ export const useComponent = (
 
   useEffect(() => {
     if (!queryData?.renderComponent?.rendered?.key) return;
-    console.log('Component mounted', key);
+    console.log(
+      'Component mounted',
+      key,
+      queryData?.renderComponent?.rendered?.key
+    );
     if (actualClient) {
       (async () => {
         const cleaned = await actualClient.query({
@@ -390,7 +394,12 @@ export const useComponent = (
       })();
     }
     return () => {
-      console.log('Component unmounting', key, actualClient);
+      console.log(
+        'Component unmounting',
+        key,
+        actualClient,
+        queryData?.renderComponent?.rendered?.key
+      );
       if (!queryData?.renderComponent?.rendered?.key) return;
 
       if (actualClient) {
