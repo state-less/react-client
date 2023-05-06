@@ -341,17 +341,50 @@ var useComponent = function useComponent(key) {
         }, _callee4);
       }))();
     }
+    window.addEventListener('beforeunload', function (e) {
+      // Cancel the event
+      e.preventDefault();
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
+        var cleaned;
+        return _regenerator["default"].wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return actualClient.query({
+                query: UNMOUNT_COMPONENT,
+                variables: {
+                  key: key
+                },
+                fetchPolicy: 'network-only',
+                context: {
+                  headers: {
+                    'X-Unique-Id': id,
+                    Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                  }
+                }
+              });
+            case 2:
+              cleaned = _context5.sent;
+              console.log('Unmounted', cleaned);
+              window.location.reload();
+            case 5:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5);
+      }))();
+    });
     return function () {
       var _queryData$renderComp13, _queryData$renderComp14, _queryData$renderComp15, _queryData$renderComp16;
       console.log('Component unmounting', key, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp13 = queryData.renderComponent) === null || _queryData$renderComp13 === void 0 ? void 0 : (_queryData$renderComp14 = _queryData$renderComp13.rendered) === null || _queryData$renderComp14 === void 0 ? void 0 : _queryData$renderComp14.key);
       if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp15 = queryData.renderComponent) !== null && _queryData$renderComp15 !== void 0 && (_queryData$renderComp16 = _queryData$renderComp15.rendered) !== null && _queryData$renderComp16 !== void 0 && _queryData$renderComp16.key)) return;
       if (actualClient) {
-        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
+        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
           var cleaned;
-          return _regenerator["default"].wrap(function _callee5$(_context5) {
-            while (1) switch (_context5.prev = _context5.next) {
+          return _regenerator["default"].wrap(function _callee6$(_context6) {
+            while (1) switch (_context6.prev = _context6.next) {
               case 0:
-                _context5.next = 2;
+                _context6.next = 2;
                 return actualClient.query({
                   query: UNMOUNT_COMPONENT,
                   variables: {
@@ -366,13 +399,13 @@ var useComponent = function useComponent(key) {
                   }
                 });
               case 2:
-                cleaned = _context5.sent;
+                cleaned = _context6.sent;
                 console.log('Unmounted', cleaned);
               case 4:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
-          }, _callee5);
+          }, _callee6);
         }))();
       }
     };
@@ -393,12 +426,12 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref10) {
-  var data = _ref10.data,
-    actualClient = _ref10.actualClient,
-    setLastMutationResult = _ref10.setLastMutationResult,
-    id = _ref10.id,
-    session = _ref10.session;
+var inline = function inline(_ref11) {
+  var data = _ref11.data,
+    actualClient = _ref11.actualClient,
+    setLastMutationResult = _ref11.setLastMutationResult,
+    id = _ref11.id,
+    session = _ref11.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -407,20 +440,20 @@ var inline = function inline(_ref10) {
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
-        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
+        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7() {
           var _len,
             args,
             _key,
             response,
-            _args6 = arguments;
-          return _regenerator["default"].wrap(function _callee6$(_context6) {
-            while (1) switch (_context6.prev = _context6.next) {
+            _args7 = arguments;
+          return _regenerator["default"].wrap(function _callee7$(_context7) {
+            while (1) switch (_context7.prev = _context7.next) {
               case 0:
-                _context6.prev = 0;
-                for (_len = _args6.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                  args[_key] = _args6[_key];
+                _context7.prev = 0;
+                for (_len = _args7.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args7[_key];
                 }
-                _context6.next = 4;
+                _context7.next = 4;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -436,21 +469,21 @@ var inline = function inline(_ref10) {
                   }
                 });
               case 4:
-                response = _context6.sent;
+                response = _context7.sent;
                 setLastMutationResult(response);
-                _context6.next = 11;
+                _context7.next = 11;
                 break;
               case 8:
-                _context6.prev = 8;
-                _context6.t0 = _context6["catch"](0);
+                _context7.prev = 8;
+                _context7.t0 = _context7["catch"](0);
                 setLastMutationResult({
-                  errors: [_context6.t0]
+                  errors: [_context7.t0]
                 });
               case 11:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
-          }, _callee6, null, [[0, 8]]);
+          }, _callee7, null, [[0, 8]]);
         }));
       }
     };
@@ -552,10 +585,10 @@ var useServerState = function useServerState(initialValue, options) {
         actualValue = value((queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue);
       }
       setOptimisticValue(actualValue);
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7() {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee8() {
         var response;
-        return _regenerator["default"].wrap(function _callee7$(_context7) {
-          while (1) switch (_context7.prev = _context7.next) {
+        return _regenerator["default"].wrap(function _callee8$(_context8) {
+          while (1) switch (_context8.prev = _context8.next) {
             case 0:
               ref.current.abort();
               ref.current = new AbortController();
@@ -572,21 +605,21 @@ var useServerState = function useServerState(initialValue, options) {
                   }
                 }
               });
-              _context7.next = 5;
+              _context8.next = 5;
               return response;
             case 5:
               if (!ref.current.signal.aborted) {
-                _context7.next = 7;
+                _context8.next = 7;
                 break;
               }
-              return _context7.abrupt("return");
+              return _context8.abrupt("return");
             case 7:
               setTimeout(setOptimisticValue, 0, null);
             case 8:
             case "end":
-              return _context7.stop();
+              return _context8.stop();
           }
-        }, _callee7);
+        }, _callee8);
       }))();
     };
   }, [key, scope, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value]);
