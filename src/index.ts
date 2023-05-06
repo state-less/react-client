@@ -391,6 +391,8 @@ export const useComponent = (
     }
     return () => {
       console.log('Component unmounting', key, actualClient);
+      if (!queryData?.renderComponent?.rendered?.key) return;
+
       if (actualClient) {
         (async () => {
           const cleaned = await actualClient.query({
@@ -412,7 +414,7 @@ export const useComponent = (
         })();
       }
     };
-  }, [queryData?.renderComponent?.rendered?.key]);
+  });
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
