@@ -239,22 +239,27 @@ export const useComponent = (
   const actualClient = client || providedClient;
 
   useEffect(() => {
+    console.log('Component mounted', key);
     return () => {
+      console.log('Component unmounting', key, actualClient);
       if (actualClient) {
-        actualClient.query({
-          query: UNMOUNT_COMPONENT,
-          variables: {
-            key,
-          },
-          context: {
-            headers: {
-              'X-Unique-Id': id,
-              Authorization: session.token
-                ? `Bearer ${session.token}`
-                : undefined,
+        (async () => {
+          const cleaned = await actualClient.query({
+            query: UNMOUNT_COMPONENT,
+            variables: {
+              key,
             },
-          },
-        });
+            context: {
+              headers: {
+                'X-Unique-Id': id,
+                Authorization: session.token
+                  ? `Bearer ${session.token}`
+                  : undefined,
+              },
+            },
+          });
+          console.log('Unmounted', cleaned);
+        })();
       }
     };
   }, []);

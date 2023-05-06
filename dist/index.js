@@ -166,20 +166,37 @@ var useComponent = function useComponent(key) {
     setSkip = _useState4[1];
   var actualClient = client || providedClient;
   (0, _react2.useEffect)(function () {
+    console.log('Component mounted', key);
     return function () {
+      console.log('Component unmounting', key, actualClient);
       if (actualClient) {
-        actualClient.query({
-          query: UNMOUNT_COMPONENT,
-          variables: {
-            key: key
-          },
-          context: {
-            headers: {
-              'X-Unique-Id': id,
-              Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+          var cleaned;
+          return _regenerator["default"].wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return actualClient.query({
+                  query: UNMOUNT_COMPONENT,
+                  variables: {
+                    key: key
+                  },
+                  context: {
+                    headers: {
+                      'X-Unique-Id': id,
+                      Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                    }
+                  }
+                });
+              case 2:
+                cleaned = _context2.sent;
+                console.log('Unmounted', cleaned);
+              case 4:
+              case "end":
+                return _context2.stop();
             }
-          }
-        });
+          }, _callee2);
+        }))();
       }
     };
   }, []);
@@ -219,13 +236,13 @@ var useComponent = function useComponent(key) {
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   (0, _react2.useEffect)(function () {
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
       var sub;
-      return _regenerator["default"].wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+      return _regenerator["default"].wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.next = 2;
+            _context3.next = 2;
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
@@ -242,7 +259,7 @@ var useComponent = function useComponent(key) {
               }
             });
           case 2:
-            sub = _context2.sent;
+            sub = _context3.sent;
             console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
@@ -262,9 +279,9 @@ var useComponent = function useComponent(key) {
             });
           case 5:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2);
+      }, _callee3);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key]);
 
@@ -273,13 +290,13 @@ var useComponent = function useComponent(key) {
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   (0, _react2.useEffect)(function () {
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
       var _options$data2, _options$data3;
       var sub;
-      return _regenerator["default"].wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+      return _regenerator["default"].wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
           case 0:
-            _context3.next = 2;
+            _context4.next = 2;
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
@@ -296,7 +313,7 @@ var useComponent = function useComponent(key) {
               }
             });
           case 2:
-            sub = _context3.sent;
+            sub = _context4.sent;
             console.log('SUBSCRIBED Hydrated', options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.key);
             sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp8, _subscriptionData$dat3, _subscriptionData$dat4;
@@ -316,9 +333,9 @@ var useComponent = function useComponent(key) {
             });
           case 5:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
-      }, _callee3);
+      }, _callee4);
     }))();
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
   var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered;
@@ -337,12 +354,12 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref8) {
-  var data = _ref8.data,
-    actualClient = _ref8.actualClient,
-    setLastMutationResult = _ref8.setLastMutationResult,
-    id = _ref8.id,
-    session = _ref8.session;
+var inline = function inline(_ref9) {
+  var data = _ref9.data,
+    actualClient = _ref9.actualClient,
+    setLastMutationResult = _ref9.setLastMutationResult,
+    id = _ref9.id,
+    session = _ref9.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -351,20 +368,20 @@ var inline = function inline(_ref8) {
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
-        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
           var _len,
             args,
             _key,
             response,
-            _args4 = arguments;
-          return _regenerator["default"].wrap(function _callee4$(_context4) {
-            while (1) switch (_context4.prev = _context4.next) {
+            _args5 = arguments;
+          return _regenerator["default"].wrap(function _callee5$(_context5) {
+            while (1) switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.prev = 0;
-                for (_len = _args4.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                  args[_key] = _args4[_key];
+                _context5.prev = 0;
+                for (_len = _args5.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args5[_key];
                 }
-                _context4.next = 4;
+                _context5.next = 4;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -380,21 +397,21 @@ var inline = function inline(_ref8) {
                   }
                 });
               case 4:
-                response = _context4.sent;
+                response = _context5.sent;
                 setLastMutationResult(response);
-                _context4.next = 11;
+                _context5.next = 11;
                 break;
               case 8:
-                _context4.prev = 8;
-                _context4.t0 = _context4["catch"](0);
+                _context5.prev = 8;
+                _context5.t0 = _context5["catch"](0);
                 setLastMutationResult({
-                  errors: [_context4.t0]
+                  errors: [_context5.t0]
                 });
               case 11:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
-          }, _callee4, null, [[0, 8]]);
+          }, _callee5, null, [[0, 8]]);
         }));
       }
     };
@@ -496,10 +513,10 @@ var useServerState = function useServerState(initialValue, options) {
         actualValue = value((queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue);
       }
       setOptimisticValue(actualValue);
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
         var response;
-        return _regenerator["default"].wrap(function _callee5$(_context5) {
-          while (1) switch (_context5.prev = _context5.next) {
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
             case 0:
               ref.current.abort();
               ref.current = new AbortController();
@@ -516,21 +533,21 @@ var useServerState = function useServerState(initialValue, options) {
                   }
                 }
               });
-              _context5.next = 5;
+              _context6.next = 5;
               return response;
             case 5:
               if (!ref.current.signal.aborted) {
-                _context5.next = 7;
+                _context6.next = 7;
                 break;
               }
-              return _context5.abrupt("return");
+              return _context6.abrupt("return");
             case 7:
               setTimeout(setOptimisticValue, 0, null);
             case 8:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     };
   }, [key, scope, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value]);
