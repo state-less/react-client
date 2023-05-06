@@ -369,12 +369,8 @@ export const useComponent = (
   }, [options?.data?.key]);
 
   useEffect(() => {
-    if (!queryData?.renderComponent?.rendered?.key || !subscribed) return;
-    console.log(
-      'Component mounted',
-      key,
-      queryData?.renderComponent?.rendered?.key
-    );
+    if (!subscribed) return;
+    console.log('Component mounted', subscribed);
     if (actualClient) {
       (async () => {
         const cleaned = await actualClient.query({
@@ -424,13 +420,8 @@ export const useComponent = (
       })();
     });
     return () => {
-      console.log(
-        'Component unmounting',
-        key,
-        actualClient,
-        queryData?.renderComponent?.rendered?.key
-      );
-      if (!queryData?.renderComponent?.rendered?.key || !subscribed) return;
+      console.log('Component unmounting', subscribed);
+      if (!subscribed) return;
 
       if (actualClient) {
         (async () => {
@@ -453,7 +444,7 @@ export const useComponent = (
         })();
       }
     };
-  }, [queryData?.renderComponent?.rendered?.key, subscribed]);
+  }, [subscribed]);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
