@@ -319,6 +319,7 @@ var useComponent = function useComponent(key) {
                   variables: {
                     key: key
                   },
+                  fetchPolicy: 'network-only',
                   context: {
                     headers: {
                       'X-Unique-Id': id,

@@ -371,6 +371,7 @@ export const useComponent = (
             variables: {
               key,
             },
+            fetchPolicy: 'network-only',
             context: {
               headers: {
                 'X-Unique-Id': id,
