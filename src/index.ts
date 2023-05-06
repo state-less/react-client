@@ -394,10 +394,13 @@ export const useComponent = (
       })();
     }
 
+    let unloading = false;
     window.addEventListener('beforeunload', function (e) {
+      if (unloading) return;
       // Cancel the event
       e.preventDefault();
       (async () => {
+        unloading = true;
         const cleaned = await actualClient.query({
           query: UNMOUNT_COMPONENT,
           variables: {

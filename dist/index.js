@@ -341,7 +341,9 @@ var useComponent = function useComponent(key) {
         }, _callee4);
       }))();
     }
+    var unloading = false;
     window.addEventListener('beforeunload', function (e) {
+      if (unloading) return;
       // Cancel the event
       e.preventDefault();
       (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
@@ -349,7 +351,8 @@ var useComponent = function useComponent(key) {
         return _regenerator["default"].wrap(function _callee5$(_context5) {
           while (1) switch (_context5.prev = _context5.next) {
             case 0:
-              _context5.next = 2;
+              unloading = true;
+              _context5.next = 3;
               return actualClient.query({
                 query: UNMOUNT_COMPONENT,
                 variables: {
@@ -363,11 +366,11 @@ var useComponent = function useComponent(key) {
                   }
                 }
               });
-            case 2:
+            case 3:
               cleaned = _context5.sent;
               console.log('Unmounted', cleaned);
               window.location.reload();
-            case 5:
+            case 6:
             case "end":
               return _context5.stop();
           }
