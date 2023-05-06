@@ -329,7 +329,7 @@ var useComponent = function useComponent(key) {
                 query: MOUNT_COMPONENT,
                 variables: {
                   key: key,
-                  clientProps: options === null || options === void 0 ? void 0 : options.props
+                  props: options === null || options === void 0 ? void 0 : options.props
                 },
                 fetchPolicy: 'network-only',
                 context: {

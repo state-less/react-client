@@ -378,7 +378,7 @@ export const useComponent = (
           query: MOUNT_COMPONENT,
           variables: {
             key,
-            clientProps: options?.props,
+            props: options?.props,
           },
           fetchPolicy: 'network-only',
           context: {
