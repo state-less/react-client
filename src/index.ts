@@ -238,32 +238,6 @@ export const useComponent = (
   const [skip, setSkip] = useState(!!options?.data?.key);
   const actualClient = client || providedClient;
 
-  useEffect(() => {
-    console.log('Component mounted', key);
-    return () => {
-      console.log('Component unmounting', key, actualClient);
-      if (actualClient) {
-        (async () => {
-          const cleaned = await actualClient.query({
-            query: UNMOUNT_COMPONENT,
-            variables: {
-              key,
-            },
-            context: {
-              headers: {
-                'X-Unique-Id': id,
-                Authorization: session.token
-                  ? `Bearer ${session.token}`
-                  : undefined,
-              },
-            },
-          });
-          console.log('Unmounted', cleaned);
-        })();
-      }
-    };
-  }, []);
-
   if (!actualClient) {
     throw new Error(
       'No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.'
@@ -385,6 +359,32 @@ export const useComponent = (
       });
     })();
   }, [options?.data?.key]);
+
+  useEffect(() => {
+    console.log('Component mounted', key);
+    return () => {
+      console.log('Component unmounting', key, actualClient);
+      if (actualClient) {
+        (async () => {
+          const cleaned = await actualClient.query({
+            query: UNMOUNT_COMPONENT,
+            variables: {
+              key,
+            },
+            context: {
+              headers: {
+                'X-Unique-Id': id,
+                Authorization: session.token
+                  ? `Bearer ${session.token}`
+                  : undefined,
+              },
+            },
+          });
+          console.log('Unmounted', cleaned);
+        })();
+      }
+    };
+  }, []);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered

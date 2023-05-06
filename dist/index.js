@@ -165,41 +165,6 @@ var useComponent = function useComponent(key) {
     skip = _useState4[0],
     setSkip = _useState4[1];
   var actualClient = client || providedClient;
-  (0, _react2.useEffect)(function () {
-    console.log('Component mounted', key);
-    return function () {
-      console.log('Component unmounting', key, actualClient);
-      if (actualClient) {
-        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-          var cleaned;
-          return _regenerator["default"].wrap(function _callee2$(_context2) {
-            while (1) switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return actualClient.query({
-                  query: UNMOUNT_COMPONENT,
-                  variables: {
-                    key: key
-                  },
-                  context: {
-                    headers: {
-                      'X-Unique-Id': id,
-                      Authorization: session.token ? "Bearer ".concat(session.token) : undefined
-                    }
-                  }
-                });
-              case 2:
-                cleaned = _context2.sent;
-                console.log('Unmounted', cleaned);
-              case 4:
-              case "end":
-                return _context2.stop();
-            }
-          }, _callee2);
-        }))();
-      }
-    };
-  }, []);
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
@@ -236,13 +201,13 @@ var useComponent = function useComponent(key) {
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   (0, _react2.useEffect)(function () {
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
       var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
       var sub;
-      return _regenerator["default"].wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+      return _regenerator["default"].wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
           case 0:
-            _context3.next = 2;
+            _context2.next = 2;
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
@@ -259,7 +224,7 @@ var useComponent = function useComponent(key) {
               }
             });
           case 2:
-            sub = _context3.sent;
+            sub = _context2.sent;
             console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key);
             sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
@@ -279,9 +244,9 @@ var useComponent = function useComponent(key) {
             });
           case 5:
           case "end":
-            return _context3.stop();
+            return _context2.stop();
         }
-      }, _callee3);
+      }, _callee2);
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key]);
 
@@ -290,13 +255,13 @@ var useComponent = function useComponent(key) {
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   (0, _react2.useEffect)(function () {
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _options$data2, _options$data3;
       var sub;
-      return _regenerator["default"].wrap(function _callee4$(_context4) {
-        while (1) switch (_context4.prev = _context4.next) {
+      return _regenerator["default"].wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context4.next = 2;
+            _context3.next = 2;
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
@@ -313,7 +278,7 @@ var useComponent = function useComponent(key) {
               }
             });
           case 2:
-            sub = _context4.sent;
+            sub = _context3.sent;
             console.log('SUBSCRIBED Hydrated', options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.key);
             sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp8, _subscriptionData$dat3, _subscriptionData$dat4;
@@ -333,11 +298,46 @@ var useComponent = function useComponent(key) {
             });
           case 5:
           case "end":
-            return _context4.stop();
+            return _context3.stop();
         }
-      }, _callee4);
+      }, _callee3);
     }))();
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
+  (0, _react2.useEffect)(function () {
+    console.log('Component mounted', key);
+    return function () {
+      console.log('Component unmounting', key, actualClient);
+      if (actualClient) {
+        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+          var cleaned;
+          return _regenerator["default"].wrap(function _callee4$(_context4) {
+            while (1) switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return actualClient.query({
+                  query: UNMOUNT_COMPONENT,
+                  variables: {
+                    key: key
+                  },
+                  context: {
+                    headers: {
+                      'X-Unique-Id': id,
+                      Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                    }
+                  }
+                });
+              case 2:
+                cleaned = _context4.sent;
+                console.log('Unmounted', cleaned);
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }, _callee4);
+        }))();
+      }
+    };
+  }, []);
   var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered;
   var inlined = inline({
     data: inlineData,
