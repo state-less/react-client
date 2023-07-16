@@ -502,6 +502,7 @@ const inline = ({
               },
             });
             setLastMutationResult(response);
+            return response.data.callFunction;
           } catch (e) {
             setLastMutationResult({ errors: [e] });
           }

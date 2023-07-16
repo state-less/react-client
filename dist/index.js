@@ -481,19 +481,18 @@ var inline = function inline(_ref11) {
               case 4:
                 response = _context7.sent;
                 setLastMutationResult(response);
-                _context7.next = 11;
-                break;
-              case 8:
-                _context7.prev = 8;
+                return _context7.abrupt("return", response.data.callFunction);
+              case 9:
+                _context7.prev = 9;
                 _context7.t0 = _context7["catch"](0);
                 setLastMutationResult({
                   errors: [_context7.t0]
                 });
-              case 11:
+              case 12:
               case "end":
                 return _context7.stop();
             }
-          }, _callee7, null, [[0, 8]]);
+          }, _callee7, null, [[0, 9]]);
         }));
       }
     };
