@@ -505,6 +505,7 @@ const inline = ({
             return response.data.callFunction;
           } catch (e) {
             setLastMutationResult({ errors: [e] });
+            throw e;
           }
         };
       }

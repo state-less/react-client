@@ -488,7 +488,8 @@ var inline = function inline(_ref11) {
                 setLastMutationResult({
                   errors: [_context7.t0]
                 });
-              case 12:
+                throw _context7.t0;
+              case 13:
               case "end":
                 return _context7.stop();
             }
