@@ -276,6 +276,11 @@ export const useComponent = (
     skip: skip,
   });
 
+  console.log(
+    'Cached data',
+    options.props,
+    queryData?.renderComponent?.rendered
+  );
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
@@ -347,7 +352,7 @@ export const useComponent = (
           },
         },
       });
-      console.log('SUBSCRIBED Hydrated', options?.data?.key);
+
       sub.subscribe((subscriptionData) => {
         setSkip(false);
         actualClient.cache.writeQuery({
