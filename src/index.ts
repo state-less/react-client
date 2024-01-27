@@ -279,6 +279,7 @@ export const useComponent = (
 
   console.log(
     'Cached data',
+    skip,
     options.props,
     queryData?.renderComponent?.rendered
   );

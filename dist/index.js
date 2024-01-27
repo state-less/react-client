@@ -202,7 +202,7 @@ var useComponent = function useComponent(key) {
     error = _useQuery.error,
     loading = _useQuery.loading,
     refetch = _useQuery.refetch;
-  console.log('Cached data', options.props, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered);
+  console.log('Cached data', skip, options.props, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp = queryData.renderComponent) === null || _queryData$renderComp === void 0 ? void 0 : _queryData$renderComp.rendered);
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
