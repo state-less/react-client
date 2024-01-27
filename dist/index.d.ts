@@ -20,6 +20,7 @@ type UseComponentOptions = {
     client?: ApolloClient<any>;
     data?: any;
     props?: any;
+    preventUnload?: boolean;
 };
 type UseServerStateInfo = {
     error: ApolloError;

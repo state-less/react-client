@@ -138,6 +138,7 @@ type UseComponentOptions = {
   client?: ApolloClient<any>;
   data?: any;
   props?: any;
+  preventUnload?: boolean;
 };
 
 type UseServerStateInfo = {
@@ -402,31 +403,33 @@ export const useComponent = (
   //   }
 
   let unloading = false;
-  // window.addEventListener('beforeunload', function (e) {
-  //   if (unloading) return;
-  //   // Cancel the event
-  //   e.preventDefault();
-  //   (async () => {
-  //     unloading = true;
-  //     const cleaned = await actualClient.query({
-  //       query: UNMOUNT_COMPONENT,
-  //       variables: {
-  //         key,
-  //       },
-  //       fetchPolicy: 'network-only',
-  //       context: {
-  //         headers: {
-  //           'X-Unique-Id': id,
-  //           Authorization: session.token
-  //             ? `Bearer ${session.token}`
-  //             : undefined,
-  //         },
-  //       },
-  //     });
-  //     console.log('Unmounted', cleaned);
-  //     // window.location.reload();
-  //   })();
-  // });
+  if (options.preventUnload) {
+    window.addEventListener('beforeunload', function (e) {
+      if (unloading) return;
+      // Cancel the event
+      e.preventDefault();
+      (async () => {
+        unloading = true;
+        const cleaned = await actualClient.query({
+          query: UNMOUNT_COMPONENT,
+          variables: {
+            key,
+          },
+          fetchPolicy: 'network-only',
+          context: {
+            headers: {
+              'X-Unique-Id': id,
+              Authorization: session.token
+                ? `Bearer ${session.token}`
+                : undefined,
+            },
+          },
+        });
+        console.log('Unmounted', cleaned);
+        // window.location.reload();
+      })();
+    });
+  }
   useEffect(() => {
     return () => {
       console.log('Component unmounting', subscribed);
