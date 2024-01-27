@@ -402,34 +402,40 @@ export const useComponent = (
   //     })();
   //   }
 
+  const unload = function (e) {
+    if (unloading) return;
+    // Cancel the event
+    e.preventDefault();
+    (async () => {
+      unloading = true;
+      await actualClient.query({
+        query: UNMOUNT_COMPONENT,
+        variables: {
+          key,
+        },
+        fetchPolicy: 'network-only',
+        context: {
+          headers: {
+            'X-Unique-Id': id,
+            Authorization: session.token
+              ? `Bearer ${session.token}`
+              : undefined,
+          },
+        },
+      });
+
+      window.location.reload();
+    })();
+
+    return 'Just press ok, we only need to send a message to the server.';
+  };
   let unloading = false;
   if (options.preventUnload) {
-    window.addEventListener('pagehide', function (e) {
-      if (unloading) return;
-      // Cancel the event
-      e.preventDefault();
-      (async () => {
-        unloading = true;
-        await actualClient.query({
-          query: UNMOUNT_COMPONENT,
-          variables: {
-            key,
-          },
-          fetchPolicy: 'network-only',
-          context: {
-            headers: {
-              'X-Unique-Id': id,
-              Authorization: session.token
-                ? `Bearer ${session.token}`
-                : undefined,
-            },
-          },
-        });
-        unloading = false;
-        // window.location.reload();
-      })();
-    });
+    window.addEventListener('pagehide', unload);
+    window.addEventListener('unload', unload);
+    window.addEventListener('beforeunload', unload);
   }
+
   useEffect(() => {
     return () => {
       console.log('Component unmounting', subscribed);

@@ -340,41 +340,44 @@ var useComponent = function useComponent(key) {
   //     })();
   //   }
 
+  var unload = function unload(e) {
+    if (unloading) return;
+    // Cancel the event
+    e.preventDefault();
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+      return _regenerator["default"].wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            unloading = true;
+            _context4.next = 3;
+            return actualClient.query({
+              query: UNMOUNT_COMPONENT,
+              variables: {
+                key: key
+              },
+              fetchPolicy: 'network-only',
+              context: {
+                headers: {
+                  'X-Unique-Id': id,
+                  Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                }
+              }
+            });
+          case 3:
+            window.location.reload();
+          case 4:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4);
+    }))();
+    return 'Just press ok, we only need to send a message to the server.';
+  };
   var unloading = false;
   if (options.preventUnload) {
-    window.addEventListener('pagehide', function (e) {
-      if (unloading) return;
-      // Cancel the event
-      e.preventDefault();
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
-        return _regenerator["default"].wrap(function _callee4$(_context4) {
-          while (1) switch (_context4.prev = _context4.next) {
-            case 0:
-              unloading = true;
-              _context4.next = 3;
-              return actualClient.query({
-                query: UNMOUNT_COMPONENT,
-                variables: {
-                  key: key
-                },
-                fetchPolicy: 'network-only',
-                context: {
-                  headers: {
-                    'X-Unique-Id': id,
-                    Authorization: session.token ? "Bearer ".concat(session.token) : undefined
-                  }
-                }
-              });
-            case 3:
-              unloading = false;
-              // window.location.reload();
-            case 4:
-            case "end":
-              return _context4.stop();
-          }
-        }, _callee4);
-      }))();
-    });
+    window.addEventListener('pagehide', unload);
+    window.addEventListener('unload', unload);
+    window.addEventListener('beforeunload', unload);
   }
   (0, _react2.useEffect)(function () {
     return function () {
