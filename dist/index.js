@@ -342,12 +342,11 @@ var useComponent = function useComponent(key) {
 
   var unloading = false;
   if (options.preventUnload) {
-    window.addEventListener('beforeunload', function (e) {
+    window.addEventListener('pagehide', function (e) {
       if (unloading) return;
       // Cancel the event
       e.preventDefault();
       (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
-        var cleaned;
         return _regenerator["default"].wrap(function _callee4$(_context4) {
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
@@ -367,10 +366,9 @@ var useComponent = function useComponent(key) {
                 }
               });
             case 3:
-              cleaned = _context4.sent;
-              console.log('Unmounted', cleaned);
+              unloading = false;
               // window.location.reload();
-            case 5:
+            case 4:
             case "end":
               return _context4.stop();
           }

@@ -404,13 +404,13 @@ export const useComponent = (
 
   let unloading = false;
   if (options.preventUnload) {
-    window.addEventListener('beforeunload', function (e) {
+    window.addEventListener('pagehide', function (e) {
       if (unloading) return;
       // Cancel the event
       e.preventDefault();
       (async () => {
         unloading = true;
-        const cleaned = await actualClient.query({
+        await actualClient.query({
           query: UNMOUNT_COMPONENT,
           variables: {
             key,
@@ -425,7 +425,7 @@ export const useComponent = (
             },
           },
         });
-        console.log('Unmounted', cleaned);
+        unloading = false;
         // window.location.reload();
       })();
     });
