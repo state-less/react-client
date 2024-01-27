@@ -11,7 +11,7 @@
     "test": "yarn jest --coverage"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.10",
+    "@apollo/client": "^3.8.10",
     "@babel/plugin-transform-react-jsx": "^7.21.0",
     "@babel/preset-react": "^7.18.6",
     "@testing-library/jest-dom": "^5.16.5",
