@@ -278,12 +278,7 @@ export const useComponent = (
     skip: skip,
   });
 
-  console.log(
-    'Cached data',
-    skip,
-    options.props,
-    queryData?.renderComponent?.rendered
-  );
+  console.log('Prerendered data', skip, options.data?.key);
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
