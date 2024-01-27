@@ -401,58 +401,58 @@ export const useComponent = (
   //     })();
   //   }
 
-  //   let unloading = false;
-  //   window.addEventListener('beforeunload', function (e) {
-  //     if (unloading) return;
-  //     // Cancel the event
-  //     e.preventDefault();
-  //     (async () => {
-  //       unloading = true;
-  //       const cleaned = await actualClient.query({
-  //         query: UNMOUNT_COMPONENT,
-  //         variables: {
-  //           key,
-  //         },
-  //         fetchPolicy: 'network-only',
-  //         context: {
-  //           headers: {
-  //             'X-Unique-Id': id,
-  //             Authorization: session.token
-  //               ? `Bearer ${session.token}`
-  //               : undefined,
-  //           },
-  //         },
-  //       });
-  //       console.log('Unmounted', cleaned);
-  //       window.location.reload();
-  //     })();
-  //   });
-  //   return () => {
-  //     console.log('Component unmounting', subscribed);
-  //     if (!subscribed) return;
+    let unloading = false;
+    window.addEventListener('beforeunload', function (e) {
+      if (unloading) return;
+      // Cancel the event
+      e.preventDefault();
+      (async () => {
+        unloading = true;
+        const cleaned = await actualClient.query({
+          query: UNMOUNT_COMPONENT,
+          variables: {
+            key,
+          },
+          fetchPolicy: 'network-only',
+          context: {
+            headers: {
+              'X-Unique-Id': id,
+              Authorization: session.token
+                ? `Bearer ${session.token}`
+                : undefined,
+            },
+          },
+        });
+        console.log('Unmounted', cleaned);
+        // window.location.reload();
+      })();
+    });
+    return () => {
+      console.log('Component unmounting', subscribed);
+      if (!subscribed) return;
 
-  //     if (actualClient) {
-  //       (async () => {
-  //         const cleaned = await actualClient.query({
-  //           query: UNMOUNT_COMPONENT,
-  //           variables: {
-  //             key,
-  //           },
-  //           fetchPolicy: 'network-only',
-  //           context: {
-  //             headers: {
-  //               'X-Unique-Id': id,
-  //               Authorization: session.token
-  //                 ? `Bearer ${session.token}`
-  //                 : undefined,
-  //             },
-  //           },
-  //         });
-  //         console.log('Unmounted', cleaned);
-  //       })();
-  //     }
-  //   };
-  // }, [subscribed]);
+      if (actualClient) {
+        (async () => {
+          const cleaned = await actualClient.query({
+            query: UNMOUNT_COMPONENT,
+            variables: {
+              key,
+            },
+            fetchPolicy: 'network-only',
+            context: {
+              headers: {
+                'X-Unique-Id': id,
+                Authorization: session.token
+                  ? `Bearer ${session.token}`
+                  : undefined,
+              },
+            },
+          });
+          console.log('Unmounted', cleaned);
+        })();
+      }
+    };
+  }, [subscribed]);
 
   const inlineData =
     options?.data && !queryData?.renderComponent?.rendered
