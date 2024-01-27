@@ -267,7 +267,7 @@ export const useComponent = (
       props: options.props,
     },
 
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'cache-and-network',
     context: {
       headers: {
         'X-Unique-Id': id,

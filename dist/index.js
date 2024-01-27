@@ -189,7 +189,7 @@ var useComponent = function useComponent(key) {
         key: key,
         props: options.props
       },
-      fetchPolicy: 'no-cache',
+      fetchPolicy: 'cache-and-network',
       context: {
         headers: {
           'X-Unique-Id': id,
