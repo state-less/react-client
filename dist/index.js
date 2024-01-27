@@ -340,59 +340,68 @@ var useComponent = function useComponent(key) {
   //     })();
   //   }
 
-  //   let unloading = false;
-  //   window.addEventListener('beforeunload', function (e) {
-  //     if (unloading) return;
-  //     // Cancel the event
-  //     e.preventDefault();
-  //     (async () => {
-  //       unloading = true;
-  //       const cleaned = await actualClient.query({
-  //         query: UNMOUNT_COMPONENT,
-  //         variables: {
-  //           key,
+  var unloading = false;
+  // window.addEventListener('beforeunload', function (e) {
+  //   if (unloading) return;
+  //   // Cancel the event
+  //   e.preventDefault();
+  //   (async () => {
+  //     unloading = true;
+  //     const cleaned = await actualClient.query({
+  //       query: UNMOUNT_COMPONENT,
+  //       variables: {
+  //         key,
+  //       },
+  //       fetchPolicy: 'network-only',
+  //       context: {
+  //         headers: {
+  //           'X-Unique-Id': id,
+  //           Authorization: session.token
+  //             ? `Bearer ${session.token}`
+  //             : undefined,
   //         },
-  //         fetchPolicy: 'network-only',
-  //         context: {
-  //           headers: {
-  //             'X-Unique-Id': id,
-  //             Authorization: session.token
-  //               ? `Bearer ${session.token}`
-  //               : undefined,
-  //           },
-  //         },
-  //       });
-  //       console.log('Unmounted', cleaned);
-  //       window.location.reload();
-  //     })();
-  //   });
-  //   return () => {
-  //     console.log('Component unmounting', subscribed);
-  //     if (!subscribed) return;
-
-  //     if (actualClient) {
-  //       (async () => {
-  //         const cleaned = await actualClient.query({
-  //           query: UNMOUNT_COMPONENT,
-  //           variables: {
-  //             key,
-  //           },
-  //           fetchPolicy: 'network-only',
-  //           context: {
-  //             headers: {
-  //               'X-Unique-Id': id,
-  //               Authorization: session.token
-  //                 ? `Bearer ${session.token}`
-  //                 : undefined,
-  //             },
-  //           },
-  //         });
-  //         console.log('Unmounted', cleaned);
-  //       })();
-  //     }
-  //   };
-  // }, [subscribed]);
-
+  //       },
+  //     });
+  //     console.log('Unmounted', cleaned);
+  //     // window.location.reload();
+  //   })();
+  // });
+  (0, _react2.useEffect)(function () {
+    return function () {
+      console.log('Component unmounting', subscribed);
+      if (!subscribed) return;
+      if (actualClient) {
+        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+          var cleaned;
+          return _regenerator["default"].wrap(function _callee4$(_context4) {
+            while (1) switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return actualClient.query({
+                  query: UNMOUNT_COMPONENT,
+                  variables: {
+                    key: key
+                  },
+                  fetchPolicy: 'network-only',
+                  context: {
+                    headers: {
+                      'X-Unique-Id': id,
+                      Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+                    }
+                  }
+                });
+              case 2:
+                cleaned = _context4.sent;
+                console.log('Unmounted', cleaned);
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }, _callee4);
+        }))();
+      }
+    };
+  }, [subscribed]);
   var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp12 = queryData.renderComponent) !== null && _queryData$renderComp12 !== void 0 && _queryData$renderComp12.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp13 = queryData.renderComponent) === null || _queryData$renderComp13 === void 0 ? void 0 : _queryData$renderComp13.rendered;
   var inlined = inline({
     data: inlineData,
@@ -409,12 +418,12 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref8) {
-  var data = _ref8.data,
-    actualClient = _ref8.actualClient,
-    setLastMutationResult = _ref8.setLastMutationResult,
-    id = _ref8.id,
-    session = _ref8.session;
+var inline = function inline(_ref9) {
+  var data = _ref9.data,
+    actualClient = _ref9.actualClient,
+    setLastMutationResult = _ref9.setLastMutationResult,
+    id = _ref9.id,
+    session = _ref9.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -423,20 +432,20 @@ var inline = function inline(_ref8) {
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
-        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
+        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
           var _len,
             args,
             _key,
             response,
-            _args4 = arguments;
-          return _regenerator["default"].wrap(function _callee4$(_context4) {
-            while (1) switch (_context4.prev = _context4.next) {
+            _args5 = arguments;
+          return _regenerator["default"].wrap(function _callee5$(_context5) {
+            while (1) switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.prev = 0;
-                for (_len = _args4.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                  args[_key] = _args4[_key];
+                _context5.prev = 0;
+                for (_len = _args5.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args5[_key];
                 }
-                _context4.next = 4;
+                _context5.next = 4;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -452,21 +461,21 @@ var inline = function inline(_ref8) {
                   }
                 });
               case 4:
-                response = _context4.sent;
+                response = _context5.sent;
                 setLastMutationResult(response);
-                return _context4.abrupt("return", response.data.callFunction);
+                return _context5.abrupt("return", response.data.callFunction);
               case 9:
-                _context4.prev = 9;
-                _context4.t0 = _context4["catch"](0);
+                _context5.prev = 9;
+                _context5.t0 = _context5["catch"](0);
                 setLastMutationResult({
-                  errors: [_context4.t0]
+                  errors: [_context5.t0]
                 });
-                throw _context4.t0;
+                throw _context5.t0;
               case 13:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
-          }, _callee4, null, [[0, 9]]);
+          }, _callee5, null, [[0, 9]]);
         }));
       }
     };
@@ -568,10 +577,10 @@ var useServerState = function useServerState(initialValue, options) {
         actualValue = value((queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue);
       }
       setOptimisticValue(actualValue);
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
         var response;
-        return _regenerator["default"].wrap(function _callee5$(_context5) {
-          while (1) switch (_context5.prev = _context5.next) {
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
             case 0:
               ref.current.abort();
               ref.current = new AbortController();
@@ -588,21 +597,21 @@ var useServerState = function useServerState(initialValue, options) {
                   }
                 }
               });
-              _context5.next = 5;
+              _context6.next = 5;
               return response;
             case 5:
               if (!ref.current.signal.aborted) {
-                _context5.next = 7;
+                _context6.next = 7;
                 break;
               }
-              return _context5.abrupt("return");
+              return _context6.abrupt("return");
             case 7:
               setTimeout(setOptimisticValue, 0, null);
             case 8:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     };
   }, [key, scope, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value]);
