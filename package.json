@@ -1,6 +1,6 @@
 {
   "name": "@state-less/react-client",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "The react-server client",
   "main": "dist/index.js",
   "author": "Moritz Roessler",
