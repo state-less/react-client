@@ -138,6 +138,7 @@ type UseComponentOptions = {
   client?: ApolloClient<any>;
   data?: any;
   props?: any;
+  skip?: boolean;
   preventUnload?: boolean;
 };
 
@@ -241,7 +242,7 @@ export const useComponent = (
   const [lastMutationResult, setLastMutationResult] =
     useState<FetchResult>(null);
 
-  const [skip, setSkip] = useState(!!options?.data?.key);
+  const [skip, setSkip] = useState(options?.skip || !!options?.data?.key);
   const [subscribed, setSubcribed] = useState(false);
   const actualClient = client || providedClient;
 
