@@ -293,7 +293,7 @@ var useComponent = function useComponent(key) {
             sub = _context3.sent;
             sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
-              // setSkip(false);
+              if (!options.skip) setSkip(false);
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
