@@ -353,7 +353,7 @@ export const useComponent = (
       });
 
       sub.subscribe((subscriptionData) => {
-        setSkip(false);
+        // setSkip(false);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
