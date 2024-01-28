@@ -242,6 +242,7 @@ var useComponent = function useComponent(key) {
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
   (0, _react2.useEffect)(function () {
+    console.log('Resubscribing', key, subscribed);
     if (!subscribed) return;
     var can = subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
@@ -261,6 +262,7 @@ var useComponent = function useComponent(key) {
     });
     return function () {
       var _can$unsubscribe;
+      console.log('Unsubscribing', key);
       can === null || can === void 0 ? void 0 : (_can$unsubscribe = can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(can);
     };
   }, [subscribed, queryData]);
@@ -307,6 +309,7 @@ var useComponent = function useComponent(key) {
   (0, _react2.useEffect)(function () {
     var _options$data5;
     if (!(options !== null && options !== void 0 && (_options$data5 = options.data) !== null && _options$data5 !== void 0 && _options$data5.key)) return;
+    console.log('Resubscribing', key, subscribed);
     if (!subscribed) return;
     var can = subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
@@ -326,6 +329,7 @@ var useComponent = function useComponent(key) {
     });
     return function () {
       var _can$unsubscribe2;
+      console.log('Unsubscribing', key);
       can === null || can === void 0 ? void 0 : (_can$unsubscribe2 = can.unsubscribe) === null || _can$unsubscribe2 === void 0 ? void 0 : _can$unsubscribe2.call(can);
     };
   }, [subscribed, options.props]);

@@ -309,7 +309,9 @@ export const useComponent = (
   }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
+    console.log('Resubscribing', key, subscribed);
     if (!subscribed) return;
+
     const can = subscribed.subscribe((subscriptionData) => {
       actualClient.cache.writeQuery({
         query: RENDER_COMPONENT,
@@ -330,6 +332,8 @@ export const useComponent = (
     });
 
     return () => {
+      console.log('Unsubscribing', key);
+
       can?.unsubscribe?.();
     };
   }, [subscribed, queryData]);
@@ -365,6 +369,7 @@ export const useComponent = (
 
   useEffect(() => {
     if (!options?.data?.key) return;
+    console.log('Resubscribing', key, subscribed);
     if (!subscribed) return;
     const can = subscribed.subscribe((subscriptionData) => {
       if (!options.skip) setSkip(false);
@@ -386,6 +391,8 @@ export const useComponent = (
     });
 
     return () => {
+      console.log('Unsubscribing', key);
+
       can?.unsubscribe?.();
     };
   }, [subscribed, options.props]);
