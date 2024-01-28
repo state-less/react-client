@@ -285,8 +285,9 @@ export const useComponent = (
    */
   useEffect(() => {
     if (!queryData?.renderComponent?.rendered?.key) return;
+    let subscription;
     (async () => {
-      const sub = await actualClient.subscribe({
+      subscription = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
           key: queryData?.renderComponent?.rendered?.key,
@@ -304,8 +305,11 @@ export const useComponent = (
         },
       });
       setSubcribed(true);
-      console.log('WRITING TO CACHE SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
-      sub.subscribe((subscriptionData) => {
+      console.log(
+        'WRITING TO CACHE SUBSCRIBED',
+        queryData?.renderComponent?.rendered?.key
+      );
+      subscription.subscribe((subscriptionData) => {
         console.log('WRITING TO CACHE', options.props);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
@@ -325,6 +329,9 @@ export const useComponent = (
         setSkip(false);
       });
     })();
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, [queryData?.renderComponent?.rendered?.key, options.props]);
 
   /**
