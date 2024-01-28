@@ -209,7 +209,7 @@ var useComponent = function useComponent(key) {
   (0, _react2.useEffect)(function () {
     var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
     console.log('Creating new sub client', key, !(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || subscribed);
-    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp3 = queryData.renderComponent) !== null && _queryData$renderComp3 !== void 0 && (_queryData$renderComp4 = _queryData$renderComp3.rendered) !== null && _queryData$renderComp4 !== void 0 && _queryData$renderComp4.key) || subscribed) return;
+    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp3 = queryData.renderComponent) !== null && _queryData$renderComp3 !== void 0 && (_queryData$renderComp4 = _queryData$renderComp3.rendered) !== null && _queryData$renderComp4 !== void 0 && _queryData$renderComp4.key) || (subscribed === null || subscribed === void 0 ? void 0 : subscribed._state) === 'ready') return;
     var can;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
       var _queryData$renderComp5, _queryData$renderComp6;

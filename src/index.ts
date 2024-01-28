@@ -288,7 +288,11 @@ export const useComponent = (
       key,
       !queryData?.renderComponent?.rendered?.key || subscribed
     );
-    if (!queryData?.renderComponent?.rendered?.key || subscribed) return;
+    if (
+      !queryData?.renderComponent?.rendered?.key ||
+      subscribed?._state === 'ready'
+    )
+      return;
     let can;
     (async () => {
       const sub = await actualClient.subscribe({
