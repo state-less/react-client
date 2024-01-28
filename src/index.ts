@@ -283,11 +283,6 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   useEffect(() => {
-    console.log(
-      'Creating new sub client',
-      key,
-      !queryData?.renderComponent?.rendered?.key || subscribed
-    );
     if (
       !queryData?.renderComponent?.rendered?.key ||
       subscribed?._state === 'ready'
@@ -312,7 +307,7 @@ export const useComponent = (
           },
         },
       });
-      console.log('Setting sub client 1', key, sub);
+
       can = sub.subscribe((subscriptionData) => {
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
@@ -334,7 +329,6 @@ export const useComponent = (
       setSubcribed(can);
     })();
     return () => {
-      console.log('Unsubscribing', key, can);
       can?.unsubscribe?.();
     };
   }, [queryData?.renderComponent?.rendered?.key, queryData]);
@@ -365,7 +359,6 @@ export const useComponent = (
           },
         },
       });
-      console.log('Setting sub client 2', key, sub);
       can = sub.subscribe((subscriptionData) => {
         if (!options.skip) setSkip(false);
         actualClient.cache.writeQuery({
@@ -387,7 +380,6 @@ export const useComponent = (
       setSubcribed(can);
     })();
     return () => {
-      console.log('UNSUBSCRIBING', key, can);
       can?.unsubscribe?.();
     };
   }, [options?.data?.key, JSON.stringify(options.props)]);
@@ -518,7 +510,6 @@ const inline = ({
       if (val?.__typename === 'FunctionCall') {
         inlined.props[key] = async (...args) => {
           try {
-            console.log('Calling function', val.component, val.name, args);
             const response = await actualClient.mutate({
               mutation: CALL_FUNCTION,
               variables: {
