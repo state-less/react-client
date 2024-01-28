@@ -401,7 +401,7 @@ export const useComponent = (
       subscribed?.cancel?.();
       subscribed?.unsubscribe?.();
     };
-  }, [subscribed]);
+  }, [subscribed, options.props]);
 
   // useEffect(() => {
   //   if (!subscribed) return;

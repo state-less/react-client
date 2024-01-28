@@ -339,7 +339,7 @@ var useComponent = function useComponent(key) {
       subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$cancel2 = subscribed.cancel) === null || _subscribed$cancel2 === void 0 ? void 0 : _subscribed$cancel2.call(subscribed);
       subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$unsubscri2 = subscribed.unsubscribe) === null || _subscribed$unsubscri2 === void 0 ? void 0 : _subscribed$unsubscri2.call(subscribed);
     };
-  }, [subscribed]);
+  }, [subscribed, options.props]);
 
   // useEffect(() => {
   //   if (!subscribed) return;
