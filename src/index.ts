@@ -335,8 +335,8 @@ export const useComponent = (
     });
     return () => {
       if (subscribed) {
-        subscribed?.cancel();
-        subscribed?.unsubscribe();
+        subscribed?.cancel?.();
+        subscribed?.unsubscribe?.();
       }
     };
   }, [subscribed, options.props]);
@@ -398,8 +398,8 @@ export const useComponent = (
     });
 
     return () => {
-      subscribed?.cancel();
-      subscribed?.unsubscribe();
+      subscribed?.cancel?.();
+      subscribed?.unsubscribe?.();
     };
   }, [subscribed]);
 

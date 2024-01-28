@@ -265,8 +265,9 @@ var useComponent = function useComponent(key) {
     });
     return function () {
       if (subscribed) {
-        subscribed === null || subscribed === void 0 ? void 0 : subscribed.cancel();
-        subscribed === null || subscribed === void 0 ? void 0 : subscribed.unsubscribe();
+        var _subscribed$cancel, _subscribed$unsubscri;
+        subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$cancel = subscribed.cancel) === null || _subscribed$cancel === void 0 ? void 0 : _subscribed$cancel.call(subscribed);
+        subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$unsubscri = subscribed.unsubscribe) === null || _subscribed$unsubscri === void 0 ? void 0 : _subscribed$unsubscri.call(subscribed);
       }
     };
   }, [subscribed, options.props]);
@@ -334,8 +335,9 @@ var useComponent = function useComponent(key) {
       });
     });
     return function () {
-      subscribed === null || subscribed === void 0 ? void 0 : subscribed.cancel();
-      subscribed === null || subscribed === void 0 ? void 0 : subscribed.unsubscribe();
+      var _subscribed$cancel2, _subscribed$unsubscri2;
+      subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$cancel2 = subscribed.cancel) === null || _subscribed$cancel2 === void 0 ? void 0 : _subscribed$cancel2.call(subscribed);
+      subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$unsubscri2 = subscribed.unsubscribe) === null || _subscribed$unsubscri2 === void 0 ? void 0 : _subscribed$unsubscri2.call(subscribed);
     };
   }, [subscribed]);
 
