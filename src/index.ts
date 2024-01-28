@@ -516,6 +516,7 @@ const inline = ({
       if (val?.__typename === 'FunctionCall') {
         inlined.props[key] = async (...args) => {
           try {
+            console.log('Calling function', val.component, val.name, args);
             const response = await actualClient.mutate({
               mutation: CALL_FUNCTION,
               variables: {

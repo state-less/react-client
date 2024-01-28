@@ -474,7 +474,8 @@ var inline = function inline(_ref10) {
                 for (_len = _args6.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
                   args[_key] = _args6[_key];
                 }
-                _context6.next = 4;
+                console.log('Calling function', val.component, val.name, args);
+                _context6.next = 5;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -489,22 +490,22 @@ var inline = function inline(_ref10) {
                     }
                   }
                 });
-              case 4:
+              case 5:
                 response = _context6.sent;
                 setLastMutationResult(response);
                 return _context6.abrupt("return", response.data.callFunction);
-              case 9:
-                _context6.prev = 9;
+              case 10:
+                _context6.prev = 10;
                 _context6.t0 = _context6["catch"](0);
                 setLastMutationResult({
                   errors: [_context6.t0]
                 });
                 throw _context6.t0;
-              case 13:
+              case 14:
               case "end":
                 return _context6.stop();
             }
-          }, _callee6, null, [[0, 9]]);
+          }, _callee6, null, [[0, 10]]);
         }));
       }
     };
