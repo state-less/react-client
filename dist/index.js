@@ -246,7 +246,7 @@ var useComponent = function useComponent(key) {
   (0, _react2.useEffect)(function () {
     console.log('SUBSCRIBING', subscribed, key);
     if (!subscribed) return;
-    subscribed.subscribe(function (subscriptionData) {
+    var can = subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
       console.log('WRITING TO CACHE', options.props);
       actualClient.cache.writeQuery({
@@ -263,6 +263,7 @@ var useComponent = function useComponent(key) {
       });
       setSkip(false);
     });
+    console.log('SUBSCRIBED', can);
     return function () {
       if (subscribed) {
         var _subscribed$cancel, _subscribed$unsubscri;

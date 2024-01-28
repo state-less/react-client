@@ -314,7 +314,7 @@ export const useComponent = (
   useEffect(() => {
     console.log('SUBSCRIBING', subscribed, key);
     if (!subscribed) return;
-    subscribed.subscribe((subscriptionData) => {
+    const can = subscribed.subscribe((subscriptionData) => {
       console.log('WRITING TO CACHE', options.props);
       actualClient.cache.writeQuery({
         query: RENDER_COMPONENT,
@@ -333,6 +333,8 @@ export const useComponent = (
       });
       setSkip(false);
     });
+
+    console.log('SUBSCRIBED', can);
     return () => {
       if (subscribed) {
         subscribed?.cancel?.();
