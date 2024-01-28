@@ -281,7 +281,7 @@ var useComponent = function useComponent(key) {
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
-                key: options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.key,
+                key: options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.component,
                 scope: 'global',
                 bearer: session.token ? "Bearer ".concat(session.token) : undefined,
                 id: id

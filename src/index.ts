@@ -345,7 +345,7 @@ export const useComponent = (
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
-          key: options?.data?.key,
+          key: options?.data?.component,
           scope: 'global',
           bearer: session.token ? `Bearer ${session.token}` : undefined,
           id,
