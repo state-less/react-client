@@ -208,8 +208,9 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     var _queryData$renderComp, _queryData$renderComp2;
+    console.log('Before subscribe', key);
     if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || subscribed) return;
-    /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
       var _queryData$renderComp3, _queryData$renderComp4;
       var sub;
       return _regenerator["default"].wrap(function _callee2$(_context2) {
@@ -240,11 +241,11 @@ var useComponent = function useComponent(key) {
             return _context2.stop();
         }
       }, _callee2);
-    }));
+    }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
   (0, _react2.useEffect)(function () {
-    if (!subscribed) return;
     console.log('SUBSCRIBING', subscribed, key);
+    if (!subscribed) return;
     subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
       console.log('WRITING TO CACHE', options.props);
@@ -276,8 +277,9 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     var _options$data2, _queryData$renderComp8, _queryData$renderComp9;
+    console.log('Before subscribe', key);
     if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && (_queryData$renderComp9 = _queryData$renderComp8.rendered) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.key) return;
-    /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _options$data3;
       var sub;
       return _regenerator["default"].wrap(function _callee3$(_context3) {
@@ -301,17 +303,19 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context3.sent;
+            console.log('Set subscription', key);
             setSubcribed(sub);
-          case 4:
+          case 5:
           case "end":
             return _context3.stop();
         }
       }, _callee3);
-    }));
+    }))();
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
   (0, _react2.useEffect)(function () {
-    var _options$data5;
-    if (!(options !== null && options !== void 0 && (_options$data5 = options.data) !== null && _options$data5 !== void 0 && _options$data5.key)) return;
+    var _options$data5, _options$data6;
+    console.log('Subscribing ', options === null || options === void 0 ? void 0 : (_options$data5 = options.data) === null || _options$data5 === void 0 ? void 0 : _options$data5.key, subscribed);
+    if (!(options !== null && options !== void 0 && (_options$data6 = options.data) !== null && _options$data6 !== void 0 && _options$data6.key)) return;
     if (!subscribed) return;
     subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;

@@ -283,9 +283,11 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   useEffect(() => {
+    console.log('Before subscribe', key);
+
     if (!queryData?.renderComponent?.rendered?.key || subscribed) return;
 
-    async () => {
+    (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
@@ -306,12 +308,12 @@ export const useComponent = (
       console.log('Set subscription', key);
 
       setSubcribed(sub);
-    };
+    })();
   }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
-    if (!subscribed) return;
     console.log('SUBSCRIBING', subscribed, key);
+    if (!subscribed) return;
     subscribed.subscribe((subscriptionData) => {
       console.log('WRITING TO CACHE', options.props);
       actualClient.cache.writeQuery({
@@ -344,9 +346,11 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   useEffect(() => {
+    console.log('Before subscribe', key);
+
     if (!options?.data?.key || queryData?.renderComponent?.rendered?.key)
       return;
-    async () => {
+    (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
@@ -364,11 +368,14 @@ export const useComponent = (
           },
         },
       });
+      console.log('Set subscription', key);
+
       setSubcribed(sub);
-    };
+    })();
   }, [options?.data?.key]);
 
   useEffect(() => {
+    console.log('Subscribing ', options?.data?.key, subscribed);
     if (!options?.data?.key) return;
     if (!subscribed) return;
     subscribed.subscribe((subscriptionData) => {
