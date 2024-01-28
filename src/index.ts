@@ -256,6 +256,7 @@ export const useComponent = (
 
   const [session] = useLocalStorage('session', initialSession);
 
+  const cacheId = `RenderComponent:${key}:${JSON.stringify(options.props)}`;
   const {
     data: queryData,
     error,
@@ -270,12 +271,13 @@ export const useComponent = (
       props: options.props,
     },
 
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
     context: {
       headers: {
         'X-Unique-Id': id,
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
+      customCacheKey: cacheId,
     },
     skip: skip,
   });
