@@ -615,7 +615,14 @@ export const useServerState = <ValueType>(
     //     },
     //   },
     // });
-    actualClient.writeQuery({
+    console.log(
+      'WRITING TO CACHE',
+      key,
+      scope,
+      queryData.getState,
+      subscriptionData?.updateState?.value
+    );
+    actualClient.cache.writeQuery({
       query: GET_STATE,
       variables: {
         key,
