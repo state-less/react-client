@@ -336,7 +336,7 @@ export const useComponent = (
     return () => {
       can?.unsubscribe?.();
     };
-  }, [subscribed, options.props]);
+  }, [subscribed, options.props, queryData?.renderComponent?.rendered]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.

@@ -152,7 +152,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _queryData$renderComp5, _queryData$renderComp6, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp5, _queryData$renderComp6, _queryData$renderComp8, _options$data4, _queryData$renderComp12, _queryData$renderComp13, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref5 = options || {},
     client = _ref5.client;
@@ -266,15 +266,15 @@ var useComponent = function useComponent(key) {
       var _can$unsubscribe;
       can === null || can === void 0 ? void 0 : (_can$unsubscribe = can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(can);
     };
-  }, [subscribed, options.props]);
+  }, [subscribed, options.props, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.rendered]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   (0, _react2.useEffect)(function () {
-    var _options$data2, _queryData$renderComp8, _queryData$renderComp9;
-    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && (_queryData$renderComp9 = _queryData$renderComp8.rendered) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.key) return;
+    var _options$data2, _queryData$renderComp9, _queryData$renderComp10;
+    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp9 = queryData.renderComponent) !== null && _queryData$renderComp9 !== void 0 && (_queryData$renderComp10 = _queryData$renderComp9.rendered) !== null && _queryData$renderComp10 !== void 0 && _queryData$renderComp10.key) return;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _options$data3;
       var sub;
@@ -312,7 +312,7 @@ var useComponent = function useComponent(key) {
     if (!(options !== null && options !== void 0 && (_options$data5 = options.data) !== null && _options$data5 !== void 0 && _options$data5.key)) return;
     if (!subscribed) return;
     var can = subscribed.subscribe(function (subscriptionData) {
-      var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
+      var _queryData$renderComp11, _subscriptionData$dat3, _subscriptionData$dat4;
       if (!options.skip) setSkip(false);
       actualClient.cache.writeQuery({
         query: RENDER_COMPONENT,
@@ -322,7 +322,7 @@ var useComponent = function useComponent(key) {
         },
         data: {
           renderComponent: {
-            rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
+            rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp11 = queryData.renderComponent) === null || _queryData$renderComp11 === void 0 ? void 0 : _queryData$renderComp11.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
           }
         }
       });
@@ -435,7 +435,7 @@ var useComponent = function useComponent(key) {
       }
     };
   }, [subscribed]);
-  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp12 = queryData.renderComponent) !== null && _queryData$renderComp12 !== void 0 && _queryData$renderComp12.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp13 = queryData.renderComponent) === null || _queryData$renderComp13 === void 0 ? void 0 : _queryData$renderComp13.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
