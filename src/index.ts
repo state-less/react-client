@@ -304,8 +304,9 @@ export const useComponent = (
         },
       });
       setSubcribed(true);
-      console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
+      console.log('WRITING TO CACHE SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
       sub.subscribe((subscriptionData) => {
+        console.log('WRITING TO CACHE', options.props);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
