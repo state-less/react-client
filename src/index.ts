@@ -332,8 +332,9 @@ export const useComponent = (
     });
 
     return () => {
-      // console.log('Unsubscribing', key);
-      // can?.unsubscribe?.();
+      console.log('Unsubscribing', key);
+      can?.unsubscribe?.();
+      setSubcribed(null);
     };
   }, [subscribed, queryData]);
 
@@ -368,7 +369,6 @@ export const useComponent = (
 
   useEffect(() => {
     if (!options?.data?.key) return;
-    console.log('Resubscribing', key, subscribed);
     if (!subscribed) return;
     const can = subscribed.subscribe((subscriptionData) => {
       if (!options.skip) setSkip(false);
@@ -390,8 +390,9 @@ export const useComponent = (
     });
 
     return () => {
-      // console.log('Unsubscribing', key);
-      // can?.unsubscribe?.();
+      console.log('Unsubscribing', key);
+      can?.unsubscribe?.();
+      setSubcribed(null);
     };
   }, [subscribed, options.props]);
 
