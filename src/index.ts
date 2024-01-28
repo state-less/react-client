@@ -312,9 +312,11 @@ export const useComponent = (
   }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
+    console.log('Subscribing to cache', key, options.props);
+
     if (!subscribed) return;
     const can = subscribed.subscribe((subscriptionData) => {
-      console.log('WRITING TO CACHE', options.props);
+      console.log('WRITING TO CACHE', options.props, subscriptionData);
       actualClient.cache.writeQuery({
         query: RENDER_COMPONENT,
         variables: {
