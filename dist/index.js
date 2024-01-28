@@ -519,7 +519,7 @@ var inline = function inline(_ref10) {
   return inlined;
 };
 var useServerState = function useServerState(initialValue, options) {
-  var _subscriptionData$upd2, _queryData$getState2, _queryData$getState3;
+  var _subscriptionData$upd3, _queryData$getState2, _queryData$getState3;
   var key = options.key,
     scope = options.scope,
     client = options.client;
@@ -569,7 +569,7 @@ var useServerState = function useServerState(initialValue, options) {
     }),
     subscriptionData = _useSubscription.data;
   (0, _react2.useEffect)(function () {
-    var _subscriptionData$upd;
+    var _subscriptionData$upd, _subscriptionData$upd2;
     // actualClient.cache.modify({
     //   id: actualClient.cache.identify({
     //     __typename: 'Query',
@@ -583,6 +583,7 @@ var useServerState = function useServerState(initialValue, options) {
     //   },
     // });
     console.log('WRITING TO CACHE', key, scope, queryData === null || queryData === void 0 ? void 0 : queryData.getState, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value);
+    if (!(subscriptionData !== null && subscriptionData !== void 0 && (_subscriptionData$upd2 = subscriptionData.updateState) !== null && _subscriptionData$upd2 !== void 0 && _subscriptionData$upd2.value)) return;
     actualClient.cache.writeQuery({
       query: GET_STATE,
       variables: {
@@ -593,7 +594,7 @@ var useServerState = function useServerState(initialValue, options) {
         getState: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : queryData.getState), subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.updateState)
       }
     });
-  }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd2 = subscriptionData.updateState) === null || _subscriptionData$upd2 === void 0 ? void 0 : _subscriptionData$upd2.value]);
+  }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd3 = subscriptionData.updateState) === null || _subscriptionData$upd3 === void 0 ? void 0 : _subscriptionData$upd3.value]);
   var setValue = (0, _react2.useMemo)(function () {
     return function (value) {
       var actualValue = value;

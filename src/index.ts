@@ -622,6 +622,7 @@ export const useServerState = <ValueType>(
       queryData?.getState,
       subscriptionData?.updateState?.value
     );
+    if (!subscriptionData?.updateState?.value) return;
     actualClient.cache.writeQuery({
       query: GET_STATE,
       variables: {
