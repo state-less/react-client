@@ -234,7 +234,7 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context2.sent;
-            console.log("Setting sub client 1");
+            console.log('Setting sub client 1', key, sub);
             setSubcribed(sub);
           case 5:
           case "end":
@@ -300,7 +300,7 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context3.sent;
-            console.log("Setting sub client 2");
+            console.log('Setting sub client 2', key, sub);
             setSubcribed(sub);
           case 5:
           case "end":

@@ -308,7 +308,7 @@ export const useComponent = (
           },
         },
       });
-      console.log ("Setting sub client 1")
+      console.log('Setting sub client 1', key, sub);
       setSubcribed(sub);
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
@@ -367,7 +367,7 @@ export const useComponent = (
           },
         },
       });
-      console.log ("Setting sub client 2")
+      console.log('Setting sub client 2', key, sub);
 
       setSubcribed(sub);
     })();
