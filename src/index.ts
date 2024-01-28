@@ -363,6 +363,7 @@ export const useComponent = (
 
       sub.subscribe((subscriptionData) => {
         if (!options.skip) setSkip(false);
+        console.log('WRITING TO CACHE PRERENDER', key, options.props);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {

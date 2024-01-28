@@ -301,6 +301,7 @@ var useComponent = function useComponent(key) {
             sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp8, _subscriptionData$dat3, _subscriptionData$dat4;
               if (!options.skip) setSkip(false);
+              console.log('WRITING TO CACHE PRERENDER', key, options.props);
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
