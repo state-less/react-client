@@ -152,7 +152,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _queryData$renderComp8, _queryData$renderComp9, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp5, _queryData$renderComp6, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref5 = options || {},
     client = _ref5.client;
@@ -167,7 +167,7 @@ var useComponent = function useComponent(key) {
     _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
     skip = _useState4[0],
     setSkip = _useState4[1];
-  var _useState5 = (0, _react2.useState)(false),
+  var _useState5 = (0, _react2.useState)(null),
     _useState6 = (0, _slicedToArray2["default"])(_useState5, 2),
     subscribed = _useState6[0],
     setSubcribed = _useState6[1];
@@ -183,7 +183,6 @@ var useComponent = function useComponent(key) {
   var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
-  var cacheId = "RenderComponent:".concat(key, ":").concat(JSON.stringify(options.props));
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
       client: actualClient,
       variables: {
@@ -195,8 +194,7 @@ var useComponent = function useComponent(key) {
         headers: {
           'X-Unique-Id': id,
           Authorization: session.token ? "Bearer ".concat(session.token) : undefined
-        },
-        customCacheKey: cacheId
+        }
       },
       skip: skip
     }),
@@ -204,16 +202,15 @@ var useComponent = function useComponent(key) {
     error = _useQuery.error,
     loading = _useQuery.loading,
     refetch = _useQuery.refetch;
-
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   (0, _react2.useEffect)(function () {
     var _queryData$renderComp, _queryData$renderComp2;
-    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key)) return;
+    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || subscribed) return;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-      var _queryData$renderComp3, _queryData$renderComp4, _queryData$renderComp5, _queryData$renderComp6;
+      var _queryData$renderComp3, _queryData$renderComp4;
       var sub;
       return _regenerator["default"].wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
@@ -236,39 +233,45 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context2.sent;
-            setSubcribed(true);
-            console.log('SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key);
-            sub.subscribe(function (subscriptionData) {
-              var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
-              actualClient.cache.writeQuery({
-                query: RENDER_COMPONENT,
-                variables: {
-                  key: key,
-                  props: options.props
-                },
-                data: {
-                  renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
-                  }
-                }
-              });
-              setSkip(false);
-            });
-          case 6:
+            setSubcribed(sub);
+          case 4:
           case "end":
             return _context2.stop();
         }
       }, _callee2);
     }))();
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : (_queryData$renderComp9 = _queryData$renderComp8.rendered) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.key]);
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
+  (0, _react2.useEffect)(function () {
+    if (!subscribed) return;
+    var can = subscribed.subscribe(function (subscriptionData) {
+      var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
+      actualClient.cache.writeQuery({
+        query: RENDER_COMPONENT,
+        variables: {
+          key: key,
+          props: options.props
+        },
+        data: {
+          renderComponent: {
+            rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
+          }
+        }
+      });
+      setSkip(false);
+    });
+    return function () {
+      var _can$unsubscribe;
+      can === null || can === void 0 ? void 0 : (_can$unsubscribe = can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(can);
+    };
+  }, [subscribed, queryData]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   (0, _react2.useEffect)(function () {
-    var _options$data2;
-    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key)) return;
+    var _options$data2, _queryData$renderComp8, _queryData$renderComp9;
+    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && (_queryData$renderComp9 = _queryData$renderComp8.rendered) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.key) return;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _options$data3;
       var sub;
@@ -293,22 +296,7 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context3.sent;
-            sub.subscribe(function (subscriptionData) {
-              var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
-              if (!options.skip) setSkip(false);
-              actualClient.cache.writeQuery({
-                query: RENDER_COMPONENT,
-                variables: {
-                  key: key,
-                  props: options.props
-                },
-                data: {
-                  renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
-                  }
-                }
-              });
-            });
+            setSubcribed(sub);
           case 4:
           case "end":
             return _context3.stop();
@@ -316,6 +304,31 @@ var useComponent = function useComponent(key) {
       }, _callee3);
     }))();
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
+  (0, _react2.useEffect)(function () {
+    var _options$data5;
+    if (!(options !== null && options !== void 0 && (_options$data5 = options.data) !== null && _options$data5 !== void 0 && _options$data5.key)) return;
+    if (!subscribed) return;
+    var can = subscribed.subscribe(function (subscriptionData) {
+      var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
+      if (!options.skip) setSkip(false);
+      actualClient.cache.writeQuery({
+        query: RENDER_COMPONENT,
+        variables: {
+          key: key,
+          props: options.props
+        },
+        data: {
+          renderComponent: {
+            rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
+          }
+        }
+      });
+    });
+    return function () {
+      var _can$unsubscribe2;
+      can === null || can === void 0 ? void 0 : (_can$unsubscribe2 = can.unsubscribe) === null || _can$unsubscribe2 === void 0 ? void 0 : _can$unsubscribe2.call(can);
+    };
+  }, [subscribed, options.props]);
 
   // useEffect(() => {
   //   if (!subscribed) return;
@@ -383,7 +396,6 @@ var useComponent = function useComponent(key) {
   }
   (0, _react2.useEffect)(function () {
     return function () {
-      console.log('Component unmounting', subscribed);
       window.removeEventListener('pagehide', unload);
       window.removeEventListener('unload', unload);
       window.removeEventListener('beforeunload', unload);
@@ -513,7 +525,7 @@ var inline = function inline(_ref10) {
   return inlined;
 };
 var useServerState = function useServerState(initialValue, options) {
-  var _subscriptionData$upd, _queryData$getState2, _queryData$getState3;
+  var _subscriptionData$upd2, _queryData$getState2, _queryData$getState3;
   var key = options.key,
     scope = options.scope,
     client = options.client;
@@ -563,19 +575,9 @@ var useServerState = function useServerState(initialValue, options) {
     }),
     subscriptionData = _useSubscription.data;
   (0, _react2.useEffect)(function () {
-    // actualClient.cache.modify({
-    //   id: actualClient.cache.identify({
-    //     __typename: 'Query',
-    //     variables: { key, scope },
-    //     query: GET_STATE,
-    //   }),
-    //   fields: {
-    //     getState() {
-    //       return { ...queryData.getState, ...subscriptionData?.updateState };
-    //     },
-    //   },
-    // });
-    actualClient.writeQuery({
+    var _subscriptionData$upd;
+    if (!(subscriptionData !== null && subscriptionData !== void 0 && (_subscriptionData$upd = subscriptionData.updateState) !== null && _subscriptionData$upd !== void 0 && _subscriptionData$upd.value)) return;
+    actualClient.cache.writeQuery({
       query: GET_STATE,
       variables: {
         key: key,
@@ -585,7 +587,7 @@ var useServerState = function useServerState(initialValue, options) {
         getState: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : queryData.getState), subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.updateState)
       }
     });
-  }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value]);
+  }, [subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd2 = subscriptionData.updateState) === null || _subscriptionData$upd2 === void 0 ? void 0 : _subscriptionData$upd2.value]);
   var setValue = (0, _react2.useMemo)(function () {
     return function (value) {
       var actualValue = value;

@@ -244,7 +244,7 @@ export const useComponent = (
     useState<FetchResult>(null);
 
   const [skip, setSkip] = useState(options?.skip || !!options?.data?.key);
-  const [subscribed, setSubcribed] = useState(false);
+  const [subscribed, setSubcribed] = useState<any | null>(null);
   const actualClient = client || providedClient;
 
   if (!actualClient) {
@@ -255,8 +255,6 @@ export const useComponent = (
   const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
 
   const [session] = useLocalStorage('session', initialSession);
-
-  const cacheId = `RenderComponent:${key}:${JSON.stringify(options.props)}`;
   const {
     data: queryData,
     error,
@@ -277,17 +275,16 @@ export const useComponent = (
         'X-Unique-Id': id,
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
-      customCacheKey: cacheId,
     },
     skip: skip,
   });
-
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   useEffect(() => {
-    if (!queryData?.renderComponent?.rendered?.key) return;
+    if (!queryData?.renderComponent?.rendered?.key || subscribed) return;
+
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
@@ -306,35 +303,44 @@ export const useComponent = (
           },
         },
       });
-      setSubcribed(true);
-      console.log('SUBSCRIBED', queryData?.renderComponent?.rendered?.key);
-      sub.subscribe((subscriptionData) => {
-        actualClient.cache.writeQuery({
-          query: RENDER_COMPONENT,
-          variables: {
-            key,
-            props: options.props,
-          },
-          data: {
-            renderComponent: {
-              rendered: {
-                ...queryData?.renderComponent?.rendered,
-                ...subscriptionData?.data?.updateComponent?.rendered,
-              },
-            },
-          },
-        });
-        setSkip(false);
-      });
+
+      setSubcribed(sub);
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
+
+  useEffect(() => {
+    if (!subscribed) return;
+    const can = subscribed.subscribe((subscriptionData) => {
+      actualClient.cache.writeQuery({
+        query: RENDER_COMPONENT,
+        variables: {
+          key,
+          props: options.props,
+        },
+        data: {
+          renderComponent: {
+            rendered: {
+              ...queryData?.renderComponent?.rendered,
+              ...subscriptionData?.data?.updateComponent?.rendered,
+            },
+          },
+        },
+      });
+      setSkip(false);
+    });
+
+    return () => {
+      can?.unsubscribe?.();
+    };
+  }, [subscribed, queryData]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   useEffect(() => {
-    if (!options?.data?.key) return;
+    if (!options?.data?.key || queryData?.renderComponent?.rendered?.key)
+      return;
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
@@ -353,27 +359,36 @@ export const useComponent = (
           },
         },
       });
-
-      sub.subscribe((subscriptionData) => {
-        if (!options.skip) setSkip(false);
-        actualClient.cache.writeQuery({
-          query: RENDER_COMPONENT,
-          variables: {
-            key,
-            props: options.props,
-          },
-          data: {
-            renderComponent: {
-              rendered: {
-                ...queryData?.renderComponent?.rendered,
-                ...subscriptionData?.data?.updateComponent?.rendered,
-              },
-            },
-          },
-        });
-      });
+      setSubcribed(sub);
     })();
   }, [options?.data?.key]);
+
+  useEffect(() => {
+    if (!options?.data?.key) return;
+    if (!subscribed) return;
+    const can = subscribed.subscribe((subscriptionData) => {
+      if (!options.skip) setSkip(false);
+      actualClient.cache.writeQuery({
+        query: RENDER_COMPONENT,
+        variables: {
+          key,
+          props: options.props,
+        },
+        data: {
+          renderComponent: {
+            rendered: {
+              ...queryData?.renderComponent?.rendered,
+              ...subscriptionData?.data?.updateComponent?.rendered,
+            },
+          },
+        },
+      });
+    });
+
+    return () => {
+      can?.unsubscribe?.();
+    };
+  }, [subscribed, options.props]);
 
   // useEffect(() => {
   //   if (!subscribed) return;
@@ -436,7 +451,6 @@ export const useComponent = (
 
   useEffect(() => {
     return () => {
-      console.log('Component unmounting', subscribed);
       window.removeEventListener('pagehide', unload);
       window.removeEventListener('unload', unload);
       window.removeEventListener('beforeunload', unload);
@@ -596,19 +610,8 @@ export const useServerState = <ValueType>(
   });
 
   useEffect(() => {
-    // actualClient.cache.modify({
-    //   id: actualClient.cache.identify({
-    //     __typename: 'Query',
-    //     variables: { key, scope },
-    //     query: GET_STATE,
-    //   }),
-    //   fields: {
-    //     getState() {
-    //       return { ...queryData.getState, ...subscriptionData?.updateState };
-    //     },
-    //   },
-    // });
-    actualClient.writeQuery({
+    if (!subscriptionData?.updateState?.value) return;
+    actualClient.cache.writeQuery({
       query: GET_STATE,
       variables: {
         key,
