@@ -245,7 +245,7 @@ export const useComponent = (
     useState<FetchResult>(null);
 
   const [skip, setSkip] = useState(options?.skip || !!options?.data?.key);
-  const [subscribed, setSubcribed] = useState<Observable<{}> | null>(null);
+  const [subscribed, setSubcribed] = useState<any | null>(null);
   const actualClient = client || providedClient;
 
   if (!actualClient) {
@@ -286,7 +286,7 @@ export const useComponent = (
   useEffect(() => {
     if (!queryData?.renderComponent?.rendered?.key || subscribed) return;
 
-    (async () => {
+    async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
@@ -305,31 +305,36 @@ export const useComponent = (
         },
       });
       setSubcribed(sub);
-      console.log(
-        'WRITING TO CACHE SUBSCRIBED',
-        queryData?.renderComponent?.rendered?.key
-      );
-      sub.subscribe((subscriptionData) => {
-        console.log('WRITING TO CACHE', options.props);
-        actualClient.cache.writeQuery({
-          query: RENDER_COMPONENT,
-          variables: {
-            key,
-            props: options.props,
-          },
-          data: {
-            renderComponent: {
-              rendered: {
-                ...queryData?.renderComponent?.rendered,
-                ...subscriptionData?.data?.updateComponent?.rendered,
-              },
+    };
+  }, [queryData?.renderComponent?.rendered?.key]);
+
+  useEffect(() => {
+    subscribed.subscribe((subscriptionData) => {
+      console.log('WRITING TO CACHE', options.props);
+      actualClient.cache.writeQuery({
+        query: RENDER_COMPONENT,
+        variables: {
+          key,
+          props: options.props,
+        },
+        data: {
+          renderComponent: {
+            rendered: {
+              ...queryData?.renderComponent?.rendered,
+              ...subscriptionData?.data?.updateComponent?.rendered,
             },
           },
-        });
-        setSkip(false);
+        },
       });
-    })();
-  }, [queryData?.renderComponent?.rendered?.key, options.props]);
+      setSkip(false);
+    });
+    return () => {
+      if (subscribed) {
+        subscribed?.cancel();
+        subscribed?.unsubscribe();
+      }
+    };
+  }, [subscribed, options.props]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
