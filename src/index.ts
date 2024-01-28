@@ -140,6 +140,7 @@ type UseComponentOptions = {
   props?: any;
   skip?: boolean;
   preventUnload?: boolean;
+  sendUnmount?: boolean;
 };
 
 type UseServerStateInfo = {
@@ -279,7 +280,6 @@ export const useComponent = (
     skip: skip,
   });
 
-  console.log('Prerendered data', skip, options.data?.key);
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
@@ -435,9 +435,12 @@ export const useComponent = (
   useEffect(() => {
     return () => {
       console.log('Component unmounting', subscribed);
+      window.removeEventListener('pagehide', unload);
+      window.removeEventListener('unload', unload);
+      window.removeEventListener('beforeunload', unload);
       if (!subscribed) return;
 
-      if (actualClient) {
+      if (options.sendUnmount && actualClient) {
         (async () => {
           const cleaned = await actualClient.query({
             query: UNMOUNT_COMPONENT,
@@ -454,7 +457,6 @@ export const useComponent = (
               },
             },
           });
-          console.log('Unmounted', cleaned);
         })();
       }
     };

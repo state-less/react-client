@@ -22,6 +22,7 @@ type UseComponentOptions = {
     props?: any;
     skip?: boolean;
     preventUnload?: boolean;
+    sendUnmount?: boolean;
 };
 type UseServerStateInfo = {
     error: ApolloError;

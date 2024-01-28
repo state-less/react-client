@@ -152,7 +152,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _options$data2, _queryData$renderComp8, _queryData$renderComp9, _options$data5, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp8, _queryData$renderComp9, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref5 = options || {},
     client = _ref5.client;
@@ -202,7 +202,7 @@ var useComponent = function useComponent(key) {
     error = _useQuery.error,
     loading = _useQuery.loading,
     refetch = _useQuery.refetch;
-  console.log('Prerendered data', skip, (_options$data2 = options.data) === null || _options$data2 === void 0 ? void 0 : _options$data2.key);
+
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
@@ -265,10 +265,10 @@ var useComponent = function useComponent(key) {
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   (0, _react2.useEffect)(function () {
-    var _options$data3;
-    if (!(options !== null && options !== void 0 && (_options$data3 = options.data) !== null && _options$data3 !== void 0 && _options$data3.key)) return;
+    var _options$data2;
+    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key)) return;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
-      var _options$data4;
+      var _options$data3;
       var sub;
       return _regenerator["default"].wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
@@ -277,7 +277,7 @@ var useComponent = function useComponent(key) {
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
-                key: options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key,
+                key: options === null || options === void 0 ? void 0 : (_options$data3 = options.data) === null || _options$data3 === void 0 ? void 0 : _options$data3.key,
                 scope: 'global',
                 bearer: session.token ? "Bearer ".concat(session.token) : undefined,
                 id: id
@@ -313,7 +313,7 @@ var useComponent = function useComponent(key) {
         }
       }, _callee3);
     }))();
-  }, [options === null || options === void 0 ? void 0 : (_options$data5 = options.data) === null || _options$data5 === void 0 ? void 0 : _options$data5.key]);
+  }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
 
   // useEffect(() => {
   //   if (!subscribed) return;
@@ -382,8 +382,11 @@ var useComponent = function useComponent(key) {
   (0, _react2.useEffect)(function () {
     return function () {
       console.log('Component unmounting', subscribed);
+      window.removeEventListener('pagehide', unload);
+      window.removeEventListener('unload', unload);
+      window.removeEventListener('beforeunload', unload);
       if (!subscribed) return;
-      if (actualClient) {
+      if (options.sendUnmount && actualClient) {
         (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
           var cleaned;
           return _regenerator["default"].wrap(function _callee5$(_context5) {
@@ -405,8 +408,7 @@ var useComponent = function useComponent(key) {
                 });
               case 2:
                 cleaned = _context5.sent;
-                console.log('Unmounted', cleaned);
-              case 4:
+              case 3:
               case "end":
                 return _context5.stop();
             }
