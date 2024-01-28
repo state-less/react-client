@@ -152,7 +152,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _queryData$renderComp8, _queryData$renderComp9, _options$data4, _queryData$renderComp13, _queryData$renderComp14, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref5 = options || {},
     client = _ref5.client;
@@ -207,12 +207,11 @@ var useComponent = function useComponent(key) {
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   (0, _react2.useEffect)(function () {
-    var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
-    console.log('Creating new sub client', key, !(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || subscribed);
-    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp3 = queryData.renderComponent) !== null && _queryData$renderComp3 !== void 0 && (_queryData$renderComp4 = _queryData$renderComp3.rendered) !== null && _queryData$renderComp4 !== void 0 && _queryData$renderComp4.key) || (subscribed === null || subscribed === void 0 ? void 0 : subscribed._state) === 'ready') return;
+    var _queryData$renderComp, _queryData$renderComp2;
+    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || (subscribed === null || subscribed === void 0 ? void 0 : subscribed._state) === 'ready') return;
     var can;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-      var _queryData$renderComp5, _queryData$renderComp6;
+      var _queryData$renderComp3, _queryData$renderComp4;
       var sub;
       return _regenerator["default"].wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
@@ -221,7 +220,7 @@ var useComponent = function useComponent(key) {
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
-                key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key,
+                key: queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp3 = queryData.renderComponent) === null || _queryData$renderComp3 === void 0 ? void 0 : (_queryData$renderComp4 = _queryData$renderComp3.rendered) === null || _queryData$renderComp4 === void 0 ? void 0 : _queryData$renderComp4.key,
                 scope: 'global',
                 bearer: session.token ? "Bearer ".concat(session.token) : undefined,
                 id: id
@@ -235,9 +234,8 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context2.sent;
-            console.log('Setting sub client 1', key, sub);
             can = sub.subscribe(function (subscriptionData) {
-              var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
+              var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
@@ -246,14 +244,14 @@ var useComponent = function useComponent(key) {
                 },
                 data: {
                   renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : _queryData$renderComp5.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
                   }
                 }
               });
               setSkip(false);
             });
             setSubcribed(can);
-          case 6:
+          case 5:
           case "end":
             return _context2.stop();
         }
@@ -261,18 +259,17 @@ var useComponent = function useComponent(key) {
     }))();
     return function () {
       var _can, _can$unsubscribe;
-      console.log('Unsubscribing', key, can);
       (_can = can) === null || _can === void 0 ? void 0 : (_can$unsubscribe = _can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(_can);
     };
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : (_queryData$renderComp9 = _queryData$renderComp8.rendered) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.key, queryData]);
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp6 = queryData.renderComponent) === null || _queryData$renderComp6 === void 0 ? void 0 : (_queryData$renderComp7 = _queryData$renderComp6.rendered) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.key, queryData]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   (0, _react2.useEffect)(function () {
-    var _options$data2, _queryData$renderComp10, _queryData$renderComp11;
-    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp10 = queryData.renderComponent) !== null && _queryData$renderComp10 !== void 0 && (_queryData$renderComp11 = _queryData$renderComp10.rendered) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.key) return;
+    var _options$data2, _queryData$renderComp8, _queryData$renderComp9;
+    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && (_queryData$renderComp9 = _queryData$renderComp8.rendered) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.key) return;
     var can;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _options$data3;
@@ -298,9 +295,10 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context3.sent;
-            console.log('Setting sub client 2', key, sub);
+            console.log('SUBSCRIBED TO PRERENDERED', key, options);
             can = sub.subscribe(function (subscriptionData) {
-              var _queryData$renderComp12, _subscriptionData$dat3, _subscriptionData$dat4;
+              var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
+              console.log('UPDATE RECEIVED FOR KEY', key);
               if (!options.skip) setSkip(false);
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
@@ -310,7 +308,7 @@ var useComponent = function useComponent(key) {
                 },
                 data: {
                   renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp10 = queryData.renderComponent) === null || _queryData$renderComp10 === void 0 ? void 0 : _queryData$renderComp10.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
                   }
                 }
               });
@@ -324,7 +322,6 @@ var useComponent = function useComponent(key) {
     }))();
     return function () {
       var _can2, _can2$unsubscribe;
-      console.log('UNSUBSCRIBING', key, can);
       (_can2 = can) === null || _can2 === void 0 ? void 0 : (_can2$unsubscribe = _can2.unsubscribe) === null || _can2$unsubscribe === void 0 ? void 0 : _can2$unsubscribe.call(_can2);
     };
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key, JSON.stringify(options.props)]);
@@ -430,7 +427,7 @@ var useComponent = function useComponent(key) {
       }
     };
   }, [subscribed]);
-  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp13 = queryData.renderComponent) !== null && _queryData$renderComp13 !== void 0 && _queryData$renderComp13.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp14 = queryData.renderComponent) === null || _queryData$renderComp14 === void 0 ? void 0 : _queryData$renderComp14.rendered;
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
@@ -473,8 +470,7 @@ var inline = function inline(_ref10) {
                 for (_len = _args6.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
                   args[_key] = _args6[_key];
                 }
-                console.log('Calling function', val.component, val.name, args);
-                _context6.next = 5;
+                _context6.next = 4;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -489,22 +485,22 @@ var inline = function inline(_ref10) {
                     }
                   }
                 });
-              case 5:
+              case 4:
                 response = _context6.sent;
                 setLastMutationResult(response);
                 return _context6.abrupt("return", response.data.callFunction);
-              case 10:
-                _context6.prev = 10;
+              case 9:
+                _context6.prev = 9;
                 _context6.t0 = _context6["catch"](0);
                 setLastMutationResult({
                   errors: [_context6.t0]
                 });
                 throw _context6.t0;
-              case 14:
+              case 13:
               case "end":
                 return _context6.stop();
             }
-          }, _callee6, null, [[0, 10]]);
+          }, _callee6, null, [[0, 9]]);
         }));
       }
     };
