@@ -23,8 +23,7 @@ import { Session } from './lib/types';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
-    renderComponent(key: $key, props: $props)
-      @connection(key: "renderComponent", filter: ["key", "props"]) {
+    renderComponent(key: $key, props: $props) {
       rendered {
         ... on ServerSideProps {
           key
