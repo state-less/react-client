@@ -341,8 +341,9 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   useEffect(() => {
-    if (!options?.data?.key) return;
-    (async () => {
+    if (!options?.data?.key || queryData?.renderComponent?.rendered?.key)
+      return;
+    async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
@@ -360,28 +361,37 @@ export const useComponent = (
           },
         },
       });
+      setSubcribed(sub);
+    };
+  }, [options?.data?.key]);
 
-      sub.subscribe((subscriptionData) => {
-        if (!options.skip) setSkip(false);
-        console.log('WRITING TO CACHE PRERENDER', key, options.props);
-        actualClient.cache.writeQuery({
-          query: RENDER_COMPONENT,
-          variables: {
-            key,
-            props: options.props,
-          },
-          data: {
-            renderComponent: {
-              rendered: {
-                ...queryData?.renderComponent?.rendered,
-                ...subscriptionData?.data?.updateComponent?.rendered,
-              },
+  useEffect(() => {
+    if (!options?.data?.key) return;
+    if (!subscribed) return;
+    subscribed.subscribe((subscriptionData) => {
+      // if (!options.skip) setSkip(false);
+      actualClient.cache.writeQuery({
+        query: RENDER_COMPONENT,
+        variables: {
+          key,
+          props: options.props,
+        },
+        data: {
+          renderComponent: {
+            rendered: {
+              ...queryData?.renderComponent?.rendered,
+              ...subscriptionData?.data?.updateComponent?.rendered,
             },
           },
-        });
+        },
       });
-    })();
-  }, [options?.data?.key]);
+    });
+
+    return () => {
+      subscribed?.cancel();
+      subscribed?.unsubscribe();
+    };
+  }, [subscribed]);
 
   // useEffect(() => {
   //   if (!subscribed) return;
