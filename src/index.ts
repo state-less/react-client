@@ -23,7 +23,8 @@ import { Session } from './lib/types';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
-    renderComponent(key: $key, props: $props) {
+    renderComponent(key: $key, props: $props)
+      @connection(key: "renderComponent", filter: ["key", "props"]) {
       rendered {
         ... on ServerSideProps {
           key
@@ -281,7 +282,7 @@ export const useComponent = (
     },
     skip: skip,
   });
-
+  console.log('Cached data', queryData?.renderComponent?.rendered, cacheId);
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
