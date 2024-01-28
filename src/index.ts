@@ -303,12 +303,15 @@ export const useComponent = (
           },
         },
       });
+      console.log('Set subscription', key);
+
       setSubcribed(sub);
     };
   }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
     if (!subscribed) return;
+    console.log('SUBSCRIBING', subscribed, key);
     subscribed.subscribe((subscriptionData) => {
       console.log('WRITING TO CACHE', options.props);
       actualClient.cache.writeQuery({
