@@ -313,7 +313,7 @@ var useComponent = function useComponent(key) {
     if (!subscribed) return;
     subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
-      // if (!options.skip) setSkip(false);
+      if (!options.skip) setSkip(false);
       actualClient.cache.writeQuery({
         query: RENDER_COMPONENT,
         variables: {
