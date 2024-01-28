@@ -256,8 +256,6 @@ export const useComponent = (
   const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
 
   const [session] = useLocalStorage('session', initialSession);
-
-  const cacheId = `RenderComponent:${key}:${JSON.stringify(options.props)}`;
   const {
     data: queryData,
     error,
@@ -278,11 +276,9 @@ export const useComponent = (
         'X-Unique-Id': id,
         Authorization: session.token ? `Bearer ${session.token}` : undefined,
       },
-      customCacheKey: cacheId,
     },
     skip: skip,
   });
-  console.log('Cached data', queryData?.renderComponent?.rendered, cacheId);
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
@@ -328,7 +324,7 @@ export const useComponent = (
         setSkip(false);
       });
     })();
-  }, [queryData?.renderComponent?.rendered?.key]);
+  }, [queryData?.renderComponent?.rendered?.key, options.props]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
