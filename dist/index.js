@@ -261,9 +261,8 @@ var useComponent = function useComponent(key) {
       setSkip(false);
     });
     return function () {
-      var _can$unsubscribe;
-      console.log('Unsubscribing', key);
-      can === null || can === void 0 ? void 0 : (_can$unsubscribe = can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(can);
+      // console.log('Unsubscribing', key);
+      // can?.unsubscribe?.();
     };
   }, [subscribed, queryData]);
 
@@ -328,9 +327,8 @@ var useComponent = function useComponent(key) {
       });
     });
     return function () {
-      var _can$unsubscribe2;
-      console.log('Unsubscribing', key);
-      can === null || can === void 0 ? void 0 : (_can$unsubscribe2 = can.unsubscribe) === null || _can$unsubscribe2 === void 0 ? void 0 : _can$unsubscribe2.call(can);
+      // console.log('Unsubscribing', key);
+      // can?.unsubscribe?.();
     };
   }, [subscribed, options.props]);
 

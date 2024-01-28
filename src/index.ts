@@ -332,9 +332,8 @@ export const useComponent = (
     });
 
     return () => {
-      console.log('Unsubscribing', key);
-
-      can?.unsubscribe?.();
+      // console.log('Unsubscribing', key);
+      // can?.unsubscribe?.();
     };
   }, [subscribed, queryData]);
 
@@ -391,9 +390,8 @@ export const useComponent = (
     });
 
     return () => {
-      console.log('Unsubscribing', key);
-
-      can?.unsubscribe?.();
+      // console.log('Unsubscribing', key);
+      // can?.unsubscribe?.();
     };
   }, [subscribed, options.props]);
 
