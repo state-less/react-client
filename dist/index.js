@@ -242,6 +242,7 @@ var useComponent = function useComponent(key) {
     }));
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
   (0, _react2.useEffect)(function () {
+    if (!subscribed) return;
     subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
       console.log('WRITING TO CACHE', options.props);

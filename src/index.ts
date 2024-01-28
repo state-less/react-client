@@ -308,6 +308,7 @@ export const useComponent = (
   }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
+    if (!subscribed) return;
     subscribed.subscribe((subscriptionData) => {
       console.log('WRITING TO CACHE', options.props);
       actualClient.cache.writeQuery({
