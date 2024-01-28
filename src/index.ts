@@ -283,6 +283,11 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   useEffect(() => {
+    console.log(
+      'Creating new sub client',
+      key,
+      !queryData?.renderComponent?.rendered?.key || subscribed
+    );
     if (!queryData?.renderComponent?.rendered?.key || subscribed) return;
 
     (async () => {
@@ -303,7 +308,7 @@ export const useComponent = (
           },
         },
       });
-
+      console.log ("Setting sub client 1")
       setSubcribed(sub);
     })();
   }, [queryData?.renderComponent?.rendered?.key]);
@@ -334,7 +339,6 @@ export const useComponent = (
     return () => {
       console.log('Unsubscribing', key);
       can?.unsubscribe?.();
-      setSubcribed(null);
     };
   }, [subscribed, queryData]);
 
@@ -363,6 +367,8 @@ export const useComponent = (
           },
         },
       });
+      console.log ("Setting sub client 2")
+
       setSubcribed(sub);
     })();
   }, [options?.data?.key]);
@@ -392,9 +398,8 @@ export const useComponent = (
     return () => {
       console.log('Unsubscribing', key);
       can?.unsubscribe?.();
-      setSubcribed(null);
     };
-  }, [subscribed, options.props]);
+  }, [subscribed, JSON.stringify(options.props)]);
 
   // useEffect(() => {
   //   if (!subscribed) return;
