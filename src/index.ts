@@ -245,7 +245,7 @@ export const useComponent = (
     useState<FetchResult>(null);
 
   const [skip, setSkip] = useState(options?.skip || !!options?.data?.key);
-  const [subscribed, setSubcribed] = useState(false);
+  const [subscribed, setSubcribed] = useState<Observable<{}> | null>(null);
   const actualClient = client || providedClient;
 
   if (!actualClient) {
@@ -284,10 +284,10 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
    */
   useEffect(() => {
-    if (!queryData?.renderComponent?.rendered?.key) return;
-    let subscription;
+    if (!queryData?.renderComponent?.rendered?.key || subscribed) return;
+
     (async () => {
-      subscription = await actualClient.subscribe({
+      const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
         variables: {
           key: queryData?.renderComponent?.rendered?.key,
@@ -304,12 +304,12 @@ export const useComponent = (
           },
         },
       });
-      setSubcribed(true);
+      setSubcribed(sub);
       console.log(
         'WRITING TO CACHE SUBSCRIBED',
         queryData?.renderComponent?.rendered?.key
       );
-      subscription.subscribe((subscriptionData) => {
+      sub.subscribe((subscriptionData) => {
         console.log('WRITING TO CACHE', options.props);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
@@ -329,9 +329,6 @@ export const useComponent = (
         setSkip(false);
       });
     })();
-    return () => {
-      subscription?.unsubscribe();
-    };
   }, [queryData?.renderComponent?.rendered?.key, options.props]);
 
   /**

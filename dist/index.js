@@ -167,7 +167,7 @@ var useComponent = function useComponent(key) {
     _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
     skip = _useState4[0],
     setSkip = _useState4[1];
-  var _useState5 = (0, _react2.useState)(false),
+  var _useState5 = (0, _react2.useState)(null),
     _useState6 = (0, _slicedToArray2["default"])(_useState5, 2),
     subscribed = _useState6[0],
     setSubcribed = _useState6[1];
@@ -208,10 +208,10 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     var _queryData$renderComp, _queryData$renderComp2;
-    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key)) return;
-    var subscription;
+    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || subscribed) return;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
       var _queryData$renderComp3, _queryData$renderComp4, _queryData$renderComp5, _queryData$renderComp6;
+      var sub;
       return _regenerator["default"].wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -232,10 +232,10 @@ var useComponent = function useComponent(key) {
               }
             });
           case 2:
-            subscription = _context2.sent;
-            setSubcribed(true);
+            sub = _context2.sent;
+            setSubcribed(sub);
             console.log('WRITING TO CACHE SUBSCRIBED', queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key);
-            subscription.subscribe(function (subscriptionData) {
+            sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
               console.log('WRITING TO CACHE', options.props);
               actualClient.cache.writeQuery({
@@ -258,10 +258,6 @@ var useComponent = function useComponent(key) {
         }
       }, _callee2);
     }))();
-    return function () {
-      var _subscription;
-      (_subscription = subscription) === null || _subscription === void 0 ? void 0 : _subscription.unsubscribe();
-    };
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : (_queryData$renderComp9 = _queryData$renderComp8.rendered) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.key, options.props]);
 
   /**
