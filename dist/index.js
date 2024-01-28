@@ -236,7 +236,7 @@ var useComponent = function useComponent(key) {
           case 2:
             sub = _context2.sent;
             console.log('Setting sub client 1', key, sub);
-            can = subscribed.subscribe(function (subscriptionData) {
+            can = sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
@@ -299,7 +299,7 @@ var useComponent = function useComponent(key) {
           case 2:
             sub = _context3.sent;
             console.log('Setting sub client 2', key, sub);
-            can = subscribed.subscribe(function (subscriptionData) {
+            can = sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp12, _subscriptionData$dat3, _subscriptionData$dat4;
               if (!options.skip) setSkip(false);
               actualClient.cache.writeQuery({

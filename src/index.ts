@@ -309,7 +309,7 @@ export const useComponent = (
         },
       });
       console.log('Setting sub client 1', key, sub);
-      can = subscribed.subscribe((subscriptionData) => {
+      can = sub.subscribe((subscriptionData) => {
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
@@ -362,7 +362,7 @@ export const useComponent = (
         },
       });
       console.log('Setting sub client 2', key, sub);
-      can = subscribed.subscribe((subscriptionData) => {
+      can = sub.subscribe((subscriptionData) => {
         if (!options.skip) setSkip(false);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
