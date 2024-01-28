@@ -183,18 +183,20 @@ var useComponent = function useComponent(key) {
   var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
+  var cacheId = "RenderComponent:".concat(key, ":").concat(JSON.stringify(options.props));
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
       client: actualClient,
       variables: {
         key: key,
         props: options.props
       },
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'cache-first',
       context: {
         headers: {
           'X-Unique-Id': id,
           Authorization: session.token ? "Bearer ".concat(session.token) : undefined
-        }
+        },
+        customCacheKey: cacheId
       },
       skip: skip
     }),
