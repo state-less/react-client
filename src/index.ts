@@ -619,7 +619,7 @@ export const useServerState = <ValueType>(
       'WRITING TO CACHE',
       key,
       scope,
-      queryData.getState,
+      queryData?.getState,
       subscriptionData?.updateState?.value
     );
     actualClient.cache.writeQuery({

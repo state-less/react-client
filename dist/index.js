@@ -582,7 +582,7 @@ var useServerState = function useServerState(initialValue, options) {
     //     },
     //   },
     // });
-    console.log('WRITING TO CACHE', key, scope, queryData.getState, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value);
+    console.log('WRITING TO CACHE', key, scope, queryData === null || queryData === void 0 ? void 0 : queryData.getState, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$upd = subscriptionData.updateState) === null || _subscriptionData$upd === void 0 ? void 0 : _subscriptionData$upd.value);
     actualClient.cache.writeQuery({
       query: GET_STATE,
       variables: {
