@@ -295,10 +295,8 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context3.sent;
-            console.log('SUBSCRIBED TO PRERENDERED', key, options);
             can = sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
-              console.log('UPDATE RECEIVED FOR KEY', key);
               if (!options.skip) setSkip(false);
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
@@ -314,7 +312,7 @@ var useComponent = function useComponent(key) {
               });
             });
             setSubcribed(can);
-          case 6:
+          case 5:
           case "end":
             return _context3.stop();
         }

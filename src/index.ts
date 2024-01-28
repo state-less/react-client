@@ -359,9 +359,8 @@ export const useComponent = (
           },
         },
       });
-      console.log('SUBSCRIBED TO PRERENDERED', key, options);
+
       can = sub.subscribe((subscriptionData) => {
-        console.log('UPDATE RECEIVED FOR KEY', key);
         if (!options.skip) setSkip(false);
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
