@@ -152,7 +152,7 @@ var renderComponent = /*#__PURE__*/function () {
 }();
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _queryData$renderComp7, _queryData$renderComp8, _options$data4, _queryData$renderComp13, _queryData$renderComp14, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp8, _queryData$renderComp9, _options$data4, _queryData$renderComp13, _queryData$renderComp14, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref5 = options || {},
     client = _ref5.client;
@@ -210,6 +210,7 @@ var useComponent = function useComponent(key) {
     var _queryData$renderComp, _queryData$renderComp2, _queryData$renderComp3, _queryData$renderComp4;
     console.log('Creating new sub client', key, !(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || subscribed);
     if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp3 = queryData.renderComponent) !== null && _queryData$renderComp3 !== void 0 && (_queryData$renderComp4 = _queryData$renderComp3.rendered) !== null && _queryData$renderComp4 !== void 0 && _queryData$renderComp4.key) || subscribed) return;
+    var can;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
       var _queryData$renderComp5, _queryData$renderComp6;
       var sub;
@@ -235,39 +236,35 @@ var useComponent = function useComponent(key) {
           case 2:
             sub = _context2.sent;
             console.log('Setting sub client 1', key, sub);
-            setSubcribed(sub);
-          case 5:
+            can = subscribed.subscribe(function (subscriptionData) {
+              var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
+              actualClient.cache.writeQuery({
+                query: RENDER_COMPONENT,
+                variables: {
+                  key: key,
+                  props: options.props
+                },
+                data: {
+                  renderComponent: {
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : _queryData$renderComp7.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
+                  }
+                }
+              });
+              setSkip(false);
+            });
+            setSubcribed(can);
+          case 6:
           case "end":
             return _context2.stop();
         }
       }, _callee2);
     }))();
-  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp7 = queryData.renderComponent) === null || _queryData$renderComp7 === void 0 ? void 0 : (_queryData$renderComp8 = _queryData$renderComp7.rendered) === null || _queryData$renderComp8 === void 0 ? void 0 : _queryData$renderComp8.key]);
-  (0, _react2.useEffect)(function () {
-    console.log('Resubscribing', key, subscribed);
-    if (!subscribed) return;
-    var can = subscribed.subscribe(function (subscriptionData) {
-      var _queryData$renderComp9, _subscriptionData$dat, _subscriptionData$dat2;
-      actualClient.cache.writeQuery({
-        query: RENDER_COMPONENT,
-        variables: {
-          key: key,
-          props: options.props
-        },
-        data: {
-          renderComponent: {
-            rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
-          }
-        }
-      });
-      setSkip(false);
-    });
     return function () {
-      var _can$unsubscribe;
-      console.log('Unsubscribing', key);
-      can === null || can === void 0 ? void 0 : (_can$unsubscribe = can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(can);
+      var _can, _can$unsubscribe;
+      console.log('Unsubscribing', key, can);
+      (_can = can) === null || _can === void 0 ? void 0 : (_can$unsubscribe = _can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(_can);
     };
-  }, [subscribed, queryData]);
+  }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp8 = queryData.renderComponent) === null || _queryData$renderComp8 === void 0 ? void 0 : (_queryData$renderComp9 = _queryData$renderComp8.rendered) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.key, queryData]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
@@ -276,6 +273,7 @@ var useComponent = function useComponent(key) {
   (0, _react2.useEffect)(function () {
     var _options$data2, _queryData$renderComp10, _queryData$renderComp11;
     if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp10 = queryData.renderComponent) !== null && _queryData$renderComp10 !== void 0 && (_queryData$renderComp11 = _queryData$renderComp10.rendered) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.key) return;
+    var can;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _options$data3;
       var sub;
@@ -301,40 +299,35 @@ var useComponent = function useComponent(key) {
           case 2:
             sub = _context3.sent;
             console.log('Setting sub client 2', key, sub);
-            setSubcribed(sub);
-          case 5:
+            can = subscribed.subscribe(function (subscriptionData) {
+              var _queryData$renderComp12, _subscriptionData$dat3, _subscriptionData$dat4;
+              if (!options.skip) setSkip(false);
+              actualClient.cache.writeQuery({
+                query: RENDER_COMPONENT,
+                variables: {
+                  key: key,
+                  props: options.props
+                },
+                data: {
+                  renderComponent: {
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
+                  }
+                }
+              });
+            });
+            setSubcribed(can);
+          case 6:
           case "end":
             return _context3.stop();
         }
       }, _callee3);
     }))();
-  }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
-  (0, _react2.useEffect)(function () {
-    var _options$data5;
-    if (!(options !== null && options !== void 0 && (_options$data5 = options.data) !== null && _options$data5 !== void 0 && _options$data5.key)) return;
-    if (!subscribed) return;
-    var can = subscribed.subscribe(function (subscriptionData) {
-      var _queryData$renderComp12, _subscriptionData$dat3, _subscriptionData$dat4;
-      if (!options.skip) setSkip(false);
-      actualClient.cache.writeQuery({
-        query: RENDER_COMPONENT,
-        variables: {
-          key: key,
-          props: options.props
-        },
-        data: {
-          renderComponent: {
-            rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
-          }
-        }
-      });
-    });
     return function () {
-      var _can$unsubscribe2;
-      console.log('Unsubscribing', key);
-      can === null || can === void 0 ? void 0 : (_can$unsubscribe2 = can.unsubscribe) === null || _can$unsubscribe2 === void 0 ? void 0 : _can$unsubscribe2.call(can);
+      var _can2, _can2$unsubscribe;
+      console.log('UNSUBSCRIBING', key, can);
+      (_can2 = can) === null || _can2 === void 0 ? void 0 : (_can2$unsubscribe = _can2.unsubscribe) === null || _can2$unsubscribe === void 0 ? void 0 : _can2$unsubscribe.call(_can2);
     };
-  }, [subscribed, JSON.stringify(options.props)]);
+  }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key, JSON.stringify(options.props)]);
 
   // useEffect(() => {
   //   if (!subscribed) return;

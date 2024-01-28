@@ -289,7 +289,7 @@ export const useComponent = (
       !queryData?.renderComponent?.rendered?.key || subscribed
     );
     if (!queryData?.renderComponent?.rendered?.key || subscribed) return;
-
+    let can;
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
@@ -309,38 +309,31 @@ export const useComponent = (
         },
       });
       console.log('Setting sub client 1', key, sub);
-      setSubcribed(sub);
-    })();
-  }, [queryData?.renderComponent?.rendered?.key]);
-
-  useEffect(() => {
-    console.log('Resubscribing', key, subscribed);
-    if (!subscribed) return;
-
-    const can = subscribed.subscribe((subscriptionData) => {
-      actualClient.cache.writeQuery({
-        query: RENDER_COMPONENT,
-        variables: {
-          key,
-          props: options.props,
-        },
-        data: {
-          renderComponent: {
-            rendered: {
-              ...queryData?.renderComponent?.rendered,
-              ...subscriptionData?.data?.updateComponent?.rendered,
+      can = subscribed.subscribe((subscriptionData) => {
+        actualClient.cache.writeQuery({
+          query: RENDER_COMPONENT,
+          variables: {
+            key,
+            props: options.props,
+          },
+          data: {
+            renderComponent: {
+              rendered: {
+                ...queryData?.renderComponent?.rendered,
+                ...subscriptionData?.data?.updateComponent?.rendered,
+              },
             },
           },
-        },
+        });
+        setSkip(false);
       });
-      setSkip(false);
-    });
-
+      setSubcribed(can);
+    })();
     return () => {
-      console.log('Unsubscribing', key);
+      console.log('Unsubscribing', key, can);
       can?.unsubscribe?.();
     };
-  }, [subscribed, queryData]);
+  }, [queryData?.renderComponent?.rendered?.key, queryData]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
@@ -349,6 +342,7 @@ export const useComponent = (
   useEffect(() => {
     if (!options?.data?.key || queryData?.renderComponent?.rendered?.key)
       return;
+    let can;
     (async () => {
       const sub = await actualClient.subscribe({
         query: UPDATE_COMPONENT,
@@ -368,38 +362,31 @@ export const useComponent = (
         },
       });
       console.log('Setting sub client 2', key, sub);
-
-      setSubcribed(sub);
-    })();
-  }, [options?.data?.key]);
-
-  useEffect(() => {
-    if (!options?.data?.key) return;
-    if (!subscribed) return;
-    const can = subscribed.subscribe((subscriptionData) => {
-      if (!options.skip) setSkip(false);
-      actualClient.cache.writeQuery({
-        query: RENDER_COMPONENT,
-        variables: {
-          key,
-          props: options.props,
-        },
-        data: {
-          renderComponent: {
-            rendered: {
-              ...queryData?.renderComponent?.rendered,
-              ...subscriptionData?.data?.updateComponent?.rendered,
+      can = subscribed.subscribe((subscriptionData) => {
+        if (!options.skip) setSkip(false);
+        actualClient.cache.writeQuery({
+          query: RENDER_COMPONENT,
+          variables: {
+            key,
+            props: options.props,
+          },
+          data: {
+            renderComponent: {
+              rendered: {
+                ...queryData?.renderComponent?.rendered,
+                ...subscriptionData?.data?.updateComponent?.rendered,
+              },
             },
           },
-        },
+        });
       });
-    });
-
+      setSubcribed(can);
+    })();
     return () => {
-      console.log('Unsubscribing', key);
+      console.log('UNSUBSCRIBING', key, can);
       can?.unsubscribe?.();
     };
-  }, [subscribed, JSON.stringify(options.props)]);
+  }, [options?.data?.key, JSON.stringify(options.props)]);
 
   // useEffect(() => {
   //   if (!subscribed) return;
