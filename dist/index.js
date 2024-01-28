@@ -244,7 +244,6 @@ var useComponent = function useComponent(key) {
     }))();
   }, [queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp5 = queryData.renderComponent) === null || _queryData$renderComp5 === void 0 ? void 0 : (_queryData$renderComp6 = _queryData$renderComp5.rendered) === null || _queryData$renderComp6 === void 0 ? void 0 : _queryData$renderComp6.key]);
   (0, _react2.useEffect)(function () {
-    console.log('SUBSCRIBING', subscribed, key);
     if (!subscribed) return;
     var can = subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp7, _subscriptionData$dat, _subscriptionData$dat2;
@@ -263,13 +262,9 @@ var useComponent = function useComponent(key) {
       });
       setSkip(false);
     });
-    console.log('SUBSCRIBED', can);
     return function () {
-      if (subscribed) {
-        var _subscribed$cancel, _subscribed$unsubscri;
-        subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$cancel = subscribed.cancel) === null || _subscribed$cancel === void 0 ? void 0 : _subscribed$cancel.call(subscribed);
-        subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$unsubscri = subscribed.unsubscribe) === null || _subscribed$unsubscri === void 0 ? void 0 : _subscribed$unsubscri.call(subscribed);
-      }
+      var _can$unsubscribe;
+      can === null || can === void 0 ? void 0 : (_can$unsubscribe = can.unsubscribe) === null || _can$unsubscribe === void 0 ? void 0 : _can$unsubscribe.call(can);
     };
   }, [subscribed, options.props]);
 
@@ -279,7 +274,6 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     var _options$data2, _queryData$renderComp8, _queryData$renderComp9;
-    console.log('Before subscribe', key);
     if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && (_queryData$renderComp9 = _queryData$renderComp8.rendered) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.key) return;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
       var _options$data3;
@@ -305,9 +299,8 @@ var useComponent = function useComponent(key) {
             });
           case 2:
             sub = _context3.sent;
-            console.log('Set subscription', key);
             setSubcribed(sub);
-          case 5:
+          case 4:
           case "end":
             return _context3.stop();
         }
@@ -315,11 +308,10 @@ var useComponent = function useComponent(key) {
     }))();
   }, [options === null || options === void 0 ? void 0 : (_options$data4 = options.data) === null || _options$data4 === void 0 ? void 0 : _options$data4.key]);
   (0, _react2.useEffect)(function () {
-    var _options$data5, _options$data6;
-    console.log('Subscribing ', options === null || options === void 0 ? void 0 : (_options$data5 = options.data) === null || _options$data5 === void 0 ? void 0 : _options$data5.key, subscribed);
-    if (!(options !== null && options !== void 0 && (_options$data6 = options.data) !== null && _options$data6 !== void 0 && _options$data6.key)) return;
+    var _options$data5;
+    if (!(options !== null && options !== void 0 && (_options$data5 = options.data) !== null && _options$data5 !== void 0 && _options$data5.key)) return;
     if (!subscribed) return;
-    subscribed.subscribe(function (subscriptionData) {
+    var can = subscribed.subscribe(function (subscriptionData) {
       var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
       if (!options.skip) setSkip(false);
       actualClient.cache.writeQuery({
@@ -336,9 +328,8 @@ var useComponent = function useComponent(key) {
       });
     });
     return function () {
-      var _subscribed$cancel2, _subscribed$unsubscri2;
-      subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$cancel2 = subscribed.cancel) === null || _subscribed$cancel2 === void 0 ? void 0 : _subscribed$cancel2.call(subscribed);
-      subscribed === null || subscribed === void 0 ? void 0 : (_subscribed$unsubscri2 = subscribed.unsubscribe) === null || _subscribed$unsubscri2 === void 0 ? void 0 : _subscribed$unsubscri2.call(subscribed);
+      var _can$unsubscribe2;
+      can === null || can === void 0 ? void 0 : (_can$unsubscribe2 = can.unsubscribe) === null || _can$unsubscribe2 === void 0 ? void 0 : _can$unsubscribe2.call(can);
     };
   }, [subscribed, options.props]);
 

@@ -312,7 +312,6 @@ export const useComponent = (
   }, [queryData?.renderComponent?.rendered?.key]);
 
   useEffect(() => {
-    console.log('SUBSCRIBING', subscribed, key);
     if (!subscribed) return;
     const can = subscribed.subscribe((subscriptionData) => {
       console.log('WRITING TO CACHE', options.props);
@@ -334,12 +333,8 @@ export const useComponent = (
       setSkip(false);
     });
 
-    console.log('SUBSCRIBED', can);
     return () => {
-      if (subscribed) {
-        subscribed?.cancel?.();
-        subscribed?.unsubscribe?.();
-      }
+      can?.unsubscribe?.();
     };
   }, [subscribed, options.props]);
 
@@ -348,8 +343,6 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   useEffect(() => {
-    console.log('Before subscribe', key);
-
     if (!options?.data?.key || queryData?.renderComponent?.rendered?.key)
       return;
     (async () => {
@@ -370,17 +363,14 @@ export const useComponent = (
           },
         },
       });
-      console.log('Set subscription', key);
-
       setSubcribed(sub);
     })();
   }, [options?.data?.key]);
 
   useEffect(() => {
-    console.log('Subscribing ', options?.data?.key, subscribed);
     if (!options?.data?.key) return;
     if (!subscribed) return;
-    subscribed.subscribe((subscriptionData) => {
+    const can = subscribed.subscribe((subscriptionData) => {
       if (!options.skip) setSkip(false);
       actualClient.cache.writeQuery({
         query: RENDER_COMPONENT,
@@ -400,8 +390,7 @@ export const useComponent = (
     });
 
     return () => {
-      subscribed?.cancel?.();
-      subscribed?.unsubscribe?.();
+      can?.unsubscribe?.();
     };
   }, [subscribed, options.props]);
 
