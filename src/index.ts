@@ -155,17 +155,19 @@ const getInitialValue = (key, initialValue, { cookie }) => {
     const item = window.localStorage.getItem(key);
     if (!item) {
       localStorage.setItem(key, JSON.stringify(initialValue));
+      if (cookie) {
+        document.cookie = `${cookie}=${initialValue}`;
+      }
       return initialValue;
     }
-    if (cookie) {
-      document.cookie = `${cookie}=${initialValue}`;
-    }
+
     return JSON.parse(item);
   } catch (error) {
     console.log(error);
     return initialValue;
   }
 };
+
 export const useLocalStorage = <T>(
   key: string,
   initialValue: T,

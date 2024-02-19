@@ -72,10 +72,10 @@ var getInitialValue = function getInitialValue(key, initialValue, _ref) {
     var item = window.localStorage.getItem(key);
     if (!item) {
       localStorage.setItem(key, JSON.stringify(initialValue));
+      if (cookie) {
+        document.cookie = "".concat(cookie, "=").concat(initialValue);
+      }
       return initialValue;
-    }
-    if (cookie) {
-      document.cookie = "".concat(cookie, "=").concat(initialValue);
     }
     return JSON.parse(item);
   } catch (error) {
