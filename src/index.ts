@@ -152,6 +152,9 @@ const atoms: Record<string, PrimitiveAtom<unknown>> = {};
 
 const getInitialValue = (key, initialValue, { cookie }) => {
   try {
+    if (typeof window === 'undefined') {
+      return initialValue;
+    }
     const item = window.localStorage.getItem(key);
     if (!item) {
       localStorage.setItem(key, JSON.stringify(initialValue));

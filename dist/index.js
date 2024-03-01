@@ -69,6 +69,9 @@ var atoms = {};
 var getInitialValue = function getInitialValue(key, initialValue, _ref) {
   var cookie = _ref.cookie;
   try {
+    if (typeof window === 'undefined') {
+      return initialValue;
+    }
     var item = window.localStorage.getItem(key);
     if (!item) {
       localStorage.setItem(key, JSON.stringify(initialValue));
