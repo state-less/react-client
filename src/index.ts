@@ -256,9 +256,12 @@ export const renderComponent = async (
   if (options.suspend) {
     return wrapPromise(prom)();
   }
-  const { data, error } = await prom;
-
-  return { data: data?.renderComponent?.rendered, error };
+  try {
+    const { data, error } = await prom;
+    return { data: data?.renderComponent?.rendered, error };
+  } catch (e) {
+    return { data: null, error: e };
+  }
 };
 
 export const useComponent = (

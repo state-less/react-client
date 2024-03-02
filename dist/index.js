@@ -136,8 +136,7 @@ function wrapPromise(promise) {
 }
 var renderComponent = /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
-    var _data$renderComponent;
-    var _ref4, client, prom, _yield$prom, data, error;
+    var _ref4, client, prom, _data$renderComponent, _yield$prom, data, error;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -163,9 +162,10 @@ var renderComponent = /*#__PURE__*/function () {
           }
           return _context.abrupt("return", wrapPromise(prom)());
         case 5:
-          _context.next = 7;
+          _context.prev = 5;
+          _context.next = 8;
           return prom;
-        case 7:
+        case 8:
           _yield$prom = _context.sent;
           data = _yield$prom.data;
           error = _yield$prom.error;
@@ -173,11 +173,18 @@ var renderComponent = /*#__PURE__*/function () {
             data: data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered,
             error: error
           });
-        case 11:
+        case 14:
+          _context.prev = 14;
+          _context.t0 = _context["catch"](5);
+          return _context.abrupt("return", {
+            data: null,
+            error: _context.t0
+          });
+        case 17:
         case "end":
           return _context.stop();
       }
-    }, _callee);
+    }, _callee, null, [[5, 14]]);
   }));
   return function renderComponent(_x, _x2) {
     return _ref3.apply(this, arguments);
