@@ -1,5 +1,5 @@
-/// <reference types="react" />
-export declare const ssrContext: import("react").Context<{
+import React from 'react';
+export declare const ssrContext: React.Context<{
     req: Request;
 }>;
 export declare const SSRProvider: ({ req, children }: {
