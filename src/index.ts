@@ -248,6 +248,10 @@ export const renderComponent = (key: string, options: UseComponentOptions) => {
       },
     });
 
+  if (!renderCache[key]) {
+    renderCache[key] = prom;
+  }
+
   console.log('RENDERING SSR', key, prom);
 
   if (options.suspend) {

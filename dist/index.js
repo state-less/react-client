@@ -151,6 +151,9 @@ var renderComponent = function renderComponent(key, options) {
       // },
     }
   });
+  if (!renderCache[key]) {
+    renderCache[key] = prom;
+  }
   console.log('RENDERING SSR', key, prom);
   if (options.suspend) {
     return wrapPromise(prom);
