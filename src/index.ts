@@ -160,7 +160,9 @@ const getInitialValue = (key, initialValue, { cookie }) => {
       }
       return initialValue;
     }
-
+    if (cookie) {
+      document.cookie = `${cookie}=${item}`;
+    }
     return JSON.parse(item);
   } catch (error) {
     console.log(error);
@@ -187,7 +189,7 @@ export const useLocalStorage = <T>(
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
       if (cookie) {
-        console.log('SETTING COOKIE', cookie);
+        console.log('SETTING COOKIE', cookie, JSON.stringify(valueToStore));
         document.cookie = `${cookie}=${JSON.stringify(valueToStore)}`;
       }
     } catch (error) {

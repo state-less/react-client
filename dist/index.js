@@ -83,6 +83,9 @@ var getInitialValue = function getInitialValue(key, initialValue, _ref) {
       }
       return initialValue;
     }
+    if (cookie) {
+      document.cookie = "".concat(cookie, "=").concat(item);
+    }
     return JSON.parse(item);
   } catch (error) {
     console.log(error);
@@ -106,7 +109,7 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
       if (cookie) {
-        console.log('SETTING COOKIE', cookie);
+        console.log('SETTING COOKIE', cookie, JSON.stringify(valueToStore));
         document.cookie = "".concat(cookie, "=").concat(JSON.stringify(valueToStore));
       }
     } catch (error) {
