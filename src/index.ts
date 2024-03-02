@@ -277,11 +277,8 @@ export const useComponent = (
   let serverId = v4();
   const { req } = useContext(ssrContext);
 
-  console.log('Cookie ', (req?.headers as any)?.cookie);
-
   if ((req?.headers as any)?.cookie) {
     const parsed = cookie.parse((req?.headers as any)?.cookie);
-    console.log('SERVER SESSION ID', parsed);
 
     serverId = parsed['x-react-server-id'];
     _initialSession = {
@@ -294,7 +291,9 @@ export const useComponent = (
 
   const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });
 
+  console.log ("SESS BF", _initialSession)
   const [session] = useLocalStorage('session', _initialSession);
+  console.log ("SESS BF2", session)
 
   let ssrResponse;
 
