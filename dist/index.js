@@ -96,7 +96,9 @@ var getInitialValue = function getInitialValue(key, initialValue, _ref) {
 var useLocalStorage = function useLocalStorage(key, initialValue) {
   var _ref2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
     _ref2$cookie = _ref2.cookie,
-    cookie = _ref2$cookie === void 0 ? null : _ref2$cookie;
+    cookie = _ref2$cookie === void 0 ? null : _ref2$cookie,
+    _ref2$ssr = _ref2.ssr,
+    ssr = _ref2$ssr === void 0 ? false : _ref2$ssr;
   var keyAtom = atoms[key] || (atoms[key] = (0, _jotai.atom)(getInitialValue(key, initialValue, {
     cookie: cookie
   })));
@@ -117,6 +119,7 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
       console.log(error);
     }
   };
+  if (ssr) return [initialValue, setValue];
   return [storedValue, setValue];
 };
 exports.useLocalStorage = useLocalStorage;
@@ -194,11 +197,13 @@ var useComponent = function useComponent(key) {
     }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
-  console.log("SESS BF", _initialSession);
-  var _useLocalStorage3 = useLocalStorage('session', _initialSession),
+  console.log('SESS BF', _initialSession);
+  var _useLocalStorage3 = useLocalStorage('session', _initialSession, {
+      ssr: options.suspend
+    }),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
-  console.log("SESS BF2", session);
+  console.log('SESS BF2', session);
   var ssrResponse;
   if (options.suspend) {
     ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {

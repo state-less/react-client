@@ -29,8 +29,9 @@ type UseServerStateInfo = {
     error: ApolloError;
     loading: boolean;
 };
-export declare const useLocalStorage: <T>(key: string, initialValue: T, { cookie }?: {
+export declare const useLocalStorage: <T>(key: string, initialValue: T, { cookie, ssr }?: {
     cookie?: any;
+    ssr?: boolean;
 }) => [T, (val: T) => void];
 export declare const renderCache: Record<string, () => Promise<ApolloQueryResult<any>>>;
 export declare const renderComponent: (key: string, options: UseComponentOptions) => () => Promise<ApolloQueryResult<any>>;

@@ -174,7 +174,7 @@ const getInitialValue = (key, initialValue, { cookie }) => {
 export const useLocalStorage = <T>(
   key: string,
   initialValue: T,
-  { cookie = null } = {}
+  { cookie = null, ssr = false } = {}
 ): [T, (val: T) => void] => {
   const keyAtom =
     (atoms[key] as PrimitiveAtom<T>) ||
@@ -197,6 +197,8 @@ export const useLocalStorage = <T>(
       console.log(error);
     }
   };
+
+  if (ssr) return [initialValue, setValue];
 
   return [storedValue, setValue];
 };
@@ -291,9 +293,11 @@ export const useComponent = (
 
   const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });
 
-  console.log ("SESS BF", _initialSession)
-  const [session] = useLocalStorage('session', _initialSession);
-  console.log ("SESS BF2", session)
+  console.log('SESS BF', _initialSession);
+  const [session] = useLocalStorage('session', _initialSession, {
+    ssr: options.suspend,
+  });
+  console.log('SESS BF2', session);
 
   let ssrResponse;
 
