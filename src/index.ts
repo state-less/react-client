@@ -306,7 +306,12 @@ export const useComponent = (
   let ssrResponse;
 
   if (options.suspend) {
-    ssrResponse = renderComponent(key, { ...options, client: actualClient });
+    ssrResponse = renderComponent(key, {
+      ...options,
+      client: actualClient,
+    }).catch((p) => {
+      throw p;
+    });
   } else {
     ssrResponse = null;
   }

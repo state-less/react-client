@@ -228,7 +228,9 @@ var useComponent = function useComponent(key) {
   if (options.suspend) {
     ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {
       client: actualClient
-    }));
+    }))["catch"](function (p) {
+      throw p;
+    });
   } else {
     ssrResponse = null;
   }
