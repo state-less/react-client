@@ -305,6 +305,7 @@ export const useComponent = (
       ...options,
       client: actualClient,
     })();
+    console.log('RENDERING SSR NOT THROWING');
   } else {
     ssrResponse = null;
   }
@@ -529,7 +530,7 @@ export const useComponent = (
   }, [subscribed]);
 
   const inlineData = ssrResponse
-    ? ssrResponse.data
+    ? ssrResponse.data?.renderComponent?.rendered
     : options?.data && !queryData?.renderComponent?.rendered
     ? options?.data
     : queryData?.renderComponent?.rendered;
@@ -541,6 +542,8 @@ export const useComponent = (
     id,
     session,
   });
+
+  console.log('RENDERING SSR RENDER', inlineData);
 
   const anyError = error || lastMutationResult?.errors?.[0];
 

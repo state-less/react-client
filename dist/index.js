@@ -164,7 +164,7 @@ var renderComponent = function renderComponent(key, options) {
 };
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
+  var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _ssrResponse$data, _ssrResponse$data$ren, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref4 = options || {},
     client = _ref4.client;
@@ -200,6 +200,7 @@ var useComponent = function useComponent(key) {
     ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {
       client: actualClient
     }))();
+    console.log('RENDERING SSR NOT THROWING');
   } else {
     ssrResponse = null;
   }
@@ -445,7 +446,7 @@ var useComponent = function useComponent(key) {
       }
     };
   }, [subscribed]);
-  var inlineData = ssrResponse ? ssrResponse.data : options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
+  var inlineData = ssrResponse ? (_ssrResponse$data = ssrResponse.data) === null || _ssrResponse$data === void 0 ? void 0 : (_ssrResponse$data$ren = _ssrResponse$data.renderComponent) === null || _ssrResponse$data$ren === void 0 ? void 0 : _ssrResponse$data$ren.rendered : options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
@@ -453,6 +454,7 @@ var useComponent = function useComponent(key) {
     id: id,
     session: session
   });
+  console.log('RENDERING SSR RENDER', inlineData);
   var anyError = error || (lastMutationResult === null || lastMutationResult === void 0 ? void 0 : (_lastMutationResult$e = lastMutationResult.errors) === null || _lastMutationResult$e === void 0 ? void 0 : _lastMutationResult$e[0]);
   return [inlined, {
     error: anyError,
