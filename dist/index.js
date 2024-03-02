@@ -176,11 +176,12 @@ var renderComponent = /*#__PURE__*/function () {
         case 14:
           _context.prev = 14;
           _context.t0 = _context["catch"](5);
+          console.log('ERROR RENDERING ', _context.t0);
           return _context.abrupt("return", {
             data: null,
             error: _context.t0
           });
-        case 17:
+        case 18:
         case "end":
           return _context.stop();
       }

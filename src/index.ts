@@ -260,6 +260,7 @@ export const renderComponent = async (
     const { data, error } = await prom;
     return { data: data?.renderComponent?.rendered, error };
   } catch (e) {
+    console.log('ERROR RENDERING ', e);
     return { data: null, error: e };
   }
 };
