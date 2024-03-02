@@ -228,10 +228,7 @@ function wrapPromise<T>(promise: Promise<T>): () => T {
   };
 }
 
-export const renderComponent = async (
-  key: string,
-  options: UseComponentOptions
-) => {
+export const renderComponent = (key: string, options: UseComponentOptions) => {
   const { client } = options || {};
 
   const prom =
@@ -254,15 +251,9 @@ export const renderComponent = async (
   console.log('RENDERING SSR', key, prom);
 
   if (options.suspend) {
-    return wrapPromise(prom)();
+    return wrapPromise(prom);
   }
-  try {
-    const { data, error } = await prom;
-    return { data: data?.renderComponent?.rendered, error };
-  } catch (e) {
-    console.log('ERROR RENDERING ', e);
-    return { data: null, error: e };
-  }
+  return () => prom;
 };
 
 export const useComponent = (
@@ -309,9 +300,7 @@ export const useComponent = (
     ssrResponse = renderComponent(key, {
       ...options,
       client: actualClient,
-    }).catch((p) => {
-      throw p;
-    });
+    })();
   } else {
     ssrResponse = null;
   }

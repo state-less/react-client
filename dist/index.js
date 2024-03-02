@@ -21,8 +21,8 @@ var _exportNames = {
 };
 exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _client = require("@apollo/client");
@@ -134,69 +134,37 @@ function wrapPromise(promise) {
     }
   };
 }
-var renderComponent = /*#__PURE__*/function () {
-  var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
-    var _ref4, client, prom, _data$renderComponent, _yield$prom, data, error;
-    return _regenerator["default"].wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
-        case 0:
-          _ref4 = options || {}, client = _ref4.client;
-          prom = renderCache[key] || client.query({
-            query: RENDER_COMPONENT,
-            variables: {
-              key: key,
-              props: options.props
-            },
-            fetchPolicy: 'network-only',
-            context: {
-              // headers: {
-              //   'X-Unique-Id': id,
-              //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
-              // },
-            }
-          });
-          console.log('RENDERING SSR', key, prom);
-          if (!options.suspend) {
-            _context.next = 5;
-            break;
-          }
-          return _context.abrupt("return", wrapPromise(prom)());
-        case 5:
-          _context.prev = 5;
-          _context.next = 8;
-          return prom;
-        case 8:
-          _yield$prom = _context.sent;
-          data = _yield$prom.data;
-          error = _yield$prom.error;
-          return _context.abrupt("return", {
-            data: data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered,
-            error: error
-          });
-        case 14:
-          _context.prev = 14;
-          _context.t0 = _context["catch"](5);
-          console.log('ERROR RENDERING ', _context.t0);
-          return _context.abrupt("return", {
-            data: null,
-            error: _context.t0
-          });
-        case 18:
-        case "end":
-          return _context.stop();
-      }
-    }, _callee, null, [[5, 14]]);
-  }));
-  return function renderComponent(_x, _x2) {
-    return _ref3.apply(this, arguments);
+var renderComponent = function renderComponent(key, options) {
+  var _ref3 = options || {},
+    client = _ref3.client;
+  var prom = renderCache[key] || client.query({
+    query: RENDER_COMPONENT,
+    variables: {
+      key: key,
+      props: options.props
+    },
+    fetchPolicy: 'network-only',
+    context: {
+      // headers: {
+      //   'X-Unique-Id': id,
+      //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
+      // },
+    }
+  });
+  console.log('RENDERING SSR', key, prom);
+  if (options.suspend) {
+    return wrapPromise(prom);
+  }
+  return function () {
+    return prom;
   };
-}();
+};
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
   var _options$data, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _ref5 = options || {},
-    client = _ref5.client;
+  var _ref4 = options || {},
+    client = _ref4.client;
   var _React$useContext = _react2["default"].useContext((0, _client.getApolloContext)()),
     _React$useContext$cli = _React$useContext.client,
     providedClient = _React$useContext$cli === void 0 ? null : _React$useContext$cli;
@@ -228,9 +196,7 @@ var useComponent = function useComponent(key) {
   if (options.suspend) {
     ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {
       client: actualClient
-    }))["catch"](function (p) {
-      throw p;
-    });
+    }))();
   } else {
     ssrResponse = null;
   }
@@ -261,13 +227,13 @@ var useComponent = function useComponent(key) {
     var _queryData$renderComp, _queryData$renderComp2;
     if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || (subscribed === null || subscribed === void 0 ? void 0 : subscribed._state) === 'ready') return;
     var can;
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
       var _queryData$renderComp3, _queryData$renderComp4;
       var sub;
-      return _regenerator["default"].wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+      return _regenerator["default"].wrap(function _callee$(_context) {
+        while (1) switch (_context.prev = _context.next) {
           case 0:
-            _context2.next = 2;
+            _context.next = 2;
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
@@ -284,7 +250,7 @@ var useComponent = function useComponent(key) {
               }
             });
           case 2:
-            sub = _context2.sent;
+            sub = _context.sent;
             can = sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp5, _subscriptionData$dat, _subscriptionData$dat2;
               actualClient.cache.writeQuery({
@@ -304,9 +270,9 @@ var useComponent = function useComponent(key) {
             setSubcribed(can);
           case 5:
           case "end":
-            return _context2.stop();
+            return _context.stop();
         }
-      }, _callee2);
+      }, _callee);
     }))();
     return function () {
       var _can, _can$unsubscribe;
@@ -322,13 +288,13 @@ var useComponent = function useComponent(key) {
     var _options$data2, _queryData$renderComp8, _queryData$renderComp9;
     if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp8 = queryData.renderComponent) !== null && _queryData$renderComp8 !== void 0 && (_queryData$renderComp9 = _queryData$renderComp8.rendered) !== null && _queryData$renderComp9 !== void 0 && _queryData$renderComp9.key) return;
     var can;
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
       var _options$data3;
       var sub;
-      return _regenerator["default"].wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+      return _regenerator["default"].wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
           case 0:
-            _context3.next = 2;
+            _context2.next = 2;
             return actualClient.subscribe({
               query: UPDATE_COMPONENT,
               variables: {
@@ -345,7 +311,7 @@ var useComponent = function useComponent(key) {
               }
             });
           case 2:
-            sub = _context3.sent;
+            sub = _context2.sent;
             can = sub.subscribe(function (subscriptionData) {
               var _queryData$renderComp10, _subscriptionData$dat3, _subscriptionData$dat4;
               if (!options.skip) setSkip(false);
@@ -365,9 +331,9 @@ var useComponent = function useComponent(key) {
             setSubcribed(can);
           case 5:
           case "end":
-            return _context3.stop();
+            return _context2.stop();
         }
-      }, _callee3);
+      }, _callee2);
     }))();
     return function () {
       var _can2, _can2$unsubscribe;
@@ -404,12 +370,12 @@ var useComponent = function useComponent(key) {
     if (unloading) return;
     // Cancel the event
     e.preventDefault();
-    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
-      return _regenerator["default"].wrap(function _callee4$(_context4) {
-        while (1) switch (_context4.prev = _context4.next) {
+    (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+      return _regenerator["default"].wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
             unloading = true;
-            _context4.next = 3;
+            _context3.next = 3;
             return actualClient.query({
               query: UNMOUNT_COMPONENT,
               variables: {
@@ -427,9 +393,9 @@ var useComponent = function useComponent(key) {
             window.location.reload();
           case 4:
           case "end":
-            return _context4.stop();
+            return _context3.stop();
         }
-      }, _callee4);
+      }, _callee3);
     }))();
     return 'Just press ok, we only need to send a message to the server.';
   };
@@ -446,12 +412,12 @@ var useComponent = function useComponent(key) {
       window.removeEventListener('beforeunload', unload);
       if (!subscribed) return;
       if (options.sendUnmount && actualClient) {
-        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
+        (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4() {
           var cleaned;
-          return _regenerator["default"].wrap(function _callee5$(_context5) {
-            while (1) switch (_context5.prev = _context5.next) {
+          return _regenerator["default"].wrap(function _callee4$(_context4) {
+            while (1) switch (_context4.prev = _context4.next) {
               case 0:
-                _context5.next = 2;
+                _context4.next = 2;
                 return actualClient.query({
                   query: UNMOUNT_COMPONENT,
                   variables: {
@@ -466,12 +432,12 @@ var useComponent = function useComponent(key) {
                   }
                 });
               case 2:
-                cleaned = _context5.sent;
+                cleaned = _context4.sent;
               case 3:
               case "end":
-                return _context5.stop();
+                return _context4.stop();
             }
-          }, _callee5);
+          }, _callee4);
         }))();
       }
     };
@@ -492,12 +458,12 @@ var useComponent = function useComponent(key) {
   }];
 };
 exports.useComponent = useComponent;
-var inline = function inline(_ref10) {
-  var data = _ref10.data,
-    actualClient = _ref10.actualClient,
-    setLastMutationResult = _ref10.setLastMutationResult,
-    id = _ref10.id,
-    session = _ref10.session;
+var inline = function inline(_ref9) {
+  var data = _ref9.data,
+    actualClient = _ref9.actualClient,
+    setLastMutationResult = _ref9.setLastMutationResult,
+    id = _ref9.id,
+    session = _ref9.session;
   var inlined = data;
   if (data !== null && data !== void 0 && data.props) {
     inlined = (0, _utilities.cloneDeep)(inlined);
@@ -506,20 +472,20 @@ var inline = function inline(_ref10) {
         key = _Object$entries$_i[0],
         val = _Object$entries$_i[1];
       if ((val === null || val === void 0 ? void 0 : val.__typename) === 'FunctionCall') {
-        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
+        inlined.props[key] = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5() {
           var _len,
             args,
             _key,
             response,
-            _args6 = arguments;
-          return _regenerator["default"].wrap(function _callee6$(_context6) {
-            while (1) switch (_context6.prev = _context6.next) {
+            _args5 = arguments;
+          return _regenerator["default"].wrap(function _callee5$(_context5) {
+            while (1) switch (_context5.prev = _context5.next) {
               case 0:
-                _context6.prev = 0;
-                for (_len = _args6.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                  args[_key] = _args6[_key];
+                _context5.prev = 0;
+                for (_len = _args5.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args5[_key];
                 }
-                _context6.next = 4;
+                _context5.next = 4;
                 return actualClient.mutate({
                   mutation: CALL_FUNCTION,
                   variables: {
@@ -535,21 +501,21 @@ var inline = function inline(_ref10) {
                   }
                 });
               case 4:
-                response = _context6.sent;
+                response = _context5.sent;
                 setLastMutationResult(response);
-                return _context6.abrupt("return", response.data.callFunction);
+                return _context5.abrupt("return", response.data.callFunction);
               case 9:
-                _context6.prev = 9;
-                _context6.t0 = _context6["catch"](0);
+                _context5.prev = 9;
+                _context5.t0 = _context5["catch"](0);
                 setLastMutationResult({
-                  errors: [_context6.t0]
+                  errors: [_context5.t0]
                 });
-                throw _context6.t0;
+                throw _context5.t0;
               case 13:
               case "end":
-                return _context6.stop();
+                return _context5.stop();
             }
-          }, _callee6, null, [[0, 9]]);
+          }, _callee5, null, [[0, 9]]);
         }));
       }
     };
@@ -641,10 +607,10 @@ var useServerState = function useServerState(initialValue, options) {
         actualValue = value((queryData === null || queryData === void 0 ? void 0 : (_queryData$getState = queryData.getState) === null || _queryData$getState === void 0 ? void 0 : _queryData$getState.value) || initialValue);
       }
       setOptimisticValue(actualValue);
-      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7() {
+      (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6() {
         var response;
-        return _regenerator["default"].wrap(function _callee7$(_context7) {
-          while (1) switch (_context7.prev = _context7.next) {
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
             case 0:
               ref.current.abort();
               ref.current = new AbortController();
@@ -661,21 +627,21 @@ var useServerState = function useServerState(initialValue, options) {
                   }
                 }
               });
-              _context7.next = 5;
+              _context6.next = 5;
               return response;
             case 5:
               if (!ref.current.signal.aborted) {
-                _context7.next = 7;
+                _context6.next = 7;
                 break;
               }
-              return _context7.abrupt("return");
+              return _context6.abrupt("return");
             case 7:
               setTimeout(setOptimisticValue, 0, null);
             case 8:
             case "end":
-              return _context7.stop();
+              return _context6.stop();
           }
-        }, _callee7);
+        }, _callee6);
       }))();
     };
   }, [key, scope, actualClient, queryData === null || queryData === void 0 ? void 0 : (_queryData$getState2 = queryData.getState) === null || _queryData$getState2 === void 0 ? void 0 : _queryData$getState2.value]);
