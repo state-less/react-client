@@ -179,7 +179,7 @@ var useComponent = function useComponent(key) {
   var _useContext = (0, _react2.useContext)(_SSRProvider.ssrContext),
     req = _useContext.req;
   if (req.headers.cookie) {
-    var parsed = (0, _cookie["default"])(req.headers.cookie);
+    var parsed = _cookie["default"].parse(req.headers.cookie);
     serverId = parsed['x-react-server-id'];
     _initialSession = {
       id: serverId,

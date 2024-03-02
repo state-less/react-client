@@ -278,7 +278,7 @@ export const useComponent = (
   const { req } = useContext(ssrContext);
 
   if ((req.headers as any).cookie) {
-    const parsed = cookie((req.headers as any).cookie);
+    const parsed = cookie.parse((req.headers as any).cookie);
     serverId = parsed['x-react-server-id'];
     _initialSession = {
       id: serverId,
