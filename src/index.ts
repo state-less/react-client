@@ -201,7 +201,7 @@ export const useLocalStorage = <T>(
   return [storedValue, setValue];
 };
 
-let renderCache: Record<string, Promise<any>> = {};
+const renderCache: Record<string, Promise<any>> = {};
 
 function wrapPromise<T>(promise: Promise<T>): () => T {
   let status = 'pending';
@@ -217,6 +217,7 @@ function wrapPromise<T>(promise: Promise<T>): () => T {
     }
   );
   return () => {
+    console.log('WRAP PROM', status);
     switch (status) {
       case 'pending':
         throw suspender;

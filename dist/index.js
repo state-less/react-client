@@ -124,6 +124,7 @@ function wrapPromise(promise) {
     response = err;
   });
   return function () {
+    console.log('WRAP PROM', status);
     switch (status) {
       case 'pending':
         throw suspender;
