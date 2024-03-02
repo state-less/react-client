@@ -32,12 +32,13 @@ var AuthProvider = function AuthProvider(_ref) {
   var _useContext = (0, _react.useContext)(context),
     apolloClient = _useContext.client;
   var actualClient = client || apolloClient;
-  var _useLocalStorage = (0, _.useLocalStorage)('session', _instances.initialSession, {
-      cookie: 'x-session'
-    }),
+  var _useLocalStorage = (0, _.useLocalStorage)('session', _instances.initialSession),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 2),
     auth = _useLocalStorage2[0],
     setAuth = _useLocalStorage2[1];
+  (0, _react.useEffect)(function () {
+    document.cookie = "token=".concat(auth.token);
+  }, [auth.token]);
   var authenticate = /*#__PURE__*/function () {
     var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(_ref2) {
       var strategy, data, _yield$actualClient$m, authenticate;

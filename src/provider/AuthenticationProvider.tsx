@@ -1,5 +1,11 @@
 import { ApolloClient, getApolloContext, gql } from '@apollo/client';
-import { createContext, PropsWithChildren, ReactNode, useContext } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useContext,
+  useEffect,
+} from 'react';
 import { useLocalStorage } from '..';
 import React from 'react';
 import { initialSession } from '../lib/instances';
@@ -30,9 +36,11 @@ export const AuthProvider = ({
 
   const actualClient = client || apolloClient;
 
-  const [auth, setAuth] = useLocalStorage('session', initialSession, {
-    cookie: 'x-session',
-  });
+  const [auth, setAuth] = useLocalStorage('session', initialSession);
+
+  useEffect(() => {
+    document.cookie = `token=${auth.token}`;
+  }, [auth.token]);
 
   const authenticate = async ({ strategy, data }) => {
     const {
