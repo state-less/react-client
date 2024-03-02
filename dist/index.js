@@ -35,6 +35,7 @@ var _jotai = require("jotai");
 var _instances = require("./lib/instances");
 var _SSR = require("./lib/util/SSR");
 var _SSRProvider = require("./provider/SSRProvider");
+var _cookie = _interopRequireDefault(require("cookie"));
 var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -173,17 +174,29 @@ var useComponent = function useComponent(key) {
   if (!actualClient) {
     throw new Error('No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.');
   }
-  var _useLocalStorage = useLocalStorage('id', (0, _uuid.v4)(), {
+  var _initialSession = _instances.initialSession;
+  var serverId = (0, _uuid.v4)();
+  var _useContext = (0, _react2.useContext)(_SSRProvider.ssrContext),
+    req = _useContext.req;
+  if (req.headers.cookie) {
+    var parsed = (0, _cookie["default"])(req.headers.cookie);
+    serverId = parsed['x-react-server-id'];
+    _initialSession = {
+      id: serverId,
+      token: parsed.token,
+      strategy: null,
+      strategies: null
+    };
+  }
+  var _useLocalStorage = useLocalStorage('id', serverId, {
       cookie: 'x-react-server-id'
     }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
-  var _useContext = (0, _react2.useContext)(_SSRProvider.ssrContext),
-    req = _useContext.req;
-  console.log('COOKIE', req === null || req === void 0 ? void 0 : req.headers);
-  var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
+  var _useLocalStorage3 = useLocalStorage('session', _initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
+  console.log('SERVER SESSION ID', id, session);
   var ssrResponse;
   if (options.suspend) {
     ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {

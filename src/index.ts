@@ -13,9 +13,10 @@ import { useAtom } from 'jotai';
 import { atom } from 'jotai';
 import { PrimitiveAtom } from 'jotai/vanilla';
 import { initialSession } from './lib/instances';
-import { Session } from './lib/types';
+import { Session, Strategies } from './lib/types';
 import { wrapPromise } from './lib/util/SSR';
 import { ssrContext } from './provider/SSRProvider';
+import cookie from 'cookie';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -271,12 +272,27 @@ export const useComponent = (
       'No Apollo Client found. Wrap your application in an ApolloProvider or provide a Client in the options.'
     );
   }
-  const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
+
+  let _initialSession: Session = initialSession;
+  let serverId = v4();
   const { req } = useContext(ssrContext);
 
-  console.log('COOKIE', req?.headers);
-  const [session] = useLocalStorage('session', initialSession);
+  if ((req.headers as any).cookie) {
+    const parsed = cookie((req.headers as any).cookie);
+    serverId = parsed['x-react-server-id'];
+    _initialSession = {
+      id: serverId,
+      token: parsed.token,
+      strategy: null,
+      strategies: null,
+    };
+  }
 
+  const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });
+
+  const [session] = useLocalStorage('session', _initialSession);
+
+  console.log('SERVER SESSION ID', id, session);
   let ssrResponse;
 
   if (options.suspend) {

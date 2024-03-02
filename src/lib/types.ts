@@ -1,8 +1,8 @@
 export type Session = {
   id: string;
   token: string;
-  strategy: Strategies;
-  strategies: Record<Strategies, Strategy>;
+  strategy?: Strategies;
+  strategies?: Record<Strategies, Strategy>;
 };
 
 export enum Strategies {
