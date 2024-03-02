@@ -3,7 +3,6 @@ import {
   ApolloClient,
   ApolloQueryResult,
   FetchResult,
-  Observable,
   OperationVariables,
 } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
@@ -12,14 +11,10 @@ import { v4 } from 'uuid';
 import { cloneDeep } from '@apollo/client/utilities';
 import { useAtom } from 'jotai';
 import { atom } from 'jotai';
-import {
-  Atom,
-  PrimitiveAtom,
-  SetStateAction,
-  WritableAtom,
-} from 'jotai/vanilla';
+import { PrimitiveAtom } from 'jotai/vanilla';
 import { initialSession } from './lib/instances';
 import { Session } from './lib/types';
+import { wrapPromise } from './lib/util/SSR';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -201,33 +196,10 @@ export const useLocalStorage = <T>(
   return [storedValue, setValue];
 };
 
-const renderCache: Record<string, () => Promise<ApolloQueryResult<any>>> = {};
-
-function wrapPromise<T>(promise: Promise<T>): () => T {
-  let status = 'pending';
-  let response: T;
-  const suspender = promise.then(
-    (res) => {
-      status = 'success';
-      response = res;
-    },
-    (err) => {
-      status = 'error';
-      response = err;
-    }
-  );
-  return () => {
-    console.log('WRAP PROM', status);
-    switch (status) {
-      case 'pending':
-        throw suspender;
-      case 'error':
-        throw response;
-      default:
-        return response;
-    }
-  };
-}
+export const renderCache: Record<
+  string,
+  () => Promise<ApolloQueryResult<any>>
+> = {};
 
 export const renderComponent = (key: string, options: UseComponentOptions) => {
   const { client } = options || {};
@@ -243,7 +215,7 @@ export const renderComponent = (key: string, options: UseComponentOptions) => {
         key,
         props: options.props,
       },
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       context: {
         // headers: {
         //   'X-Unique-Id': id,

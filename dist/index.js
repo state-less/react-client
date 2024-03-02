@@ -15,11 +15,12 @@ var _exportNames = {
   SET_STATE: true,
   CALL_FUNCTION: true,
   useLocalStorage: true,
+  renderCache: true,
   renderComponent: true,
   useComponent: true,
   useServerState: true
 };
-exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
+exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.renderCache = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
@@ -32,6 +33,7 @@ var _uuid = require("uuid");
 var _utilities = require("@apollo/client/utilities");
 var _jotai = require("jotai");
 var _instances = require("./lib/instances");
+var _SSR = require("./lib/util/SSR");
 var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -113,28 +115,7 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
 };
 exports.useLocalStorage = useLocalStorage;
 var renderCache = {};
-function wrapPromise(promise) {
-  var status = 'pending';
-  var response;
-  var suspender = promise.then(function (res) {
-    status = 'success';
-    response = res;
-  }, function (err) {
-    status = 'error';
-    response = err;
-  });
-  return function () {
-    console.log('WRAP PROM', status);
-    switch (status) {
-      case 'pending':
-        throw suspender;
-      case 'error':
-        throw response;
-      default:
-        return response;
-    }
-  };
-}
+exports.renderCache = renderCache;
 var renderComponent = function renderComponent(key, options) {
   var _ref3 = options || {},
     client = _ref3.client;
@@ -148,7 +129,7 @@ var renderComponent = function renderComponent(key, options) {
         key: key,
         props: options.props
       },
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       context: {
         // headers: {
         //   'X-Unique-Id': id,
@@ -156,7 +137,7 @@ var renderComponent = function renderComponent(key, options) {
         // },
       }
     });
-    prom = wrapPromise(res);
+    prom = (0, _SSR.wrapPromise)(res);
     renderCache[key] = prom;
   }
   console.log('RENDERING SSR', key, prom);
