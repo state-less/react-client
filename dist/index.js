@@ -138,30 +138,29 @@ function wrapPromise(promise) {
 var renderComponent = function renderComponent(key, options) {
   var _ref3 = options || {},
     client = _ref3.client;
-  var prom = renderCache[key] || client.query({
-    query: RENDER_COMPONENT,
-    variables: {
-      key: key,
-      props: options.props
-    },
-    fetchPolicy: 'network-only',
-    context: {
-      // headers: {
-      //   'X-Unique-Id': id,
-      //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
-      // },
-    }
-  });
-  if (!renderCache[key]) {
+  var prom;
+  if (renderCache[key]) {
+    prom = renderCache[key];
+  } else {
+    var res = client.query({
+      query: RENDER_COMPONENT,
+      variables: {
+        key: key,
+        props: options.props
+      },
+      fetchPolicy: 'network-only',
+      context: {
+        // headers: {
+        //   'X-Unique-Id': id,
+        //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
+        // },
+      }
+    });
+    prom = wrapPromise(res);
     renderCache[key] = prom;
   }
   console.log('RENDERING SSR', key, prom);
-  if (options.suspend) {
-    return wrapPromise(prom);
-  }
-  return function () {
-    return prom;
-  };
+  return renderCache[key];
 };
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {

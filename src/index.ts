@@ -201,7 +201,7 @@ export const useLocalStorage = <T>(
   return [storedValue, setValue];
 };
 
-const renderCache: Record<string, Promise<any>> = {};
+const renderCache: Record<string, () => Promise<ApolloQueryResult<any>>> = {};
 
 function wrapPromise<T>(promise: Promise<T>): () => T {
   let status = 'pending';
@@ -232,9 +232,12 @@ function wrapPromise<T>(promise: Promise<T>): () => T {
 export const renderComponent = (key: string, options: UseComponentOptions) => {
   const { client } = options || {};
 
-  const prom =
-    renderCache[key] ||
-    client.query({
+  let prom;
+
+  if (renderCache[key]) {
+    prom = renderCache[key];
+  } else {
+    const res = client.query({
       query: RENDER_COMPONENT,
       variables: {
         key,
@@ -248,17 +251,13 @@ export const renderComponent = (key: string, options: UseComponentOptions) => {
         // },
       },
     });
-
-  if (!renderCache[key]) {
+    prom = wrapPromise(res);
     renderCache[key] = prom;
   }
 
   console.log('RENDERING SSR', key, prom);
 
-  if (options.suspend) {
-    return wrapPromise(prom);
-  }
-  return () => prom;
+  return renderCache[key];
 };
 
 export const useComponent = (
