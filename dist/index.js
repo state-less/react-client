@@ -218,7 +218,9 @@ var useComponent = function useComponent(key) {
     session = _useLocalStorage4[0];
   var ssrResponse;
   if (options.suspend) {
-    ssrResponse = renderComponent(key, options);
+    ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {
+      client: actualClient
+    }));
   } else {
     ssrResponse = null;
   }

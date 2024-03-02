@@ -302,7 +302,7 @@ export const useComponent = (
   let ssrResponse;
 
   if (options.suspend) {
-    ssrResponse = renderComponent(key, options);
+    ssrResponse = renderComponent(key, { ...options, client: actualClient });
   } else {
     ssrResponse = null;
   }
