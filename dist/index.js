@@ -127,7 +127,8 @@ var renderCache = {};
 exports.renderCache = renderCache;
 var renderComponent = function renderComponent(key, options) {
   var _ref3 = options || {},
-    client = _ref3.client;
+    client = _ref3.client,
+    session = _ref3.session;
   var prom;
   if (renderCache[key]) {
     prom = renderCache[key];
@@ -140,10 +141,10 @@ var renderComponent = function renderComponent(key, options) {
       },
       fetchPolicy: 'cache-first',
       context: {
-        // headers: {
-        //   'X-Unique-Id': id,
-        //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
-        // },
+        headers: {
+          'X-Unique-Id': session.id,
+          Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+        }
       }
     });
     prom = (0, _SSR.wrapPromise)(res);
@@ -207,7 +208,8 @@ var useComponent = function useComponent(key) {
   var ssrResponse;
   if (options.suspend) {
     ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {
-      client: actualClient
+      client: actualClient,
+      session: session
     }))();
     console.log('RENDERING SSR NOT THROWING');
   } else {

@@ -208,8 +208,11 @@ export const renderCache: Record<
   () => Promise<ApolloQueryResult<any>>
 > = {};
 
-export const renderComponent = (key: string, options: UseComponentOptions) => {
-  const { client } = options || {};
+export const renderComponent = (
+  key: string,
+  options: UseComponentOptions & { session: Session }
+) => {
+  const { client, session } = options || {};
 
   let prom;
 
@@ -224,10 +227,10 @@ export const renderComponent = (key: string, options: UseComponentOptions) => {
       },
       fetchPolicy: 'cache-first',
       context: {
-        // headers: {
-        //   'X-Unique-Id': id,
-        //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
-        // },
+        headers: {
+          'X-Unique-Id': session.id,
+          Authorization: session.token ? `Bearer ${session.token}` : undefined,
+        },
       },
     });
     prom = wrapPromise(res);
@@ -305,6 +308,7 @@ export const useComponent = (
     ssrResponse = renderComponent(key, {
       ...options,
       client: actualClient,
+      session,
     })();
     console.log('RENDERING SSR NOT THROWING');
   } else {

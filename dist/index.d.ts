@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { ApolloClient, ApolloQueryResult, OperationVariables } from '@apollo/client/core';
+import { Session } from './lib/types';
 export declare const RENDER_COMPONENT: import("@apollo/client").DocumentNode;
 export declare const UNMOUNT_COMPONENT: import("@apollo/client").DocumentNode;
 export declare const MOUNT_COMPONENT: import("@apollo/client").DocumentNode;
@@ -34,7 +35,9 @@ export declare const useLocalStorage: <T>(key: string, initialValue: T, { cookie
     ssr?: boolean;
 }) => [T, (val: T) => void];
 export declare const renderCache: Record<string, () => Promise<ApolloQueryResult<any>>>;
-export declare const renderComponent: (key: string, options: UseComponentOptions) => () => Promise<ApolloQueryResult<any>>;
+export declare const renderComponent: (key: string, options: UseComponentOptions & {
+    session: Session;
+}) => () => Promise<ApolloQueryResult<any>>;
 export declare const useComponent: (key: string, options?: UseComponentOptions) => [any, {
     error: ApolloError | Error;
     loading: boolean;
