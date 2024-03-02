@@ -225,7 +225,7 @@ export const renderComponent = (
         key,
         props: options.props,
       },
-      fetchPolicy: 'cache-first',
+      fetchPolicy: 'network-only',
       context: {
         headers: {
           'X-Unique-Id': session.id,

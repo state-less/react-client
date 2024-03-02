@@ -139,7 +139,7 @@ var renderComponent = function renderComponent(key, options) {
         key: key,
         props: options.props
       },
-      fetchPolicy: 'cache-first',
+      fetchPolicy: 'network-only',
       context: {
         headers: {
           'X-Unique-Id': session.id,
