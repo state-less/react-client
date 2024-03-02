@@ -6,7 +6,7 @@ import {
   OperationVariables,
 } from '@apollo/client/core';
 import { useQuery, useSubscription } from '@apollo/client/react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { v4 } from 'uuid';
 import { cloneDeep } from '@apollo/client/utilities';
 import { useAtom } from 'jotai';
@@ -15,6 +15,7 @@ import { PrimitiveAtom } from 'jotai/vanilla';
 import { initialSession } from './lib/instances';
 import { Session } from './lib/types';
 import { wrapPromise } from './lib/util/SSR';
+import { ssrContext } from './provider/SSRProvider';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -257,7 +258,7 @@ export const useComponent = (
     useState<FetchResult>(null);
 
   const [skip, setSkip] = useState(
-    options?.skip || !!options?.data?.key || options.suspend
+    options?.skip || !!options?.data?.key || options?.suspend
   );
   const [subscribed, setSubcribed] = useState<any | null>(null);
   const actualClient = client || providedClient;
@@ -268,6 +269,9 @@ export const useComponent = (
     );
   }
   const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
+  const { req } = useContext(ssrContext);
+  const cookie = req.headers.get('Cookie');
+  console.log('COOKIE', cookie);
   const [session] = useLocalStorage('session', initialSession);
 
   let ssrResponse;
@@ -295,7 +299,6 @@ export const useComponent = (
       key,
       props: options.props,
     },
-
     fetchPolicy: 'cache-first',
     context: {
       headers: {

@@ -34,6 +34,7 @@ var _utilities = require("@apollo/client/utilities");
 var _jotai = require("jotai");
 var _instances = require("./lib/instances");
 var _SSR = require("./lib/util/SSR");
+var _SSRProvider = require("./provider/SSRProvider");
 var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -156,7 +157,7 @@ var useComponent = function useComponent(key) {
     _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
     lastMutationResult = _useState2[0],
     setLastMutationResult = _useState2[1];
-  var _useState3 = (0, _react2.useState)((options === null || options === void 0 ? void 0 : options.skip) || !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key) || options.suspend),
+  var _useState3 = (0, _react2.useState)((options === null || options === void 0 ? void 0 : options.skip) || !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key) || (options === null || options === void 0 ? void 0 : options.suspend)),
     _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
     skip = _useState4[0],
     setSkip = _useState4[1];
@@ -173,6 +174,10 @@ var useComponent = function useComponent(key) {
     }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
+  var _useContext = (0, _react2.useContext)(_SSRProvider.ssrContext),
+    req = _useContext.req;
+  var cookie = req.headers.get('Cookie');
+  console.log('COOKIE', cookie);
   var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
