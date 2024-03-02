@@ -32,7 +32,9 @@ var AuthProvider = function AuthProvider(_ref) {
   var _useContext = (0, _react.useContext)(context),
     apolloClient = _useContext.client;
   var actualClient = client || apolloClient;
-  var _useLocalStorage = (0, _.useLocalStorage)('session', _instances.initialSession),
+  var _useLocalStorage = (0, _.useLocalStorage)('session', _instances.initialSession, {
+      cookie: 'x-session'
+    }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 2),
     auth = _useLocalStorage2[0],
     setAuth = _useLocalStorage2[1];

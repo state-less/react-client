@@ -106,7 +106,8 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
       if (cookie) {
-        document.cookie = "".concat(cookie, "=").concat(valueToStore);
+        console.log('SETTING COOKIE', cookie);
+        document.cookie = "".concat(cookie, "=").concat(JSON.stringify(valueToStore));
       }
     } catch (error) {
       console.log(error);

@@ -187,7 +187,8 @@ export const useLocalStorage = <T>(
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
       if (cookie) {
-        document.cookie = `${cookie}=${valueToStore}`;
+        console.log('SETTING COOKIE', cookie);
+        document.cookie = `${cookie}=${JSON.stringify(valueToStore)}`;
       }
     } catch (error) {
       console.log(error);

@@ -30,7 +30,9 @@ export const AuthProvider = ({
 
   const actualClient = client || apolloClient;
 
-  const [auth, setAuth] = useLocalStorage('session', initialSession);
+  const [auth, setAuth] = useLocalStorage('session', initialSession, {
+    cookie: 'x-session',
+  });
 
   const authenticate = async ({ strategy, data }) => {
     const {
