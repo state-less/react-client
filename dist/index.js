@@ -177,7 +177,7 @@ var useComponent = function useComponent(key) {
     id = _useLocalStorage2[0];
   var _useContext = (0, _react2.useContext)(_SSRProvider.ssrContext),
     req = _useContext.req;
-  console.log('COOKIE', req.headers);
+  console.log('COOKIE', req === null || req === void 0 ? void 0 : req.headers);
   var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];

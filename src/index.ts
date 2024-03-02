@@ -272,7 +272,7 @@ export const useComponent = (
   const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
   const { req } = useContext(ssrContext);
 
-  console.log('COOKIE', req.headers);
+  console.log('COOKIE', req?.headers);
   const [session] = useLocalStorage('session', initialSession);
 
   let ssrResponse;
