@@ -277,8 +277,12 @@ export const useComponent = (
   let serverId = v4();
   const { req } = useContext(ssrContext);
 
+  console.log('Cookie ', (req?.headers as any)?.cookie);
+
   if ((req?.headers as any)?.cookie) {
     const parsed = cookie.parse((req?.headers as any)?.cookie);
+    console.log('SERVER SESSION ID', parsed);
+
     serverId = parsed['x-react-server-id'];
     _initialSession = {
       id: serverId,
@@ -292,7 +296,6 @@ export const useComponent = (
 
   const [session] = useLocalStorage('session', _initialSession);
 
-  console.log('SERVER SESSION ID', id, session);
   let ssrResponse;
 
   if (options.suspend) {

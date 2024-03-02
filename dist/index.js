@@ -151,7 +151,7 @@ var renderComponent = function renderComponent(key, options) {
 };
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _req$headers, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _ssrResponse$data, _ssrResponse$data$ren, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
+  var _options$data, _req$headers, _req$headers2, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _ssrResponse$data, _ssrResponse$data$ren, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref4 = options || {},
     client = _ref4.client;
@@ -178,9 +178,11 @@ var useComponent = function useComponent(key) {
   var serverId = (0, _uuid.v4)();
   var _useContext = (0, _react2.useContext)(_SSRProvider.ssrContext),
     req = _useContext.req;
-  if (req !== null && req !== void 0 && (_req$headers = req.headers) !== null && _req$headers !== void 0 && _req$headers.cookie) {
-    var _req$headers2;
-    var parsed = _cookie["default"].parse(req === null || req === void 0 ? void 0 : (_req$headers2 = req.headers) === null || _req$headers2 === void 0 ? void 0 : _req$headers2.cookie);
+  console.log('Cookie ', req === null || req === void 0 ? void 0 : (_req$headers = req.headers) === null || _req$headers === void 0 ? void 0 : _req$headers.cookie);
+  if (req !== null && req !== void 0 && (_req$headers2 = req.headers) !== null && _req$headers2 !== void 0 && _req$headers2.cookie) {
+    var _req$headers3;
+    var parsed = _cookie["default"].parse(req === null || req === void 0 ? void 0 : (_req$headers3 = req.headers) === null || _req$headers3 === void 0 ? void 0 : _req$headers3.cookie);
+    console.log('SERVER SESSION ID', parsed);
     serverId = parsed['x-react-server-id'];
     _initialSession = {
       id: serverId,
@@ -197,7 +199,6 @@ var useComponent = function useComponent(key) {
   var _useLocalStorage3 = useLocalStorage('session', _initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
-  console.log('SERVER SESSION ID', id, session);
   var ssrResponse;
   if (options.suspend) {
     ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {
