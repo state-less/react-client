@@ -112,16 +112,37 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
   return [storedValue, setValue];
 };
 exports.useLocalStorage = useLocalStorage;
+var renderCache = {};
+function wrapPromise(promise) {
+  var status = 'pending';
+  var response;
+  var suspender = promise.then(function (res) {
+    status = 'success';
+    response = res;
+  }, function (err) {
+    status = 'error';
+    response = err;
+  });
+  return function () {
+    switch (status) {
+      case 'pending':
+        throw suspender;
+      case 'error':
+        throw response;
+      default:
+        return response;
+    }
+  };
+}
 var renderComponent = /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, options) {
     var _data$renderComponent;
-    var _ref4, client, _yield$client$query, data, error;
+    var _ref4, client, prom, _yield$prom, data, error;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           _ref4 = options || {}, client = _ref4.client;
-          _context.next = 3;
-          return client.query({
+          prom = renderCache[key] || client.query({
             query: RENDER_COMPONENT,
             variables: {
               key: key,
@@ -135,15 +156,24 @@ var renderComponent = /*#__PURE__*/function () {
               // },
             }
           });
-        case 3:
-          _yield$client$query = _context.sent;
-          data = _yield$client$query.data;
-          error = _yield$client$query.error;
+          console.log('RENDERING SSR', key, prom);
+          if (!options.suspend) {
+            _context.next = 5;
+            break;
+          }
+          return _context.abrupt("return", wrapPromise(prom)());
+        case 5:
+          _context.next = 7;
+          return prom;
+        case 7:
+          _yield$prom = _context.sent;
+          data = _yield$prom.data;
+          error = _yield$prom.error;
           return _context.abrupt("return", {
             data: data === null || data === void 0 ? void 0 : (_data$renderComponent = data.renderComponent) === null || _data$renderComponent === void 0 ? void 0 : _data$renderComponent.rendered,
             error: error
           });
-        case 7:
+        case 11:
         case "end":
           return _context.stop();
       }
@@ -166,7 +196,7 @@ var useComponent = function useComponent(key) {
     _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
     lastMutationResult = _useState2[0],
     setLastMutationResult = _useState2[1];
-  var _useState3 = (0, _react2.useState)((options === null || options === void 0 ? void 0 : options.skip) || !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key)),
+  var _useState3 = (0, _react2.useState)((options === null || options === void 0 ? void 0 : options.skip) || !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key) || options.suspend),
     _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
     skip = _useState4[0],
     setSkip = _useState4[1];
@@ -186,6 +216,12 @@ var useComponent = function useComponent(key) {
   var _useLocalStorage3 = useLocalStorage('session', _instances.initialSession),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
+  var ssrResponse;
+  if (options.suspend) {
+    ssrResponse = renderComponent(key, options);
+  } else {
+    ssrResponse = null;
+  }
   var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
       client: actualClient,
       variables: {
@@ -428,7 +464,7 @@ var useComponent = function useComponent(key) {
       }
     };
   }, [subscribed]);
-  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
+  var inlineData = ssrResponse ? ssrResponse.data : options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,

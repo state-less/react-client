@@ -23,6 +23,7 @@ type UseComponentOptions = {
     skip?: boolean;
     preventUnload?: boolean;
     sendUnmount?: boolean;
+    suspend?: boolean;
 };
 type UseServerStateInfo = {
     error: ApolloError;
@@ -31,10 +32,7 @@ type UseServerStateInfo = {
 export declare const useLocalStorage: <T>(key: string, initialValue: T, { cookie }?: {
     cookie?: any;
 }) => [T, (val: T) => void];
-export declare const renderComponent: (key: string, options: UseComponentOptions) => Promise<{
-    data: any;
-    error: ApolloError;
-}>;
+export declare const renderComponent: (key: string, options: UseComponentOptions) => Promise<any>;
 export declare const useComponent: (key: string, options?: UseComponentOptions) => [any, {
     error: ApolloError | Error;
     loading: boolean;

@@ -141,6 +141,7 @@ type UseComponentOptions = {
   skip?: boolean;
   preventUnload?: boolean;
   sendUnmount?: boolean;
+  suspend?: boolean;
 };
 
 type UseServerStateInfo = {
@@ -200,26 +201,62 @@ export const useLocalStorage = <T>(
   return [storedValue, setValue];
 };
 
+let renderCache: Record<string, Promise<any>> = {};
+
+function wrapPromise<T>(promise: Promise<T>): () => T {
+  let status = 'pending';
+  let response: T;
+  const suspender = promise.then(
+    (res) => {
+      status = 'success';
+      response = res;
+    },
+    (err) => {
+      status = 'error';
+      response = err;
+    }
+  );
+  return () => {
+    switch (status) {
+      case 'pending':
+        throw suspender;
+      case 'error':
+        throw response;
+      default:
+        return response;
+    }
+  };
+}
+
 export const renderComponent = async (
   key: string,
   options: UseComponentOptions
 ) => {
   const { client } = options || {};
 
-  const { data, error } = await client.query({
-    query: RENDER_COMPONENT,
-    variables: {
-      key,
-      props: options.props,
-    },
-    fetchPolicy: 'network-only',
-    context: {
-      // headers: {
-      //   'X-Unique-Id': id,
-      //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
-      // },
-    },
-  });
+  const prom =
+    renderCache[key] ||
+    client.query({
+      query: RENDER_COMPONENT,
+      variables: {
+        key,
+        props: options.props,
+      },
+      fetchPolicy: 'network-only',
+      context: {
+        // headers: {
+        //   'X-Unique-Id': id,
+        //   Authorization: session.token ? `Bearer ${session.token}` : undefined,
+        // },
+      },
+    });
+
+  console.log('RENDERING SSR', key, prom);
+
+  if (options.suspend) {
+    return wrapPromise(prom)();
+  }
+  const { data, error } = await prom;
 
   return { data: data?.renderComponent?.rendered, error };
 };
@@ -248,7 +285,9 @@ export const useComponent = (
   const [lastMutationResult, setLastMutationResult] =
     useState<FetchResult>(null);
 
-  const [skip, setSkip] = useState(options?.skip || !!options?.data?.key);
+  const [skip, setSkip] = useState(
+    options?.skip || !!options?.data?.key || options.suspend
+  );
   const [subscribed, setSubcribed] = useState<any | null>(null);
   const actualClient = client || providedClient;
 
@@ -258,8 +297,16 @@ export const useComponent = (
     );
   }
   const [id] = useLocalStorage('id', v4(), { cookie: 'x-react-server-id' });
-
   const [session] = useLocalStorage('session', initialSession);
+
+  let ssrResponse;
+
+  if (options.suspend) {
+    ssrResponse = renderComponent(key, options);
+  } else {
+    ssrResponse = null;
+  }
+
   const {
     data: queryData,
     error,
@@ -479,10 +526,11 @@ export const useComponent = (
     };
   }, [subscribed]);
 
-  const inlineData =
-    options?.data && !queryData?.renderComponent?.rendered
-      ? options?.data
-      : queryData?.renderComponent?.rendered;
+  const inlineData = ssrResponse
+    ? ssrResponse.data
+    : options?.data && !queryData?.renderComponent?.rendered
+    ? options?.data
+    : queryData?.renderComponent?.rendered;
 
   const inlined = inline({
     data: inlineData,
