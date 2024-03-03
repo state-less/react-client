@@ -302,13 +302,9 @@ export const useComponent = (
 
   const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });
 
-  console.log('SESS BF', _initialSession);
   const [session] = useLocalStorage('session', _initialSession, {
     ssr: options.suspend,
   });
-  // console.log('SESS BF2', session);
-
-  let useEitherQuery: typeof useSuspenseQuery | typeof useQuery = useQuery;
 
   let result;
   const queryOptions = {
@@ -327,7 +323,10 @@ export const useComponent = (
     skip: skip,
   };
   if (options.suspend) {
+    console.log('SUSPENDED; USE SUSPENSE QUERY');
     result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
+    console.log('SUSPENDED; USE SUSPENSE QUERY 2', result);
+
     // ssrResponse = renderComponent(key, {
     //   ...options,
     //   client: actualClient,

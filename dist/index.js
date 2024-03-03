@@ -198,15 +198,11 @@ var useComponent = function useComponent(key) {
     }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
-  console.log('SESS BF', _initialSession);
   var _useLocalStorage3 = useLocalStorage('session', _initialSession, {
       ssr: options.suspend
     }),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
-  // console.log('SESS BF2', session);
-
-  var useEitherQuery = _react.useQuery;
   var result;
   var queryOptions = {
     client: actualClient,
@@ -224,7 +220,10 @@ var useComponent = function useComponent(key) {
     skip: skip
   };
   if (options.suspend) {
+    console.log('SUSPENDED; USE SUSPENSE QUERY');
     result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
+    console.log('SUSPENDED; USE SUSPENSE QUERY 2', result);
+
     // ssrResponse = renderComponent(key, {
     //   ...options,
     //   client: actualClient,
