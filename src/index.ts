@@ -299,6 +299,7 @@ export const useComponent = (
     serverId = parsed['x-react-server-id'];
     _initialSession = {
       ...decoded,
+      id: serverId,
       token: parsed.token,
     };
   }

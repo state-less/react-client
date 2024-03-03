@@ -192,6 +192,7 @@ var useComponent = function useComponent(key) {
     var decoded = jwt.decode(parsed.token);
     serverId = parsed['x-react-server-id'];
     _initialSession = _objectSpread(_objectSpread({}, decoded), {}, {
+      id: serverId,
       token: parsed.token
     });
   }
