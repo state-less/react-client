@@ -294,7 +294,6 @@ export const useComponent = (
 
   if ((req?.headers as any)?.cookie && options.ssr) {
     const parsed = cookie.parse((req?.headers as any)?.cookie);
-    console.log('CALLING JWT', typeof req, parsed);
     const decoded = jwt.decode(parsed.token);
 
     serverId = parsed['x-react-server-id'];
@@ -309,6 +308,10 @@ export const useComponent = (
   const [session] = useLocalStorage('session', _initialSession, {
     ssr: options.ssr,
   });
+
+  if (key === 'poll-open') {
+    console.log('SSR SESSIOn', id, session.token);
+  }
 
   let result;
   const queryOptions = {
