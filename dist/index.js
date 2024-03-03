@@ -197,7 +197,8 @@ var useComponent = function useComponent(key) {
     });
   }
   var _useLocalStorage = useLocalStorage('id', serverId, {
-      cookie: 'x-react-server-id'
+      cookie: 'x-react-server-id',
+      ssr: options.ssr
     }),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
@@ -206,9 +207,6 @@ var useComponent = function useComponent(key) {
     }),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
-  if (key === 'poll-open') {
-    console.log('SSR SESSIOn', serverId, id);
-  }
   var result;
   var queryOptions = {
     client: actualClient,

@@ -304,15 +304,14 @@ export const useComponent = (
     };
   }
 
-  const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });
+  const [id] = useLocalStorage('id', serverId, {
+    cookie: 'x-react-server-id',
+    ssr: options.ssr,
+  });
 
   const [session] = useLocalStorage('session', _initialSession, {
     ssr: options.ssr,
   });
-
-  if (key === 'poll-open') {
-    console.log('SSR SESSIOn', serverId, id);
-  }
 
   let result;
   const queryOptions = {
