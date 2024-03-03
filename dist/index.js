@@ -36,6 +36,7 @@ var _instances = require("./lib/instances");
 var _SSR = require("./lib/util/SSR");
 var _SSRProvider = require("./provider/SSRProvider");
 var _cookie = _interopRequireDefault(require("cookie"));
+var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -185,14 +186,19 @@ var useComponent = function useComponent(key) {
   if (req !== null && req !== void 0 && (_req$headers = req.headers) !== null && _req$headers !== void 0 && _req$headers.cookie) {
     var _req$headers2;
     var parsed = _cookie["default"].parse(req === null || req === void 0 ? void 0 : (_req$headers2 = req.headers) === null || _req$headers2 === void 0 ? void 0 : _req$headers2.cookie);
+    var decoded = _jsonwebtoken["default"].decode(parsed.token);
+    console.log('DECODED JWT', decoded);
     serverId = parsed['x-react-server-id'];
     _initialSession = {
       id: serverId,
-      token: parsed.token,
-      strategy: null,
-      strategies: null
+      token: parsed.token
+      // strategy: Strategies.Google,
+      // strategies: {
+      //   [Strategies.Google]: {},
+      // },
     };
   }
+
   var _useLocalStorage = useLocalStorage('id', serverId, {
       cookie: 'x-react-server-id'
     }),
