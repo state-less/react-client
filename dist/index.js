@@ -22,8 +22,8 @@ var _exportNames = {
 };
 exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.renderCache = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _client = require("@apollo/client");
@@ -155,7 +155,7 @@ var renderComponent = function renderComponent(key, options) {
 };
 exports.renderComponent = renderComponent;
 var useComponent = function useComponent(key) {
-  var _options$data, _req$headers, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _ssrResponse$data, _ssrResponse$data$ren, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
+  var _options$data, _req$headers, _queryData$renderComp6, _queryData$renderComp7, _options$data4, _queryData$renderComp11, _queryData$renderComp12, _lastMutationResult$e;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _ref4 = options || {},
     client = _ref4.client;
@@ -204,36 +204,43 @@ var useComponent = function useComponent(key) {
     }),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
-  console.log('SESS BF2', session);
-  var ssrResponse;
+  // console.log('SESS BF2', session);
+
+  var useEitherQuery = _react.useQuery;
+  var result;
+  var queryOptions = {
+    client: actualClient,
+    variables: {
+      key: key,
+      props: options.props
+    },
+    fetchPolicy: 'cache-first',
+    context: {
+      headers: {
+        'X-Unique-Id': id,
+        Authorization: session.token ? "Bearer ".concat(session.token) : undefined
+      }
+    },
+    skip: skip
+  };
   if (options.suspend) {
-    ssrResponse = renderComponent(key, _objectSpread(_objectSpread({}, options), {}, {
-      client: actualClient,
-      session: session
-    }))();
-    console.log('RENDERING SSR NOT THROWING');
+    result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
+    // ssrResponse = renderComponent(key, {
+    //   ...options,
+    //   client: actualClient,
+    //   session,
+    // })();
+    // console.log('RENDERING SSR NOT THROWING');
   } else {
-    ssrResponse = null;
+    result = (0, _react.useQuery)(RENDER_COMPONENT, queryOptions);
+    // ssrResponse = null;
   }
-  var _useQuery = (0, _react.useQuery)(RENDER_COMPONENT, {
-      client: actualClient,
-      variables: {
-        key: key,
-        props: options.props
-      },
-      fetchPolicy: 'cache-first',
-      context: {
-        headers: {
-          'X-Unique-Id': id,
-          Authorization: session.token ? "Bearer ".concat(session.token) : undefined
-        }
-      },
-      skip: skip
-    }),
-    queryData = _useQuery.data,
-    error = _useQuery.error,
-    loading = _useQuery.loading,
-    refetch = _useQuery.refetch;
+
+  var _result = result,
+    queryData = _result.data,
+    error = _result.error,
+    loading = _result.loading,
+    refetch = _result.refetch;
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
@@ -457,7 +464,11 @@ var useComponent = function useComponent(key) {
       }
     };
   }, [subscribed]);
-  var inlineData = ssrResponse ? (_ssrResponse$data = ssrResponse.data) === null || _ssrResponse$data === void 0 ? void 0 : (_ssrResponse$data$ren = _ssrResponse$data.renderComponent) === null || _ssrResponse$data$ren === void 0 ? void 0 : _ssrResponse$data$ren.rendered : options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
+
+  // ssrResponse
+  //   ? ssrResponse.data?.renderComponent?.rendered
+  //   :
+  var inlineData = options !== null && options !== void 0 && options.data && !(queryData !== null && queryData !== void 0 && (_queryData$renderComp11 = queryData.renderComponent) !== null && _queryData$renderComp11 !== void 0 && _queryData$renderComp11.rendered) ? options === null || options === void 0 ? void 0 : options.data : queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp12 = queryData.renderComponent) === null || _queryData$renderComp12 === void 0 ? void 0 : _queryData$renderComp12.rendered;
   var inlined = inline({
     data: inlineData,
     actualClient: actualClient,
@@ -574,7 +585,7 @@ var useServerState = function useServerState(initialValue, options) {
     _useLocalStorage6 = (0, _slicedToArray2["default"])(_useLocalStorage5, 1),
     id = _useLocalStorage6[0];
   var cacheId = "GetData:".concat(key, ":").concat(scope);
-  var _useQuery2 = (0, _react.useQuery)(GET_STATE, {
+  var _useQuery = (0, _react.useQuery)(GET_STATE, {
       client: actualClient,
       variables: {
         key: key,
@@ -587,9 +598,9 @@ var useServerState = function useServerState(initialValue, options) {
         customCacheKey: cacheId
       }
     }),
-    queryData = _useQuery2.data,
-    apolloError = _useQuery2.error,
-    loading = _useQuery2.loading;
+    queryData = _useQuery.data,
+    apolloError = _useQuery.error,
+    loading = _useQuery.loading;
   var error = queryData !== null && queryData !== void 0 && queryData.getState && !apolloError ? new _client.ApolloError({
     errorMessage: 'No data'
   }) : apolloError;

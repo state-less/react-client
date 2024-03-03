@@ -5,7 +5,13 @@ import {
   FetchResult,
   OperationVariables,
 } from '@apollo/client/core';
-import { useQuery, useSubscription } from '@apollo/client/react';
+import {
+  QueryResult,
+  UseSuspenseQueryResult,
+  useQuery,
+  useSubscription,
+  useSuspenseQuery,
+} from '@apollo/client/react';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { v4 } from 'uuid';
 import { cloneDeep } from '@apollo/client/utilities';
@@ -300,35 +306,18 @@ export const useComponent = (
   const [session] = useLocalStorage('session', _initialSession, {
     ssr: options.suspend,
   });
-  console.log('SESS BF2', session);
+  // console.log('SESS BF2', session);
 
-  let ssrResponse;
+  let useEitherQuery: typeof useSuspenseQuery | typeof useQuery = useQuery;
 
-  if (options.suspend) {
-    ssrResponse = renderComponent(key, {
-      ...options,
-      client: actualClient,
-      session,
-    })();
-    console.log('RENDERING SSR NOT THROWING');
-  } else {
-    ssrResponse = null;
-  }
-
-  const {
-    data: queryData,
-    error,
-    loading,
-    refetch,
-  } = useQuery<{
-    renderComponent: { rendered: any };
-  }>(RENDER_COMPONENT, {
+  let result;
+  const queryOptions = {
     client: actualClient,
     variables: {
       key,
       props: options.props,
     },
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-first' as const,
     context: {
       headers: {
         'X-Unique-Id': id,
@@ -336,7 +325,21 @@ export const useComponent = (
       },
     },
     skip: skip,
-  });
+  };
+  if (options.suspend) {
+    result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
+    // ssrResponse = renderComponent(key, {
+    //   ...options,
+    //   client: actualClient,
+    //   session,
+    // })();
+    // console.log('RENDERING SSR NOT THROWING');
+  } else {
+    result = useQuery(RENDER_COMPONENT, queryOptions);
+    // ssrResponse = null;
+  }
+
+  const { data: queryData, error, loading, refetch } = result;
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
@@ -533,11 +536,13 @@ export const useComponent = (
     };
   }, [subscribed]);
 
-  const inlineData = ssrResponse
-    ? ssrResponse.data?.renderComponent?.rendered
-    : options?.data && !queryData?.renderComponent?.rendered
-    ? options?.data
-    : queryData?.renderComponent?.rendered;
+  // ssrResponse
+  //   ? ssrResponse.data?.renderComponent?.rendered
+  //   :
+  const inlineData =
+    options?.data && !queryData?.renderComponent?.rendered
+      ? options?.data
+      : queryData?.renderComponent?.rendered;
 
   const inlined = inline({
     data: inlineData,
