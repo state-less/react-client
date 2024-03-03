@@ -272,9 +272,7 @@ export const useComponent = (
   const [lastMutationResult, setLastMutationResult] =
     useState<FetchResult>(null);
 
-  const [skip, setSkip] = useState(
-    options?.skip || !!options?.data?.key || options?.suspend
-  );
+  const [skip, setSkip] = useState(options?.skip || !!options?.data?.key);
   const [subscribed, setSubcribed] = useState<any | null>(null);
   const actualClient = client || providedClient;
 

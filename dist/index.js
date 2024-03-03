@@ -166,7 +166,7 @@ var useComponent = function useComponent(key) {
     _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
     lastMutationResult = _useState2[0],
     setLastMutationResult = _useState2[1];
-  var _useState3 = (0, _react2.useState)((options === null || options === void 0 ? void 0 : options.skip) || !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key) || (options === null || options === void 0 ? void 0 : options.suspend)),
+  var _useState3 = (0, _react2.useState)((options === null || options === void 0 ? void 0 : options.skip) || !!(options !== null && options !== void 0 && (_options$data = options.data) !== null && _options$data !== void 0 && _options$data.key)),
     _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
     skip = _useState4[0],
     setSkip = _useState4[1];
