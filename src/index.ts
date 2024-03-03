@@ -344,7 +344,7 @@ export const useComponent = (
 
   const { data: queryData, error, loading, refetch } = result;
 
-  if (options.suspend && options.ssr) {
+  if (options.suspend && options.ssr && !loading) {
     // Avoid caching of request because server maintains react state
     refetch();
   }

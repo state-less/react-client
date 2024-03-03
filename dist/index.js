@@ -237,7 +237,7 @@ var useComponent = function useComponent(key) {
     error = _result.error,
     loading = _result.loading,
     refetch = _result.refetch;
-  if (options.suspend && options.ssr) {
+  if (options.suspend && options.ssr && !loading) {
     // Avoid caching of request because server maintains react state
     refetch();
   }
