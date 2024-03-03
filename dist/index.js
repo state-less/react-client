@@ -220,10 +220,14 @@ var useComponent = function useComponent(key) {
     skip: skip
   };
   if (options.suspend) {
-    var _result, _result$data, _result$data$renderCo;
-    console.log('SUSPENDED; USE SUSPENSE QUERY', options.ssr);
+    if (key === 'poll-open') {
+      console.log('SUSPENDED; USE SUSPENSE QUERY', options.ssr, key, id);
+    }
     result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
-    console.log('SUSPENDED; USE SUSPENSE QUERY 2', (_result = result) === null || _result === void 0 ? void 0 : (_result$data = _result.data) === null || _result$data === void 0 ? void 0 : (_result$data$renderCo = _result$data.renderComponent) === null || _result$data$renderCo === void 0 ? void 0 : _result$data$renderCo.rendered);
+    if (key === 'poll-open') {
+      var _result, _result$data, _result$data$renderCo;
+      console.log('SUSPENDED; USE SUSPENSE QUERY 2', (_result = result) === null || _result === void 0 ? void 0 : (_result$data = _result.data) === null || _result$data === void 0 ? void 0 : (_result$data$renderCo = _result$data.renderComponent) === null || _result$data$renderCo === void 0 ? void 0 : _result$data$renderCo.rendered);
+    }
 
     // ssrResponse = renderComponent(key, {
     //   ...options,
