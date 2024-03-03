@@ -220,6 +220,12 @@ export const renderCache: Record<
   () => Promise<ApolloQueryResult<any>>
 > = {};
 
+export const resetCache = () => {
+  Object.keys(renderCache).forEach((key) => {
+    delete renderCache[key];
+  });
+};
+
 export const renderComponent = (
   key: string,
   options: UseComponentOptions & { session: Session }
@@ -346,7 +352,6 @@ export const useComponent = (
   }
 
   const { data: queryData, error, loading, refetch } = result;
-
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.

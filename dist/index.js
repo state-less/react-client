@@ -16,11 +16,12 @@ var _exportNames = {
   CALL_FUNCTION: true,
   useLocalStorage: true,
   renderCache: true,
+  resetCache: true,
   renderComponent: true,
   useComponent: true,
   useServerState: true
 };
-exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.renderCache = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
+exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.resetCache = exports.renderComponent = exports.renderCache = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
@@ -129,6 +130,12 @@ var useLocalStorage = function useLocalStorage(key, initialValue) {
 exports.useLocalStorage = useLocalStorage;
 var renderCache = {};
 exports.renderCache = renderCache;
+var resetCache = function resetCache() {
+  Object.keys(renderCache).forEach(function (key) {
+    delete renderCache[key];
+  });
+};
+exports.resetCache = resetCache;
 var renderComponent = function renderComponent(key, options) {
   var _ref3 = options || {},
     client = _ref3.client,
@@ -239,7 +246,6 @@ var useComponent = function useComponent(key) {
     error = _result.error,
     loading = _result.loading,
     refetch = _result.refetch;
-
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.

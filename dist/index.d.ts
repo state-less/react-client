@@ -36,6 +36,7 @@ export declare const useLocalStorage: <T>(key: string, initialValue: T, { cookie
     ssr?: boolean;
 }) => [T, (val: T) => void];
 export declare const renderCache: Record<string, () => Promise<ApolloQueryResult<any>>>;
+export declare const resetCache: () => void;
 export declare const renderComponent: (key: string, options: UseComponentOptions & {
     session: Session;
 }) => () => Promise<ApolloQueryResult<any>>;
