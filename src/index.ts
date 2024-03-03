@@ -298,7 +298,10 @@ export const useComponent = (
     const decoded = jwt.decode(parsed.token);
 
     serverId = parsed['x-react-server-id'];
-    _initialSession = decoded;
+    _initialSession = {
+      ...decoded,
+      token: parsed.token,
+    };
   }
 
   const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });

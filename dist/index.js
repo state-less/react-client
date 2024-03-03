@@ -22,8 +22,8 @@ var _exportNames = {
 };
 exports.useServerState = exports.useLocalStorage = exports.useComponent = exports.renderComponent = exports.renderCache = exports.UPDATE_STATE = exports.UPDATE_COMPONENT = exports.UNMOUNT_COMPONENT = exports.SET_STATE = exports.RENDER_COMPONENT = exports.MOUNT_COMPONENT = exports.GET_STATE = exports.CALL_FUNCTION = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
@@ -193,7 +193,9 @@ var useComponent = function useComponent(key) {
     console.log('CALLING JWT', (0, _typeof2["default"])(req), parsed);
     var decoded = jwt.decode(parsed.token);
     serverId = parsed['x-react-server-id'];
-    _initialSession = decoded;
+    _initialSession = _objectSpread(_objectSpread({}, decoded), {}, {
+      token: parsed.token
+    });
   }
   var _useLocalStorage = useLocalStorage('id', serverId, {
       cookie: 'x-react-server-id'
