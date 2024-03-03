@@ -302,7 +302,7 @@ export const useComponent = (
   const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });
 
   const [session] = useLocalStorage('session', _initialSession, {
-    ssr: options.suspend,
+    ssr: options.ssr,
   });
 
   let result;

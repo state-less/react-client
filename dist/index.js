@@ -199,7 +199,7 @@ var useComponent = function useComponent(key) {
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 1),
     id = _useLocalStorage2[0];
   var _useLocalStorage3 = useLocalStorage('session', _initialSession, {
-      ssr: options.suspend
+      ssr: options.ssr
     }),
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
