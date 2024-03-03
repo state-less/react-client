@@ -12,7 +12,6 @@ export function wrapPromise<T>(promise: Promise<T>): () => T {
     }
   );
   return () => {
-    console.log('WRAP PROM', status);
     switch (status) {
       case 'pending':
         throw suspender;
