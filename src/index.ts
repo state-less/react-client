@@ -23,7 +23,12 @@ import { Session, Strategies } from './lib/types';
 import { wrapPromise } from './lib/util/SSR';
 import { ssrContext } from './provider/SSRProvider';
 import cookie from 'cookie';
-import jwt from 'jsonwebtoken';
+
+let jwt = null;
+if (typeof window === 'undefined') {
+  jwt = require('jsonwebtoken');
+}
+
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
     renderComponent(key: $key, props: $props) {
