@@ -209,9 +209,6 @@ var useComponent = function useComponent(key) {
     session = _useLocalStorage4[0];
   var result;
   var fetchPolicy = options.ssr ? 'network-only' : 'cache-first';
-  if (key === 'poll-open') {
-    console.log('FETCH OPTIONS', key, fetchPolicy);
-  }
   var queryOptions = {
     client: actualClient,
     variables: {
@@ -228,7 +225,12 @@ var useComponent = function useComponent(key) {
     skip: skip
   };
   if (options.suspend) {
-    result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
+    try {
+      result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
+    } catch (prom) {
+      renderCache[key] = renderCache[key] || (0, _SSR.wrapPromise)(prom);
+      throw prom;
+    }
   } else {
     result = (0, _react.useQuery)(RENDER_COMPONENT, queryOptions);
   }

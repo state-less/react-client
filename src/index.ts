@@ -317,9 +317,7 @@ export const useComponent = (
   const fetchPolicy = options.ssr
     ? ('network-only' as const)
     : ('cache-first' as const);
-  if (key === 'poll-open') {
-    console.log('FETCH OPTIONS', key, fetchPolicy);
-  }
+
   const queryOptions = {
     client: actualClient,
     variables: {
@@ -337,7 +335,12 @@ export const useComponent = (
   };
 
   if (options.suspend) {
-    result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
+    try {
+      result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
+    } catch (prom) {
+      renderCache[key] = renderCache[key] || wrapPromise(prom);
+      throw prom;
+    }
   } else {
     result = useQuery(RENDER_COMPONENT, queryOptions);
   }
