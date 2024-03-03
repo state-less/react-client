@@ -145,7 +145,7 @@ type UseComponentOptions = {
   preventUnload?: boolean;
   sendUnmount?: boolean;
   suspend?: boolean;
-  ssrv?: boolean;
+  ssr?: boolean;
 };
 
 type UseServerStateInfo = {
@@ -312,7 +312,9 @@ export const useComponent = (
       key,
       props: options.props,
     },
-    fetchPolicy: 'cache-first' as const,
+    fetchPolicy: options.ssr
+      ? ('network-only' as const)
+      : ('cache-first' as const),
     context: {
       headers: {
         'X-Unique-Id': id,

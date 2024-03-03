@@ -25,7 +25,7 @@ type UseComponentOptions = {
     preventUnload?: boolean;
     sendUnmount?: boolean;
     suspend?: boolean;
-    ssrv?: boolean;
+    ssr?: boolean;
 };
 type UseServerStateInfo = {
     error: ApolloError;
