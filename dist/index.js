@@ -210,7 +210,7 @@ var useComponent = function useComponent(key) {
       key: key,
       props: options.props
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
     context: {
       headers: {
         'X-Unique-Id': id,
