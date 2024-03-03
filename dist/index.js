@@ -207,7 +207,7 @@ var useComponent = function useComponent(key) {
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
   if (key === 'poll-open') {
-    console.log('SSR SESSIOn', id, session.token);
+    console.log('SSR SESSIOn', serverId, id);
   }
   var result;
   var queryOptions = {

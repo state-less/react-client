@@ -311,7 +311,7 @@ export const useComponent = (
   });
 
   if (key === 'poll-open') {
-    console.log('SSR SESSIOn', id, session.token);
+    console.log('SSR SESSIOn', serverId, id);
   }
 
   let result;
