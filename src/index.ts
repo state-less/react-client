@@ -324,9 +324,12 @@ export const useComponent = (
     skip: skip,
   };
   if (options.suspend) {
-    console.log('SUSPENDED; USE SUSPENSE QUERY');
+    console.log('SUSPENDED; USE SUSPENSE QUERY', options.ssr);
     result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
-    console.log('SUSPENDED; USE SUSPENSE QUERY 2', result);
+    console.log(
+      'SUSPENDED; USE SUSPENSE QUERY 2',
+      result?.data?.renderComponent?.rendered
+    );
 
     // ssrResponse = renderComponent(key, {
     //   ...options,

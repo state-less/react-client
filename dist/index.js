@@ -220,9 +220,10 @@ var useComponent = function useComponent(key) {
     skip: skip
   };
   if (options.suspend) {
-    console.log('SUSPENDED; USE SUSPENSE QUERY');
+    var _result, _result$data, _result$data$renderCo;
+    console.log('SUSPENDED; USE SUSPENSE QUERY', options.ssr);
     result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
-    console.log('SUSPENDED; USE SUSPENSE QUERY 2', result);
+    console.log('SUSPENDED; USE SUSPENSE QUERY 2', (_result = result) === null || _result === void 0 ? void 0 : (_result$data = _result.data) === null || _result$data === void 0 ? void 0 : (_result$data$renderCo = _result$data.renderComponent) === null || _result$data$renderCo === void 0 ? void 0 : _result$data$renderCo.rendered);
 
     // ssrResponse = renderComponent(key, {
     //   ...options,
@@ -235,11 +236,11 @@ var useComponent = function useComponent(key) {
     // ssrResponse = null;
   }
 
-  var _result = result,
-    queryData = _result.data,
-    error = _result.error,
-    loading = _result.loading,
-    refetch = _result.refetch;
+  var _result2 = result,
+    queryData = _result2.data,
+    error = _result2.error,
+    loading = _result2.loading,
+    refetch = _result2.refetch;
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
