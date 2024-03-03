@@ -343,6 +343,11 @@ export const useComponent = (
   }
 
   const { data: queryData, error, loading, refetch } = result;
+
+  if (options.suspend && options.ssr) {
+    // Avoid caching of request because server maintains react state
+    refetch();
+  }
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
