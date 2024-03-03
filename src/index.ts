@@ -311,9 +311,7 @@ export const useComponent = (
       key,
       props: options.props,
     },
-    fetchPolicy: options.suspend
-      ? ('network-only' as const)
-      : ('cache-first' as const),
+    fetchPolicy: 'cache-and-network' as const,
     context: {
       headers: {
         'X-Unique-Id': id,
