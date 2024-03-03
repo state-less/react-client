@@ -289,18 +289,11 @@ export const useComponent = (
 
   if ((req?.headers as any)?.cookie) {
     const parsed = cookie.parse((req?.headers as any)?.cookie);
+    console.log('CALLING JWT', typeof req, parsed);
     const decoded = jwt.decode(parsed.token);
 
-    console.log('DECODED JWT', decoded);
     serverId = parsed['x-react-server-id'];
-    _initialSession = {
-      id: serverId,
-      token: parsed.token,
-      // strategy: Strategies.Google,
-      // strategies: {
-      //   [Strategies.Google]: {},
-      // },
-    };
+    _initialSession = decoded;
   }
 
   const [id] = useLocalStorage('id', serverId, { cookie: 'x-react-server-id' });
