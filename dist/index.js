@@ -237,10 +237,7 @@ var useComponent = function useComponent(key) {
     error = _result.error,
     loading = _result.loading,
     refetch = _result.refetch;
-  if (options.suspend && options.ssr && !loading) {
-    // Avoid caching of request because server maintains react state
-    refetch();
-  }
+
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
