@@ -314,15 +314,19 @@ export const useComponent = (
   });
 
   let result;
+  const fetchPolicy = options.ssr
+    ? ('network-only' as const)
+    : ('cache-first' as const);
+  if (key === 'poll-open') {
+    console.log('FETCH OPTIONS', key, fetchPolicy);
+  }
   const queryOptions = {
     client: actualClient,
     variables: {
       key,
       props: options.props,
     },
-    fetchPolicy: options.ssr
-      ? ('network-only' as const)
-      : ('cache-first' as const),
+    fetchPolicy: fetchPolicy,
     context: {
       headers: {
         'X-Unique-Id': id,

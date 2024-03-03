@@ -208,13 +208,17 @@ var useComponent = function useComponent(key) {
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
   var result;
+  var fetchPolicy = options.ssr ? 'network-only' : 'cache-first';
+  if (key === 'poll-open') {
+    console.log('FETCH OPTIONS', key, fetchPolicy);
+  }
   var queryOptions = {
     client: actualClient,
     variables: {
       key: key,
       props: options.props
     },
-    fetchPolicy: options.ssr ? 'network-only' : 'cache-first',
+    fetchPolicy: fetchPolicy,
     context: {
       headers: {
         'X-Unique-Id': id,
