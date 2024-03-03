@@ -208,7 +208,7 @@ var useComponent = function useComponent(key) {
     _useLocalStorage4 = (0, _slicedToArray2["default"])(_useLocalStorage3, 1),
     session = _useLocalStorage4[0];
   var result;
-  var fetchPolicy = options.ssr ? 'cache-and-network' : 'cache-and-network';
+  var fetchPolicy = options.ssr ? 'network-only' : 'cache-first';
   if (key === 'poll-open') {
     console.log('FETCH OPTIONS', key, fetchPolicy);
   }

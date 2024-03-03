@@ -315,8 +315,8 @@ export const useComponent = (
 
   let result;
   const fetchPolicy = options.ssr
-    ? ('cache-and-network' as const)
-    : ('cache-and-network' as const);
+    ? ('network-only' as const)
+    : ('cache-first' as const);
   if (key === 'poll-open') {
     console.log('FETCH OPTIONS', key, fetchPolicy);
   }
