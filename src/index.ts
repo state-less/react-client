@@ -323,27 +323,11 @@ export const useComponent = (
     },
     skip: skip,
   };
-  if (options.suspend) {
-    if (key === 'poll-open') {
-      console.log('SUSPENDED; USE SUSPENSE QUERY', options.ssr, key, id);
-    }
-    result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
-    if (key === 'poll-open') {
-      console.log(
-        'SUSPENDED; USE SUSPENSE QUERY 2',
-        result?.data?.renderComponent?.rendered
-      );
-    }
 
-    // ssrResponse = renderComponent(key, {
-    //   ...options,
-    //   client: actualClient,
-    //   session,
-    // })();
-    // console.log('RENDERING SSR NOT THROWING');
+  if (options.suspend) {
+    result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
   } else {
     result = useQuery(RENDER_COMPONENT, queryOptions);
-    // ssrResponse = null;
   }
 
   const { data: queryData, error, loading, refetch } = result;

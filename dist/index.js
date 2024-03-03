@@ -220,31 +220,15 @@ var useComponent = function useComponent(key) {
     skip: skip
   };
   if (options.suspend) {
-    if (key === 'poll-open') {
-      console.log('SUSPENDED; USE SUSPENSE QUERY', options.ssr, key, id);
-    }
     result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
-    if (key === 'poll-open') {
-      var _result, _result$data, _result$data$renderCo;
-      console.log('SUSPENDED; USE SUSPENSE QUERY 2', (_result = result) === null || _result === void 0 ? void 0 : (_result$data = _result.data) === null || _result$data === void 0 ? void 0 : (_result$data$renderCo = _result$data.renderComponent) === null || _result$data$renderCo === void 0 ? void 0 : _result$data$renderCo.rendered);
-    }
-
-    // ssrResponse = renderComponent(key, {
-    //   ...options,
-    //   client: actualClient,
-    //   session,
-    // })();
-    // console.log('RENDERING SSR NOT THROWING');
   } else {
     result = (0, _react.useQuery)(RENDER_COMPONENT, queryOptions);
-    // ssrResponse = null;
   }
-
-  var _result2 = result,
-    queryData = _result2.data,
-    error = _result2.error,
-    loading = _result2.loading,
-    refetch = _result2.refetch;
+  var _result = result,
+    queryData = _result.data,
+    error = _result.error,
+    loading = _result.loading,
+    refetch = _result.refetch;
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
    * useSubscription doesn't work because it doesn't resubscribe if the key changes.
