@@ -184,7 +184,7 @@ var useComponent = function useComponent(key) {
   var serverId = (0, _uuid.v4)();
   var _useContext = (0, _react2.useContext)(_SSRProvider.ssrContext),
     req = _useContext.req;
-  if (req !== null && req !== void 0 && (_req$headers = req.headers) !== null && _req$headers !== void 0 && _req$headers.cookie) {
+  if (req !== null && req !== void 0 && (_req$headers = req.headers) !== null && _req$headers !== void 0 && _req$headers.cookie && options.ssr) {
     var _req$headers2;
     var parsed = _cookie["default"].parse(req === null || req === void 0 ? void 0 : (_req$headers2 = req.headers) === null || _req$headers2 === void 0 ? void 0 : _req$headers2.cookie);
     console.log('CALLING JWT', (0, _typeof2["default"])(req), parsed);

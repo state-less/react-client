@@ -287,7 +287,7 @@ export const useComponent = (
   let serverId = v4();
   const { req } = useContext(ssrContext);
 
-  if ((req?.headers as any)?.cookie) {
+  if ((req?.headers as any)?.cookie && options.ssr) {
     const parsed = cookie.parse((req?.headers as any)?.cookie);
     console.log('CALLING JWT', typeof req, parsed);
     const decoded = jwt.decode(parsed.token);
