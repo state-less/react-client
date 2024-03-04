@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "es2022",
+    "target": "es2017",
+    "module": "commonjs",
     "outDir": "dist",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -9,8 +9,7 @@
     "jsx": "preserve",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "skipLibCheck": true,
-    "moduleResolution": "nodenext"
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
