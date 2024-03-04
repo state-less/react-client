@@ -38,7 +38,7 @@ var _SSR = require("./lib/util/SSR");
 var _SSRProvider = require("./provider/SSRProvider");
 var _cookie = _interopRequireDefault(require("cookie"));
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
-var _AuthenticationProvider = require("./provider/AuthenticationProvider.jsx");
+var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;

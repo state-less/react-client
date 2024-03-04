@@ -736,4 +736,4 @@ export const useServerState = <ValueType>(
   ];
 };
 
-export * from './provider/AuthenticationProvider.jsx';
+export * from './provider/AuthenticationProvider';

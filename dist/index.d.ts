@@ -50,4 +50,4 @@ export declare const useComponent: (key: string, options?: UseComponentOptions) 
     }>>;
 }];
 export declare const useServerState: <ValueType>(initialValue: ValueType, options: UseServerStateOptions) => [ValueType, (value: ValueType) => void, UseServerStateInfo];
-export * from './provider/AuthenticationProvider.jsx';
+export * from './provider/AuthenticationProvider';
