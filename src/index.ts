@@ -16,10 +16,10 @@ import { cloneDeep } from '@apollo/client/utilities';
 import { useAtom } from 'jotai';
 import { atom } from 'jotai';
 import { PrimitiveAtom } from 'jotai/vanilla';
-import { initialSession } from './lib/instances.js';
+import { initialSession } from './lib/instances';
 import { Session } from './lib/types.js';
-import { wrapPromise } from './lib/util/SSR.js';
-import { ssrContext } from './provider/SSRProvider.jsx';
+import { wrapPromise } from './lib/util/SSR';
+import { ssrContext } from './provider/SSRProvider';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 
