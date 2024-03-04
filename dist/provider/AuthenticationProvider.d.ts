@@ -2,7 +2,7 @@ import { ApolloClient } from '@apollo/client';
 import { PropsWithChildren } from 'react';
 import React from 'react';
 export declare const authContext: React.Context<{
-    session: import("../lib/types").Session;
+    session: import("../lib/types.js").Session;
     authenticate: any;
     logout: any;
 }>;

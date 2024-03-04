@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "author": "Moritz Roessler",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "build": "babel src --out-dir dist --extensions \".ts,.tsx\" --copy-files && tsc",
     "start": "yarn build && node dist/index.js",

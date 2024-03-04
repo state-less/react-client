@@ -1,5 +1,5 @@
 import React from 'react';
-import { GET_STATE, SET_STATE, UPDATE_STATE, useServerState } from '.';
+import { GET_STATE, SET_STATE, UPDATE_STATE, useServerState } from './index.js';
 import { MockedProvider } from '@apollo/client/testing';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';

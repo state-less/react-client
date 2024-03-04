@@ -1,4 +1,4 @@
-import { Session } from './types';
+import { Session } from './types.js';
 
 export const initialSession: Session = {
   id: null,

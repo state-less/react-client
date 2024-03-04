@@ -6,9 +6,9 @@ import {
   useContext,
   useEffect,
 } from 'react';
-import { useLocalStorage } from '..';
+import { useLocalStorage } from '../index.js';
 import React from 'react';
-import { initialSession } from '../lib/instances';
+import { initialSession } from '../lib/instances.js';
 
 export const authContext = createContext({
   session: initialSession,

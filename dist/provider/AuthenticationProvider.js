@@ -12,8 +12,8 @@ var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/sli
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _client = require("@apollo/client");
 var _react = _interopRequireWildcard(require("react"));
-var _ = require("..");
-var _instances = require("../lib/instances");
+var _index = require("../index.js");
+var _instances = require("../lib/instances.js");
 var _templateObject;
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -32,7 +32,7 @@ var AuthProvider = function AuthProvider(_ref) {
   var _useContext = (0, _react.useContext)(context),
     apolloClient = _useContext.client;
   var actualClient = client || apolloClient;
-  var _useLocalStorage = (0, _.useLocalStorage)('session', _instances.initialSession),
+  var _useLocalStorage = (0, _index.useLocalStorage)('session', _instances.initialSession),
     _useLocalStorage2 = (0, _slicedToArray2["default"])(_useLocalStorage, 2),
     auth = _useLocalStorage2[0],
     setAuth = _useLocalStorage2[1];

@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { ApolloClient, ApolloQueryResult, OperationVariables } from '@apollo/client/core';
-import { Session } from './lib/types';
+import { Session } from './lib/types.js';
 export declare const RENDER_COMPONENT: import("@apollo/client").DocumentNode;
 export declare const UNMOUNT_COMPONENT: import("@apollo/client").DocumentNode;
 export declare const MOUNT_COMPONENT: import("@apollo/client").DocumentNode;
@@ -50,4 +50,4 @@ export declare const useComponent: (key: string, options?: UseComponentOptions) 
     }>>;
 }];
 export declare const useServerState: <ValueType>(initialValue: ValueType, options: UseServerStateOptions) => [ValueType, (value: ValueType) => void, UseServerStateInfo];
-export * from './provider/AuthenticationProvider';
+export * from './provider/AuthenticationProvider.jsx';

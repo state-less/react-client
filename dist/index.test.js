@@ -5,14 +5,14 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _react = _interopRequireDefault(require("react"));
-var _ = require(".");
+var _index = require("./index.js");
 var _testing = require("@apollo/client/testing");
 var _react2 = require("@testing-library/react");
 require("@testing-library/jest-dom/extend-expect");
 var _testUtils = require("react-dom/test-utils");
 var mocks = [{
   request: {
-    query: _.SET_STATE,
+    query: _index.SET_STATE,
     variables: {
       key: 'hello-world',
       scope: 'global',
@@ -29,7 +29,7 @@ var mocks = [{
   }
 }, {
   request: {
-    query: _.GET_STATE,
+    query: _index.GET_STATE,
     variables: {
       key: 'hello-world',
       scope: 'global'
@@ -45,7 +45,7 @@ var mocks = [{
   }
 }, {
   request: {
-    query: _.UPDATE_STATE,
+    query: _index.UPDATE_STATE,
     variables: {
       key: 'hello-world',
       scope: 'global'
@@ -62,7 +62,7 @@ var mocks = [{
 }];
 var initialValue = 'Hello World';
 var Mock = function Mock() {
-  var _useServerState = (0, _.useServerState)(initialValue, {
+  var _useServerState = (0, _index.useServerState)(initialValue, {
       key: 'hello-world',
       scope: 'global'
     }),
@@ -71,7 +71,7 @@ var Mock = function Mock() {
   return /*#__PURE__*/_react["default"].createElement("div", null, value);
 };
 var SetValueMock = function SetValueMock() {
-  var _useServerState3 = (0, _.useServerState)(initialValue, {
+  var _useServerState3 = (0, _index.useServerState)(initialValue, {
       key: 'hello-world',
       scope: 'global'
     }),

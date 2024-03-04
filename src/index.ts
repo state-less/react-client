@@ -6,8 +6,6 @@ import {
   OperationVariables,
 } from '@apollo/client/core';
 import {
-  QueryResult,
-  UseSuspenseQueryResult,
   useQuery,
   useSubscription,
   useSuspenseQuery,
@@ -18,15 +16,15 @@ import { cloneDeep } from '@apollo/client/utilities';
 import { useAtom } from 'jotai';
 import { atom } from 'jotai';
 import { PrimitiveAtom } from 'jotai/vanilla';
-import { initialSession } from './lib/instances';
-import { Session, Strategies } from './lib/types';
-import { wrapPromise } from './lib/util/SSR';
-import { ssrContext } from './provider/SSRProvider';
+import { initialSession } from './lib/instances.js';
+import { Session } from './lib/types.js';
+import { wrapPromise } from './lib/util/SSR.js';
+import { ssrContext } from './provider/SSRProvider.jsx';
 import cookie from 'cookie';
 
 let jwt = null;
 if (typeof window === 'undefined') {
-  jwt = require('jsonwebtoken');
+  jwt = await import('jsonwebtoken');
 }
 
 export const RENDER_COMPONENT = gql`
@@ -742,4 +740,4 @@ export const useServerState = <ValueType>(
   ];
 };
 
-export * from './provider/AuthenticationProvider';
+export * from './provider/AuthenticationProvider.jsx';
