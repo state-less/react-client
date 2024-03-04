@@ -21,11 +21,7 @@ import { Session } from './lib/types.js';
 import { wrapPromise } from './lib/util/SSR.js';
 import { ssrContext } from './provider/SSRProvider.jsx';
 import cookie from 'cookie';
-
-let jwt = null;
-if (typeof window === 'undefined') {
-  jwt = await import('jsonwebtoken');
-}
+import jwt from 'jsonwebtoken';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
