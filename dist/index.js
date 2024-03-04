@@ -37,7 +37,7 @@ var _instances = require("./lib/instances");
 var _SSR = require("./lib/util/SSR");
 var _SSRProvider = require("./provider/SSRProvider");
 var _cookie = _interopRequireDefault(require("cookie"));
-var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
+var _jwtDecode = require("jwt-decode");
 var _AuthenticationProvider = require("./provider/AuthenticationProvider");
 Object.keys(_AuthenticationProvider).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -193,7 +193,7 @@ var useComponent = function useComponent(key) {
   if (req !== null && req !== void 0 && (_req$headers = req.headers) !== null && _req$headers !== void 0 && _req$headers.cookie && options.ssr) {
     var _req$headers2;
     var parsed = _cookie["default"].parse(req === null || req === void 0 ? void 0 : (_req$headers2 = req.headers) === null || _req$headers2 === void 0 ? void 0 : _req$headers2.cookie);
-    var decoded = _jsonwebtoken["default"].decode(parsed.token);
+    var decoded = (0, _jwtDecode.jwtDecode)(parsed.token);
     serverId = parsed['x-react-server-id'];
     _initialSession = _objectSpread(_objectSpread({}, decoded), {}, {
       id: serverId,

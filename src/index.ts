@@ -21,7 +21,7 @@ import { Session } from './lib/types.js';
 import { wrapPromise } from './lib/util/SSR';
 import { ssrContext } from './provider/SSRProvider';
 import cookie from 'cookie';
-import jwt from 'jsonwebtoken';
+import { jwtDecode as decode } from 'jwt-decode';
 
 export const RENDER_COMPONENT = gql`
   query MyQuery($key: ID!, $props: JSON) {
@@ -294,7 +294,7 @@ export const useComponent = (
 
   if ((req?.headers as any)?.cookie && options.ssr) {
     const parsed = cookie.parse((req?.headers as any)?.cookie);
-    const decoded = jwt.decode(parsed.token);
+    const decoded = decode(parsed.token);
 
     serverId = parsed['x-react-server-id'];
     _initialSession = {
