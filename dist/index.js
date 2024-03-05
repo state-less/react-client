@@ -276,8 +276,7 @@ var useComponent = function useComponent(key) {
           case 2:
             sub = _context.sent;
             can = sub.subscribe(function (subscriptionData) {
-              var _subscriptionData$dat, _subscriptionData$dat2, _subscriptionData$dat3, _subscriptionData$dat4;
-              console.log('Component updated', subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered);
+              var _subscriptionData$dat, _subscriptionData$dat2;
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
@@ -286,7 +285,7 @@ var useComponent = function useComponent(key) {
                 },
                 data: {
                   renderComponent: {
-                    rendered: _objectSpread({}, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
+                    rendered: _objectSpread({}, subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat = subscriptionData.data) === null || _subscriptionData$dat === void 0 ? void 0 : (_subscriptionData$dat2 = _subscriptionData$dat.updateComponent) === null || _subscriptionData$dat2 === void 0 ? void 0 : _subscriptionData$dat2.rendered)
                   }
                 }
               });
@@ -338,9 +337,8 @@ var useComponent = function useComponent(key) {
           case 2:
             sub = _context2.sent;
             can = sub.subscribe(function (subscriptionData) {
-              var _subscriptionData$dat5, _subscriptionData$dat6, _queryData$renderComp9, _subscriptionData$dat7, _subscriptionData$dat8;
+              var _queryData$renderComp9, _subscriptionData$dat3, _subscriptionData$dat4;
               if (!options.skip) setSkip(false);
-              console.log('Component updated', subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat5 = subscriptionData.data) === null || _subscriptionData$dat5 === void 0 ? void 0 : (_subscriptionData$dat6 = _subscriptionData$dat5.updateComponent) === null || _subscriptionData$dat6 === void 0 ? void 0 : _subscriptionData$dat6.rendered);
               actualClient.cache.writeQuery({
                 query: RENDER_COMPONENT,
                 variables: {
@@ -349,7 +347,7 @@ var useComponent = function useComponent(key) {
                 },
                 data: {
                   renderComponent: {
-                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat7 = subscriptionData.data) === null || _subscriptionData$dat7 === void 0 ? void 0 : (_subscriptionData$dat8 = _subscriptionData$dat7.updateComponent) === null || _subscriptionData$dat8 === void 0 ? void 0 : _subscriptionData$dat8.rendered)
+                    rendered: _objectSpread(_objectSpread({}, queryData === null || queryData === void 0 ? void 0 : (_queryData$renderComp9 = queryData.renderComponent) === null || _queryData$renderComp9 === void 0 ? void 0 : _queryData$renderComp9.rendered), subscriptionData === null || subscriptionData === void 0 ? void 0 : (_subscriptionData$dat3 = subscriptionData.data) === null || _subscriptionData$dat3 === void 0 ? void 0 : (_subscriptionData$dat4 = _subscriptionData$dat3.updateComponent) === null || _subscriptionData$dat4 === void 0 ? void 0 : _subscriptionData$dat4.rendered)
                   }
                 }
               });
