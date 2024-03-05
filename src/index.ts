@@ -403,7 +403,7 @@ export const useComponent = (
     return () => {
       can?.unsubscribe?.();
     };
-  }, [queryData?.renderComponent?.rendered?.key, queryData]);
+  }, [queryData?.renderComponent?.rendered?.key]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
