@@ -352,8 +352,8 @@ export const useComponent = (
    */
   useEffect(() => {
     if (
-      !queryData?.renderComponent?.rendered?.key ||
-      subscribed?._state === 'ready'
+      !queryData?.renderComponent?.rendered?.key
+      // || subscribed?._state === 'ready'
     )
       return;
     let can;
@@ -376,6 +376,8 @@ export const useComponent = (
         },
       });
 
+      console.log('Unsubscribing');
+      can?.unsubscribe?.();
       can = sub.subscribe((subscriptionData) => {
         console.log(
           'Component updated',
@@ -401,9 +403,12 @@ export const useComponent = (
       setSubcribed(can);
     })();
     return () => {
-      can?.unsubscribe?.();
+      // can?.unsubscribe?.();
     };
-  }, [queryData?.renderComponent?.rendered?.key]);
+  }, [
+    queryData?.renderComponent?.rendered?.key,
+    queryData?.renderComponent?.rendered,
+  ]);
 
   /**
    * This needs to be done manually because we don't have the key of the component before the query above finished.
