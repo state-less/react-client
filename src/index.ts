@@ -377,6 +377,10 @@ export const useComponent = (
       });
 
       can = sub.subscribe((subscriptionData) => {
+        console.log(
+          'Component updated',
+          subscriptionData?.data?.updateComponent?.rendered
+        );
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
@@ -430,6 +434,10 @@ export const useComponent = (
 
       can = sub.subscribe((subscriptionData) => {
         if (!options.skip) setSkip(false);
+        console.log(
+          'Component updated',
+          subscriptionData?.data?.updateComponent?.rendered
+        );
         actualClient.cache.writeQuery({
           query: RENDER_COMPONENT,
           variables: {
