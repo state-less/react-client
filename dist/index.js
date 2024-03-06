@@ -193,7 +193,12 @@ var useComponent = function useComponent(key) {
   if (req !== null && req !== void 0 && (_req$headers = req.headers) !== null && _req$headers !== void 0 && _req$headers.cookie && options.ssr) {
     var _req$headers2;
     var parsed = _cookie["default"].parse(req === null || req === void 0 ? void 0 : (_req$headers2 = req.headers) === null || _req$headers2 === void 0 ? void 0 : _req$headers2.cookie);
-    var decoded = (0, _jwtDecode.jwtDecode)(parsed.token);
+    var decoded;
+    try {
+      decoded = (0, _jwtDecode.jwtDecode)(parsed.token);
+    } catch (e) {
+      decoded = {};
+    }
     serverId = parsed['x-react-server-id'];
     _initialSession = _objectSpread(_objectSpread({}, decoded), {}, {
       id: serverId,
