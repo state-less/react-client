@@ -294,7 +294,12 @@ export const useComponent = (
 
   if ((req?.headers as any)?.cookie && options.ssr) {
     const parsed = cookie.parse((req?.headers as any)?.cookie);
-    const decoded = decode(parsed.token);
+    let decoded;
+    try {
+      decoded = decode(parsed.token);
+    } catch (e) {
+      decoded = {};
+    }
 
     serverId = parsed['x-react-server-id'];
     _initialSession = {
