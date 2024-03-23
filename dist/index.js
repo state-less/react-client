@@ -234,7 +234,7 @@ var useComponent = function useComponent(key) {
     skip: skip
   };
   if (typeof window === 'undefined' && (!options.ssr || !options.suspend)) {
-    console.log('SSR without suspend flag. Make sure you pass a suspend option');
+    console.log('SSR without suspend flag. Make sure you pass a suspend option', key);
   }
   if (options.suspend) {
     try {
