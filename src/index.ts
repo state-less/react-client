@@ -342,7 +342,8 @@ export const useComponent = (
   if (typeof window === 'undefined' && (!options.ssr || !options.suspend)) {
     console.log(
       'SSR without suspend flag. Make sure you pass a suspend option',
-      key
+      key,
+      new Error().stack
     );
   }
   if (options.suspend) {
