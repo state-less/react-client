@@ -339,6 +339,11 @@ export const useComponent = (
     skip: skip,
   };
 
+  if (typeof window === 'undefined' && (!options.ssr || !options.suspend)) {
+    console.log(
+      'SSR without suspend flag. Make sure you pass a suspend option'
+    );
+  }
   if (options.suspend) {
     try {
       result = useSuspenseQuery(RENDER_COMPONENT, queryOptions);
@@ -358,7 +363,8 @@ export const useComponent = (
   useEffect(() => {
     if (
       !queryData?.renderComponent?.rendered?.key ||
-      subscribed?._state === 'ready'
+      subscribed?._state === 'ready' ||
+      options.ssr
     )
       return;
     let can;
@@ -411,7 +417,11 @@ export const useComponent = (
    * useSubscription doesn't work because it doesn't resubscribe if the key changes. ASD
    */
   useEffect(() => {
-    if (!options?.data?.key || queryData?.renderComponent?.rendered?.key)
+    if (
+      !options?.data?.key ||
+      queryData?.renderComponent?.rendered?.key ||
+      options.ssr
+    )
       return;
     let can;
     (async () => {

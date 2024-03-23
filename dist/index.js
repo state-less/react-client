@@ -233,6 +233,9 @@ var useComponent = function useComponent(key) {
     },
     skip: skip
   };
+  if (typeof window === 'undefined' && (!options.ssr || !options.suspend)) {
+    console.log('SSR without suspend flag. Make sure you pass a suspend option');
+  }
   if (options.suspend) {
     try {
       result = (0, _react.useSuspenseQuery)(RENDER_COMPONENT, queryOptions);
@@ -254,7 +257,7 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     var _queryData$renderComp, _queryData$renderComp2;
-    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || (subscribed === null || subscribed === void 0 ? void 0 : subscribed._state) === 'ready') return;
+    if (!(queryData !== null && queryData !== void 0 && (_queryData$renderComp = queryData.renderComponent) !== null && _queryData$renderComp !== void 0 && (_queryData$renderComp2 = _queryData$renderComp.rendered) !== null && _queryData$renderComp2 !== void 0 && _queryData$renderComp2.key) || (subscribed === null || subscribed === void 0 ? void 0 : subscribed._state) === 'ready' || options.ssr) return;
     var can;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
       var _queryData$renderComp3, _queryData$renderComp4;
@@ -315,7 +318,7 @@ var useComponent = function useComponent(key) {
    */
   (0, _react2.useEffect)(function () {
     var _options$data2, _queryData$renderComp7, _queryData$renderComp8;
-    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp7 = queryData.renderComponent) !== null && _queryData$renderComp7 !== void 0 && (_queryData$renderComp8 = _queryData$renderComp7.rendered) !== null && _queryData$renderComp8 !== void 0 && _queryData$renderComp8.key) return;
+    if (!(options !== null && options !== void 0 && (_options$data2 = options.data) !== null && _options$data2 !== void 0 && _options$data2.key) || queryData !== null && queryData !== void 0 && (_queryData$renderComp7 = queryData.renderComponent) !== null && _queryData$renderComp7 !== void 0 && (_queryData$renderComp8 = _queryData$renderComp7.rendered) !== null && _queryData$renderComp8 !== void 0 && _queryData$renderComp8.key || options.ssr) return;
     var can;
     (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
       var _options$data3;
